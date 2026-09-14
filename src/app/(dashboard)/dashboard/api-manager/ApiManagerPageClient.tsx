@@ -31,6 +31,7 @@ import { UsageLimitSettings } from "./components/UsageLimitSettings";
 import { ChaosModeAccessToggle } from "./components/ChaosModeAccessToggle";
 import { BypassProviderQuotaToggle } from "./components/BypassProviderQuotaToggle";
 import { ApiKeyCompressionToggle } from "./components/ApiKeyCompressionToggle";
+import { ApiKeyAutoCombosToggle } from "./components/ApiKeyAutoCombosToggle";
 import ProviderModelPermissionList from "./components/ProviderModelPermissionList";
 import ReasoningRoutingRules from "@/shared/components/ReasoningRoutingRules";
 import { ALL_COMBOS_ACCESS_RULE } from "@/shared/constants/comboAccess";
@@ -135,6 +136,7 @@ interface ApiKey {
   allowedEndpoints?: string[];
   streamDefaultMode?: StreamDefaultMode;
   compressionEnabled?: boolean;
+  allowAutoCombos?: boolean;
   disableNonPublicModels?: boolean;
   allowUsageCommand?: boolean;
   chaosModeEnabled?: boolean;
@@ -800,6 +802,7 @@ export default function ApiManagerPageClient() {
     allowedEndpoints: string[],
     streamDefaultMode: StreamDefaultMode,
     compressionEnabled: boolean,
+    allowAutoCombos: boolean,
     disableNonPublicModels: boolean,
     allowUsageCommand: boolean,
     usageLimitEnabled: boolean,
@@ -875,6 +878,7 @@ export default function ApiManagerPageClient() {
           allowedEndpoints,
           streamDefaultMode,
           compressionEnabled,
+          allowAutoCombos,
           disableNonPublicModels,
           allowUsageCommand,
           usageLimitEnabled,
@@ -1707,6 +1711,7 @@ const PermissionsModal = memo(function PermissionsModal({
     allowedEndpoints: string[],
     streamDefaultMode: StreamDefaultMode,
     compressionEnabled: boolean,
+    allowAutoCombos: boolean,
     disableNonPublicModels: boolean,
     allowUsageCommand: boolean,
     usageLimitEnabled: boolean,
@@ -1790,6 +1795,7 @@ const PermissionsModal = memo(function PermissionsModal({
   const [compressionEnabled, setCompressionEnabled] = useState(
     apiKey?.compressionEnabled !== false
   );
+  const [allowAutoCombos, setAllowAutoCombos] = useState(apiKey?.allowAutoCombos !== false);
   const [nameError, setNameError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<string[]>(initialConnections);
@@ -2002,6 +2008,7 @@ const PermissionsModal = memo(function PermissionsModal({
       allowAllEndpoints ? [] : selectedEndpoints,
       streamDefaultMode,
       compressionEnabled,
+      allowAutoCombos,
       disableNonPublicModels,
       usageCommandEnabled,
       usageLimitEnabled,
@@ -2041,6 +2048,7 @@ const PermissionsModal = memo(function PermissionsModal({
     selectedEndpoints,
     streamDefaultMode,
     compressionEnabled,
+    allowAutoCombos,
     disableNonPublicModels,
     usageCommandEnabled,
     usageLimitEnabled,
@@ -2505,6 +2513,11 @@ const PermissionsModal = memo(function PermissionsModal({
         <ApiKeyCompressionToggle
           enabled={compressionEnabled}
           onToggle={() => setCompressionEnabled((prev) => !prev)}
+        />
+
+        <ApiKeyAutoCombosToggle
+          enabled={allowAutoCombos}
+          onToggle={() => setAllowAutoCombos((prev) => !prev)}
         />
 
         {/* Ban Toggle (SECURITY) */}
