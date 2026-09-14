@@ -790,9 +790,12 @@ async function buildUnifiedModelsResponseCore(
     // `buildComboCatalogMetadata`) already exists here, so return before the
     // provider/auto-combo/registry loops start.
     const earlyApiKey = extractApiKey(request);
+    let earlyKeyMeta: Awaited<
+      ReturnType<typeof import("@/lib/db/apiKeys").getApiKeyMetadata>
+    > | null = null;
     if (earlyApiKey) {
       const { getApiKeyMetadata } = await import("@/lib/db/apiKeys");
-      const earlyKeyMeta = await getApiKeyMetadata(earlyApiKey);
+      earlyKeyMeta = await getApiKeyMetadata(earlyApiKey);
       if (earlyKeyMeta?.allowedQuotas && earlyKeyMeta.allowedQuotas.length > 0) {
         const { buildQuotaExclusiveModels } = await import("@/lib/quota/quotaCombos");
         const quotaModels = await buildQuotaExclusiveModels(
@@ -826,6 +829,9 @@ async function buildUnifiedModelsResponseCore(
     // #9199: prepare the shared connection/settings/registry candidate snapshot once for this
     // catalog build. Runtime auto routing still prepares fresh request-scoped inputs.
     let preparedAutoInputs: Awaited<ReturnType<typeof prepareBuiltinAutoComboInputs>> | undefined;
+    // A key with allowAutoCombos=false must not be offered ids it cannot use:
+    // the policy gate rejects auto/* for it at dispatch.
+    const autoCombosDisallowedForKey = earlyKeyMeta?.allowAutoCombos === false;
     let materializedAutoCount = 0;
     for (const autoId of [
       ...Object.keys(AUTO_TEMPLATE_VARIANTS),
@@ -834,7 +840,7 @@ async function buildUnifiedModelsResponseCore(
     ]) {
       // #9418: skip the entire loop when hideAutoCombos is on — the ids are still
       // routable when sent explicitly, just not advertised in the catalog.
-      if (hideAuto) break;
+      if (hideAuto || autoCombosDisallowedForKey) break;
       if (blockedProviders.has("auto") || listedIds.has(autoId)) continue; // #5192
       // #6328 (follow-up to #6495 / #6512): REMOVE — not just hide — paid-tier
       // auto/* ids (auto/pro-* + auto/*:pro) from the advertised catalog when the
