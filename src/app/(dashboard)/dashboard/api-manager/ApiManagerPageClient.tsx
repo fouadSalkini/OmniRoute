@@ -32,6 +32,8 @@ import { ChaosModeAccessToggle } from "./components/ChaosModeAccessToggle";
 import { BypassProviderQuotaToggle } from "./components/BypassProviderQuotaToggle";
 import { ApiKeyCompressionToggle } from "./components/ApiKeyCompressionToggle";
 import { ApiKeyAutoCombosToggle } from "./components/ApiKeyAutoCombosToggle";
+import { ApiKeyCatalogScopeSelect } from "./components/ApiKeyCatalogScopeSelect";
+import type { CatalogScope } from "./components/ApiKeyCatalogScopeSelect";
 import ProviderModelPermissionList from "./components/ProviderModelPermissionList";
 import ReasoningRoutingRules from "@/shared/components/ReasoningRoutingRules";
 import { ALL_COMBOS_ACCESS_RULE } from "@/shared/constants/comboAccess";
@@ -137,6 +139,7 @@ interface ApiKey {
   streamDefaultMode?: StreamDefaultMode;
   compressionEnabled?: boolean;
   allowAutoCombos?: boolean;
+  catalogScope?: CatalogScope;
   disableNonPublicModels?: boolean;
   allowUsageCommand?: boolean;
   chaosModeEnabled?: boolean;
@@ -803,6 +806,7 @@ export default function ApiManagerPageClient() {
     streamDefaultMode: StreamDefaultMode,
     compressionEnabled: boolean,
     allowAutoCombos: boolean,
+    catalogScope: CatalogScope,
     disableNonPublicModels: boolean,
     allowUsageCommand: boolean,
     usageLimitEnabled: boolean,
@@ -879,6 +883,7 @@ export default function ApiManagerPageClient() {
           streamDefaultMode,
           compressionEnabled,
           allowAutoCombos,
+          catalogScope,
           disableNonPublicModels,
           allowUsageCommand,
           usageLimitEnabled,
@@ -1712,6 +1717,7 @@ const PermissionsModal = memo(function PermissionsModal({
     streamDefaultMode: StreamDefaultMode,
     compressionEnabled: boolean,
     allowAutoCombos: boolean,
+    catalogScope: CatalogScope,
     disableNonPublicModels: boolean,
     allowUsageCommand: boolean,
     usageLimitEnabled: boolean,
@@ -1796,6 +1802,7 @@ const PermissionsModal = memo(function PermissionsModal({
     apiKey?.compressionEnabled !== false
   );
   const [allowAutoCombos, setAllowAutoCombos] = useState(apiKey?.allowAutoCombos !== false);
+  const [catalogScope, setCatalogScope] = useState<CatalogScope>(apiKey?.catalogScope ?? "all");
   const [nameError, setNameError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<string[]>(initialConnections);
@@ -2009,6 +2016,7 @@ const PermissionsModal = memo(function PermissionsModal({
       streamDefaultMode,
       compressionEnabled,
       allowAutoCombos,
+      catalogScope,
       disableNonPublicModels,
       usageCommandEnabled,
       usageLimitEnabled,
@@ -2049,6 +2057,7 @@ const PermissionsModal = memo(function PermissionsModal({
     streamDefaultMode,
     compressionEnabled,
     allowAutoCombos,
+    catalogScope,
     disableNonPublicModels,
     usageCommandEnabled,
     usageLimitEnabled,
@@ -2519,6 +2528,8 @@ const PermissionsModal = memo(function PermissionsModal({
           enabled={allowAutoCombos}
           onToggle={() => setAllowAutoCombos((prev) => !prev)}
         />
+
+        <ApiKeyCatalogScopeSelect value={catalogScope} onChange={setCatalogScope} />
 
         {/* Ban Toggle (SECURITY) */}
         <div className="flex items-start justify-between gap-3 p-3 rounded-lg border border-red-500/20 bg-red-500/5">

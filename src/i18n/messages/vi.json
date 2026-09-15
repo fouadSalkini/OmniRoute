@@ -8291,7 +8291,12 @@
     "cliproxyapiHealth": "Sức Khỏe",
     "cliproxyapiPort": "Cổng",
     "qdrantHost": "Máy chủ",
-    "qdrantCollection": "Bộ Sưu Tập"
+    "qdrantCollection": "Bộ Sưu Tập",
+    "catalogScopeTitle": "Danh sách API mô hình",
+    "catalogScopeDesc": "Những gì GET /v1/models hiển thị cho khóa này. Thu hẹp danh sách không làm thay đổi những gì khóa có thể gọi.",
+    "catalogScopeAll": "Cả hai",
+    "catalogScopeCombos": "Chỉ combo",
+    "catalogScopeModels": "Chỉ mô hình"
   },
   "contextRtk": {
     "title": "RTK Engine",
