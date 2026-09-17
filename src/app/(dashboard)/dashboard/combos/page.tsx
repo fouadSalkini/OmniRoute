@@ -2826,6 +2826,28 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
       strategy,
     };
 
+    // When editing an existing combo from the dashboard form, synchronize allowedProviders
+    // and clear legacy family restrictions so adding steps across providers never triggers COMBO_008
+    if (isEdit) {
+      const stepProviders = models
+        .map(
+          (m: { providerId?: string; model?: string }) =>
+            m.providerId ||
+            (typeof m.model === "string" && m.model.includes("/") ? m.model.split("/")[0] : "")
+        )
+        .filter((p: string): p is string => Boolean(p));
+      const existingProviders = Array.isArray(combo?.allowedProviders)
+        ? combo.allowedProviders
+        : [];
+      if (existingProviders.length > 0) {
+        saveData.allowedProviders = Array.from(new Set([...existingProviders, ...stepProviders]));
+      }
+      if (Array.isArray(combo?.allowedModelFamilies) && combo.allowedModelFamilies.length > 0) {
+        saveData.allowedModelFamilies = null;
+      }
+      saveData.overrideAllowedProviders = true;
+    }
+
     // Per-combo description (#5005). Free-text, optional, persisted in combo data.
     if (description.trim()) {
       saveData.description = description.trim();
