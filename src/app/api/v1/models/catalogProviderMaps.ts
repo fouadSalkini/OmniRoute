@@ -103,7 +103,10 @@ export function resolveCanonicalProviderId(
 /** True when `${prefix}/__omniroute_probe__` parses back to the given providerId. */
 export function prefixRoutesToProvider(prefix: string, providerId: string): boolean {
   const parsed = parseModel(`${prefix}/__omniroute_probe__`);
-  return parsed.provider === providerId;
+  if (!parsed.provider) return false;
+  if (parsed.provider === providerId) return true;
+  const canonicalTarget = resolveCanonicalProviderModel(providerId, "__omniroute_probe__");
+  return parsed.provider === canonicalTarget.provider;
 }
 
 /**
