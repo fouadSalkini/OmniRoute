@@ -257,7 +257,7 @@ export const ProviderConnectionPermissionList = memo(function ProviderConnection
                     type="button"
                     onClick={() => handleToggleExpand(provider)}
                     className="flex items-center shrink-0 text-text-muted hover:text-text-main"
-                    aria-label={provider}
+                    aria-label={providerDisplayName}
                   >
                     <span
                       className={`material-symbols-outlined text-base transition-transform duration-200 ${
