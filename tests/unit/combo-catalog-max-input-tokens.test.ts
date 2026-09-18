@@ -14,8 +14,12 @@ const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const combosDb = await import("../../src/lib/db/combos.ts");
 const catalog = await import("../../src/app/api/v1/models/catalog.ts");
-const { buildAliasMaps, getComboTargetModelId, prefixRoutesToProvider } =
-  await import("../../src/app/api/v1/models/catalogProviderMaps.ts");
+const {
+  buildAliasMaps,
+  getComboTargetModelId,
+  prefixRoutesToProvider,
+  prefixRoutesToCanonicalProvider,
+} = await import("../../src/app/api/v1/models/catalogProviderMaps.ts");
 
 describe("Combo catalog max_input_tokens and provider prefix stripping", () => {
   after(() => {
@@ -23,12 +27,24 @@ describe("Combo catalog max_input_tokens and provider prefix stripping", () => {
     fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
-  it("prefixRoutesToProvider recognizes aliases resolving to canonical provider", () => {
-    // "opencode" routes to canonical "opencode-zen"
-    assert.equal(prefixRoutesToProvider("opencode", "opencode"), true);
-    assert.equal(prefixRoutesToProvider("oc", "opencode"), true);
-    assert.equal(prefixRoutesToProvider("opencode-zen", "opencode"), true);
+  it("prefixRoutesToCanonicalProvider recognizes aliases resolving to their canonical provider (#13994)", () => {
+    // "opencode" routes to canonical "opencode-zen" -- only the alias-aware
+    // variant used by the combo prefix-stripping path recognizes this.
+    assert.equal(prefixRoutesToCanonicalProvider("opencode", "opencode"), true);
+    assert.equal(prefixRoutesToCanonicalProvider("oc", "opencode"), true);
+    assert.equal(prefixRoutesToCanonicalProvider("opencode-zen", "opencode"), true);
     // unrelated prefix does not route to openrouter
+    assert.equal(prefixRoutesToCanonicalProvider("nvidia", "openrouter"), false);
+  });
+
+  it("prefixRoutesToProvider (catalog.ts anti-collision guard) stays strict for self-aliased no-auth providers", () => {
+    // #11433/7db430a3: the guard at catalog.ts:1121/1896 must keep failing
+    // for a self-aliased provider whose id differs from its canonical
+    // routing target, or the catalog would start publishing a
+    // provider-prefixed id ("opencode/<model>") that actually routes to a
+    // DIFFERENT provider ("opencode-zen") at request time.
+    assert.equal(prefixRoutesToProvider("opencode", "opencode"), false);
+    assert.equal(prefixRoutesToProvider("opencode-zen", "opencode-zen"), true);
     assert.equal(prefixRoutesToProvider("nvidia", "openrouter"), false);
   });
 
