@@ -14,6 +14,7 @@ import { QUOTA_MODEL_PREFIX } from "@/lib/quota/quotaModelNaming";
 import { comboErrorResponse } from "@/lib/api/comboErrorResponse";
 import { ComboInvariantError } from "@/lib/combos/invariants";
 import { buildComboNameCollisionWarning } from "@/lib/combos/modelNameCollision";
+import { resolveCanonicalProviderModel } from "@omniroute/open-sse/services/model.ts";
 
 // Minimal shape for the fields we read off a combo row in this route.
 // `getComboById` returns a structurally `JsonRecord`-typed object, so we
@@ -180,20 +181,25 @@ export async function PUT(request, { params }) {
 
     if (body.overrideAllowedProviders === true) {
       delete body.overrideAllowedProviders;
-      if (body.models && body.allowedProviders === undefined) {
+      const currentProviders = Array.isArray(currentCombo.allowedProviders)
+        ? currentCombo.allowedProviders
+        : [];
+      // Only widen an EXISTING restriction (#13951/COMBO_008). When the combo
+      // currently has no allowedProviders restriction, currentProviders is
+      // empty and unioning it with the new step providers would synthesize a
+      // brand-new allowlist out of nothing — the opposite of "no restriction".
+      if (body.models && body.allowedProviders === undefined && currentProviders.length > 0) {
         const stepProviders = (
           body.models as Array<{ providerId?: string; provider?: string; model?: string }>
         )
-          .map(
-            (m) =>
-              m.providerId ||
-              m.provider ||
-              (typeof m.model === "string" && m.model.includes("/") ? m.model.split("/")[0] : "")
-          )
+          .map((m) => {
+            if (m.providerId) return m.providerId;
+            if (m.provider) return m.provider;
+            if (typeof m.model !== "string" || !m.model.includes("/")) return "";
+            const [aliasOrProvider, ...rest] = m.model.split("/");
+            return resolveCanonicalProviderModel(aliasOrProvider, rest.join("/")).provider || "";
+          })
           .filter((p): p is string => Boolean(p));
-        const currentProviders = Array.isArray(currentCombo.allowedProviders)
-          ? currentCombo.allowedProviders
-          : [];
         body.allowedProviders = Array.from(new Set([...currentProviders, ...stepProviders]));
       }
     }
