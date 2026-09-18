@@ -126,20 +126,30 @@ export const ProviderConnectionPermissionList = memo(function ProviderConnection
     return result.sort(([a], [b]) => compareTr(a, b));
   }, [allConnectionsByProvider, isSearching, query]);
 
-  // Expand providers that have active selections by default
-  const [expandedProviders, setExpandedProviders] = useState<Set<string>>(() => {
-    if (safeSelectedConnections.length > 0) {
-      const selectedSet = new Set(safeSelectedConnections);
-      const withSelections = new Set<string>();
-      for (const conn of safeConnections) {
-        if (selectedSet.has(conn.id)) {
-          withSelections.add(conn.provider || "Other");
-        }
+  // Expand providers that have active selections by default. `connections` /
+  // `selectedConnections` commonly arrive after mount (the permissions modal
+  // opens before its fetch resolves), so a one-time lazy useState initializer
+  // computed against the first render's (often still-empty) props would never
+  // expand a provider whose selection only shows up once the data loads
+  // (#13952). Adjusting state during render (React's documented pattern for
+  // reacting to data becoming available — see "You Might Not Need an Effect")
+  // avoids that without an extra effect-triggered render, and — guarded to
+  // run only once — never fights a later manual collapse.
+  const [expandedProviders, setExpandedProviders] = useState<Set<string>>(() => new Set());
+  const [hasAutoExpanded, setHasAutoExpanded] = useState(false);
+  if (!hasAutoExpanded && safeConnections.length > 0) {
+    setHasAutoExpanded(true);
+    const selectedSet = new Set(safeSelectedConnections);
+    const withSelections = new Set<string>();
+    for (const conn of safeConnections) {
+      if (selectedSet.has(conn.id)) {
+        withSelections.add(conn.provider || "Other");
       }
-      if (withSelections.size > 0) return withSelections;
     }
-    return new Set<string>();
-  });
+    if (withSelections.size > 0) {
+      setExpandedProviders(withSelections);
+    }
+  }
 
   const handleToggleExpand = useCallback(
     (provider: string) => {
