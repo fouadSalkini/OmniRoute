@@ -8,12 +8,14 @@
  */
 
 import { isModelBlockedByPatterns } from "@/lib/db/apiKeys";
+import { isComboNameAllowedForKey } from "@/shared/utils/apiKeyPolicy";
 
 export type ComboTargetKeyPolicyInfo = {
   allowedModels?: string[] | null;
   blockedModels?: string[] | null;
   disableNonPublicModels?: boolean | null;
   modelAccessMode?: string | null;
+  allowedCombos?: string[] | null;
 };
 
 function modelMatchesAllowPattern(pattern: string, model: string): boolean {
@@ -47,8 +49,14 @@ export async function comboTargetPassesKeyModelPolicy(opts: {
 
   if (await isModelBlockedByPatterns(apiKeyInfo.blockedModels, targetModelStr)) return false;
 
-  if (allowListCoversRequestedCombo(apiKeyInfo.allowedModels, requestedModelStr)) {
-    return true;
+  if (!requestedModelStr.startsWith("auto/")) {
+    if (
+      (Array.isArray(apiKeyInfo.allowedCombos) &&
+        isComboNameAllowedForKey(apiKeyInfo.allowedCombos, requestedModelStr)) ||
+      allowListCoversRequestedCombo(apiKeyInfo.allowedModels, requestedModelStr)
+    ) {
+      return true;
+    }
   }
 
   return isModelAllowedForKey(apiKey, targetModelStr);
