@@ -192,3 +192,67 @@ test("auto/* combo still enforces per-candidate allowedModels even if auto/* is 
   });
   assert.equal(ok, false, "auto combo candidate not in allowedModels must stay blocked per #9057");
 });
+
+test("explicit allowedCombos overrides blockedModels for inner targets", async () => {
+  const ok = await comboTargetPassesKeyModelPolicy({
+    apiKey: KEY,
+    apiKeyInfo: {
+      modelAccessMode: "restricted",
+      allowedCombos: [COMBO],
+      allowedModels: ["gemini/*"],
+      blockedModels: ["deepseek/*"],
+    },
+    requestedModelStr: COMBO,
+    targetModelStr: INNER,
+    isModelAllowedForKey: allowListChecker(["gemini/*"]),
+  });
+  assert.equal(ok, true, "an explicitly allowed combo must admit its blocked direct-model target");
+});
+
+test("combo/* overrides blockedModels for every stored combo", async () => {
+  const ok = await comboTargetPassesKeyModelPolicy({
+    apiKey: KEY,
+    apiKeyInfo: {
+      modelAccessMode: "restricted",
+      allowedCombos: ["combo/*"],
+      allowedModels: ["gemini/*"],
+      blockedModels: ["deepseek/*"],
+    },
+    requestedModelStr: COMBO,
+    targetModelStr: INNER,
+    isModelAllowedForKey: allowListChecker(["gemini/*"]),
+  });
+  assert.equal(ok, true, "combo/* must admit inner targets for every stored combo");
+});
+
+test("a combo without allowedCombos permission remains blocked by blockedModels", async () => {
+  const ok = await comboTargetPassesKeyModelPolicy({
+    apiKey: KEY,
+    apiKeyInfo: {
+      modelAccessMode: "restricted",
+      allowedCombos: ["other-combo"],
+      allowedModels: ["gemini/*"],
+      blockedModels: ["deepseek/*"],
+    },
+    requestedModelStr: COMBO,
+    targetModelStr: INNER,
+    isModelAllowedForKey: allowListChecker(["gemini/*"]),
+  });
+  assert.equal(ok, false, "blockedModels must still apply without explicit combo permission");
+});
+
+test("auto/* combo keeps blockedModels enforcement even when auto/* is allowed", async () => {
+  const ok = await comboTargetPassesKeyModelPolicy({
+    apiKey: KEY,
+    apiKeyInfo: {
+      modelAccessMode: "restricted",
+      allowedCombos: ["auto/best"],
+      allowedModels: ["gemini/*"],
+      blockedModels: ["openai/*"],
+    },
+    requestedModelStr: "auto/best",
+    targetModelStr: "openai/gpt-4o",
+    isModelAllowedForKey: allowListChecker(["gemini/*"]),
+  });
+  assert.equal(ok, false, "auto/* must retain blockedModels enforcement");
+});

@@ -47,16 +47,16 @@ export async function comboTargetPassesKeyModelPolicy(opts: {
     apiKeyInfo.disableNonPublicModels === true;
   if (!hasModelRestrictions) return true;
 
+  const explicitlyAllowedCombo =
+    !requestedModelStr.startsWith("auto/") &&
+    Array.isArray(apiKeyInfo.allowedCombos) &&
+    isComboNameAllowedForKey(apiKeyInfo.allowedCombos, requestedModelStr);
+  if (explicitlyAllowedCombo) return true;
+
   if (await isModelBlockedByPatterns(apiKeyInfo.blockedModels, targetModelStr)) return false;
 
-  if (!requestedModelStr.startsWith("auto/")) {
-    if (
-      (Array.isArray(apiKeyInfo.allowedCombos) &&
-        isComboNameAllowedForKey(apiKeyInfo.allowedCombos, requestedModelStr)) ||
-      allowListCoversRequestedCombo(apiKeyInfo.allowedModels, requestedModelStr)
-    ) {
-      return true;
-    }
+  if (allowListCoversRequestedCombo(apiKeyInfo.allowedModels, requestedModelStr)) {
+    return true;
   }
 
   return isModelAllowedForKey(apiKey, targetModelStr);
