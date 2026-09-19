@@ -521,12 +521,20 @@ export async function dispatchWithCooldownRetry(opts: {
           const skippedRateLimitedUntil = await computeEarliestSkippedRateLimitedUntil(
             state.orderedTargets
           );
+          const retryHuman = skippedRateLimitedUntil
+            ? formatRetryAfter(toRetryAfterDisplayValue(skippedRateLimitedUntil))
+            : "";
           return withQuotaExhaustionClassification(
             errorResponseWithComboDiagnostics(
               skippedRateLimitedUntil ? 429 : 503,
-              quotaSkip
-                ? `Service temporarily unavailable: all targets were skipped by pre-dispatch filters (${quotaSkip})`
-                : "Service temporarily unavailable: all targets were skipped by pre-dispatch filters",
+              [
+                quotaSkip
+                  ? `Service temporarily unavailable: all targets were skipped by pre-dispatch filters (${quotaSkip})`
+                  : "Service temporarily unavailable: all targets were skipped by pre-dispatch filters",
+                retryHuman,
+              ]
+                .filter(Boolean)
+                .join(" "),
               buildComboDiag("all_targets_skipped"),
               {
                 code: "ALL_TARGETS_SKIPPED",
@@ -547,9 +555,14 @@ export async function dispatchWithCooldownRetry(opts: {
         const inactiveRateLimitedUntil = await computeEarliestSkippedRateLimitedUntil(
           state.orderedTargets
         );
+        const retryHuman = inactiveRateLimitedUntil
+          ? formatRetryAfter(toRetryAfterDisplayValue(inactiveRateLimitedUntil))
+          : "";
         return errorResponseWithComboDiagnostics(
           inactiveRateLimitedUntil ? 429 : 503,
-          "Service temporarily unavailable: all upstream accounts are inactive",
+          ["Service temporarily unavailable: all upstream accounts are inactive", retryHuman]
+            .filter(Boolean)
+            .join(" "),
           buildComboDiag("all_accounts_inactive"),
           {
             code: "ALL_ACCOUNTS_INACTIVE",

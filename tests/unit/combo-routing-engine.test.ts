@@ -2400,6 +2400,7 @@ test("handleComboChat surfaces the earliest provider-account reset when every ta
   assert.equal(payload.error.reset_at, sooner);
   assert.ok(payload.error.retry_after >= 119 && payload.error.retry_after <= 120);
   assert.equal(result.headers.get("Retry-After"), String(payload.error.retry_after));
+  assert.match(payload.error.message, /reset after (?:1m \d+s|2m)/);
 });
 
 test("handleComboChat returns a 503 when every model is unavailable before execution", async () => {
