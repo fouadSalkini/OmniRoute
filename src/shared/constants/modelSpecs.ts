@@ -77,8 +77,8 @@ const BEDROCK_CLAUDE_ALIASES = (...modelIds: string[]) => [
   ),
 ];
 
-// Provider discovery/sync sources can under-report GLM-5.2 IDs as 128K.
-// Keep native/bare Z.AI GLM-5.2 context authoritative, but do not blindly apply
+// Provider discovery/sync sources can under-report GLM-5.2 and Claude IDs as 128K/64K.
+// Keep native/bare Z.AI GLM and Anthropic Claude context authoritative, but do not blindly apply
 // it to every provider-wrapped alias: hosted providers can and do cap lower.
 const AUTHORITATIVE_CONTEXT_WINDOW_MODEL_IDS = new Set([
   "glm-5.3-flash",
@@ -954,10 +954,10 @@ export function getModelSpec(modelId: string): ModelSpec | undefined {
 
 export function getAuthoritativeContextWindow(modelId: string | null | undefined): number | null {
   if (typeof modelId !== "string" || modelId.length === 0) return null;
-  const normalized = modelId.toLowerCase();
-  for (const canonical of AUTHORITATIVE_CONTEXT_WINDOW_MODEL_IDS) {
-    if (canonical.toLowerCase() === normalized)
-      return MODEL_SPECS[canonical]?.contextWindow ?? null;
+  const canonical = findModelSpecIdByExactOrAlias(modelId) ?? modelId;
+  const normalized = canonical.toLowerCase();
+  for (const entry of AUTHORITATIVE_CONTEXT_WINDOW_MODEL_IDS) {
+    if (entry.toLowerCase() === normalized) return MODEL_SPECS[entry]?.contextWindow ?? null;
   }
   return null;
 }
