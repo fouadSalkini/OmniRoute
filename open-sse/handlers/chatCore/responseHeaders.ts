@@ -4,6 +4,7 @@ import {
 } from "@/domain/omnirouteResponseMeta";
 import { OMNIROUTE_RESPONSE_HEADERS } from "@/shared/constants/headers";
 import { defaultLogger } from "@omniroute/open-sse/utils/logger";
+import { isAnthropicAccountHeader } from "./upstreamAccountHeaders.ts";
 
 const STREAMING_RESPONSE_HEADER_DENYLIST = new Set([
   "content-type",
@@ -195,9 +196,21 @@ export function stripNextMiddlewareControlHeaders(headers: Headers): void {
   }
 }
 
+/** Streaming meta: the response-meta options plus the per-key anthropic header policy flag. */
+export type StreamingResponseHeadersMeta = Parameters<
+  typeof buildOmniRouteResponseMetaHeaders
+>[0] & {
+  /**
+   * When true, upstream `anthropic-ratelimit-*` and `anthropic-organization-id` headers are
+   * dropped instead of forwarded, per the requesting API key's account-header policy.
+   * Omitted/false preserves today's unconditional-forwarding behavior.
+   */
+  stripAnthropicAccountHeaders?: boolean;
+};
+
 export function buildStreamingResponseHeaders(
   providerHeaders: Headers,
-  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0],
+  meta: StreamingResponseHeadersMeta,
   log: ResponseHeaderLogger = defaultLogger
 ): Record<string, string> {
   const connectionScopedHeaders = new Set(
@@ -223,7 +236,10 @@ export function buildStreamingResponseHeaders(
       isNextMiddlewareControlHeader(normalized) ||
       isOmniRouteInternalHeader(normalized) ||
       // Forwarded separately below, outside the byte budget.
-      normalized === CODEX_TURN_STATE_RESPONSE_HEADER
+      normalized === CODEX_TURN_STATE_RESPONSE_HEADER ||
+      // Per-API-key policy: drop the upstream Anthropic account-identity/quota
+      // headers (see upstreamAccountHeaders.ts).
+      (meta.stripAnthropicAccountHeaders && isAnthropicAccountHeader(normalized))
     ) {
       return;
     }

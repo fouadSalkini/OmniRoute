@@ -20,6 +20,9 @@ export function assembleStreamingResponseHeaders(
     compressionResponseMeta?: string | null | undefined;
     comboStrategy?: string | null | undefined;
     fallbackAttempts?: number;
+    // Per-API-key strip of upstream anthropic-ratelimit-* / anthropic-organization-id
+    // headers (see upstreamAccountHeaders.ts). Omitted = forward as before.
+    stripAnthropicAccountHeaders?: boolean;
   },
   buildStreamingResponseHeaders: typeof defaultBuildStreaming = defaultBuildStreaming
 ): Record<string, string> {
@@ -33,6 +36,7 @@ export function assembleStreamingResponseHeaders(
       costUsd: 0,
       strategy: args.comboStrategy ?? "single",
       ...(args.fallbackAttempts !== undefined ? { fallbackAttempts: args.fallbackAttempts } : {}),
+      stripAnthropicAccountHeaders: args.stripAnthropicAccountHeaders,
     }),
     "x-omniroute-request-id": args.pendingRequestId,
   };
