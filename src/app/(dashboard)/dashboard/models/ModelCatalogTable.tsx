@@ -3,6 +3,13 @@
 import { useTranslations } from "next-intl";
 import { Badge, Button } from "@/shared/components";
 import CatalogTestBadge from "./CatalogTestBadge";
+import {
+  ActionsHeading,
+  CatalogTableFooter,
+  PlainHeading,
+  SelectAllHeaderCell,
+  SelectRowCell,
+} from "./CatalogTableParts";
 import type { CatalogTestResult } from "./catalogTestStorage";
 import { getModelTestKey } from "./catalogTestStorage";
 import type { CatalogModelRow, CatalogSortDirection, CatalogSortField } from "./modelCatalogUtils";
@@ -77,6 +84,270 @@ function SortableHeading({
   );
 }
 
+type ModelCatalogLabels = {
+  provider: string;
+  model: string;
+  type: string;
+  capabilities: string;
+  context: string;
+  output: string;
+  flags: string;
+  custom: string;
+  free: string;
+};
+
+type ProviderHealth = "healthy" | "degraded" | "down";
+
+function ModelCatalogTableHead({
+  labels,
+  sortField,
+  sortDirection,
+  onSort,
+  allOnPageSelected,
+  someOnPageSelected,
+  onToggleSelectAll,
+  showActions,
+}: {
+  labels: ModelCatalogLabels;
+  sortField: CatalogSortField;
+  sortDirection: CatalogSortDirection;
+  onSort: (field: CatalogSortField) => void;
+  allOnPageSelected: boolean;
+  someOnPageSelected: boolean;
+  onToggleSelectAll?: () => void;
+  showActions: boolean;
+}) {
+  const t = useTranslations("modelCatalog");
+  return (
+    <thead className="border-b border-border bg-black/[0.02] dark:bg-white/[0.02]">
+      <tr>
+        {onToggleSelectAll && (
+          <SelectAllHeaderCell
+            checked={allOnPageSelected}
+            indeterminate={someOnPageSelected}
+            onToggle={onToggleSelectAll}
+            label={t("selectAllModels")}
+          />
+        )}
+        <SortableHeading
+          field="provider"
+          label={labels.provider || t("provider")}
+          activeField={sortField}
+          direction={sortDirection}
+          onSort={onSort}
+        />
+        <SortableHeading
+          field="id"
+          label={labels.model || t("model")}
+          activeField={sortField}
+          direction={sortDirection}
+          onSort={onSort}
+        />
+        <SortableHeading
+          field="type"
+          label={labels.type || t("type")}
+          activeField={sortField}
+          direction={sortDirection}
+          onSort={onSort}
+        />
+        <PlainHeading>{labels.capabilities || t("capabilities")}</PlainHeading>
+        <SortableHeading
+          field="context_length"
+          label={labels.context || t("context")}
+          activeField={sortField}
+          direction={sortDirection}
+          onSort={onSort}
+        />
+        <SortableHeading
+          field="max_output_tokens"
+          label={labels.output || t("output")}
+          activeField={sortField}
+          direction={sortDirection}
+          onSort={onSort}
+        />
+        <PlainHeading>{labels.flags || t("flags")}</PlainHeading>
+        <PlainHeading>{t("healthTest")}</PlainHeading>
+        {showActions && <ActionsHeading />}
+      </tr>
+    </thead>
+  );
+}
+
+function ModelProviderCell({
+  model,
+  providerHealth,
+}: {
+  model: CatalogModelRow;
+  providerHealth?: ProviderHealth;
+}) {
+  const t = useTranslations("modelCatalog");
+  return (
+    <td className="px-4 py-3">
+      <div className="flex items-center gap-1.5">
+        <span className="font-medium text-text-main">{model.provider}</span>
+        {providerHealth && providerHealth !== "healthy" && (
+          <Badge size="sm" variant={providerHealth === "degraded" ? "warning" : "error"} dot>
+            {providerHealth === "degraded" ? t("degraded") : t("down")}
+          </Badge>
+        )}
+      </div>
+      <span className="mt-0.5 block font-mono text-xs text-text-muted">{model.providerId}</span>
+    </td>
+  );
+}
+
+function ModelTypeCell({ model }: { model: CatalogModelRow }) {
+  return (
+    <td className="px-4 py-3 text-text-main">
+      {humanize(model.type)}
+      {model.subtype && (
+        <span className="mt-0.5 block text-xs text-text-muted">{humanize(model.subtype)}</span>
+      )}
+    </td>
+  );
+}
+
+/** The first three capability badges, then a "+N" badge whose label lists the rest. */
+function ModelCapabilitiesCell({ capabilities }: { capabilities: string[] }) {
+  const t = useTranslations("modelCatalog");
+  const additionalCapabilities = capabilities.slice(3);
+  return (
+    <td className="max-w-xs px-4 py-3">
+      {capabilities.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5">
+          {capabilities.slice(0, 3).map((capability) => (
+            <Badge key={capability} size="sm" variant="default">
+              {capability}
+            </Badge>
+          ))}
+          {additionalCapabilities.length > 0 && (
+            <span
+              role="img"
+              aria-label={t("additionalCapabilities", {
+                list: additionalCapabilities.join(", "),
+              })}
+              title={additionalCapabilities.join(", ")}
+            >
+              <Badge size="sm" variant="default">
+                +{additionalCapabilities.length}
+              </Badge>
+            </span>
+          )}
+        </div>
+      ) : (
+        <span className="text-text-muted" title={t("noCapabilities")}>
+          —
+        </span>
+      )}
+    </td>
+  );
+}
+
+function ModelFlagsCell({ model, labels }: { model: CatalogModelRow; labels: ModelCatalogLabels }) {
+  const t = useTranslations("modelCatalog");
+  return (
+    <td className="px-4 py-3">
+      <div className="flex flex-wrap gap-1.5">
+        {model.custom === true && (
+          <Badge size="sm" variant="info">
+            {labels.custom || t("custom")}
+          </Badge>
+        )}
+        {model.free === true && (
+          <Badge size="sm" variant="success">
+            {labels.free || t("free")}
+          </Badge>
+        )}
+        {model.custom !== true && model.free !== true && (
+          <span className="text-text-muted" title={t("noFlags")}>
+            —
+          </span>
+        )}
+      </div>
+    </td>
+  );
+}
+
+function ModelCatalogTableRow({
+  model,
+  labels,
+  selectedIds,
+  testResults,
+  activeTestingKeys,
+  providerHealthMap,
+  onToggleSelect,
+  onTestModel,
+  bulkRunning,
+}: {
+  model: CatalogModelRow;
+  labels: ModelCatalogLabels;
+  selectedIds: Set<string>;
+  testResults: Record<string, CatalogTestResult>;
+  activeTestingKeys: ReadonlySet<string>;
+  providerHealthMap: Record<string, ProviderHealth>;
+  onToggleSelect?: (id: string) => void;
+  onTestModel?: (providerId: string, modelId: string) => void;
+  bulkRunning: boolean;
+}) {
+  const t = useTranslations("modelCatalog");
+  const common = useTranslations("common");
+  const rowId = `${model.providerId}:${model.id}`;
+  const isSelected = selectedIds.has(rowId);
+  const testKey = getModelTestKey(model.providerId, model.id);
+  const isTesting = activeTestingKeys.has(testKey);
+  const result = testResults[testKey];
+
+  const capabilities = capabilityLabels(model, {
+    input: common("input"),
+    output: common("output"),
+  });
+  return (
+    <tr
+      className={`align-top transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.02] ${
+        isSelected ? "bg-primary/[0.03]" : ""
+      }`}
+    >
+      {onToggleSelect && (
+        <SelectRowCell
+          checked={isSelected}
+          onToggle={() => onToggleSelect(rowId)}
+          label={t("selectModel", { name: model.name })}
+        />
+      )}
+      <ModelProviderCell model={model} providerHealth={providerHealthMap[model.providerId]} />
+      <td className="max-w-sm px-4 py-3">
+        <span className="block break-words font-medium text-text-main">{model.name}</span>
+        <span className="mt-0.5 block break-all font-mono text-xs text-text-muted">{model.id}</span>
+      </td>
+      <ModelTypeCell model={model} />
+      <ModelCapabilitiesCell capabilities={capabilities} />
+      <td className="whitespace-nowrap px-4 py-3 tabular-nums text-text-main">
+        {formatOptionalCount(model.context_length)}
+      </td>
+      <td className="whitespace-nowrap px-4 py-3 tabular-nums text-text-main">
+        {formatOptionalCount(model.max_output_tokens)}
+      </td>
+      <ModelFlagsCell model={model} labels={labels} />
+      <td className="whitespace-nowrap px-4 py-3">
+        <CatalogTestBadge result={result} loading={isTesting} />
+      </td>
+      {onTestModel && (
+        <td className="whitespace-nowrap px-4 py-3 text-right">
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={isTesting || bulkRunning}
+            onClick={() => onTestModel(model.providerId, model.id)}
+            data-testid={`test-model-${model.id}`}
+          >
+            {t("test")}
+          </Button>
+        </td>
+      )}
+    </tr>
+  );
+}
+
 export default function ModelCatalogTable({
   rows,
   sortField,
@@ -112,17 +383,7 @@ export default function ModelCatalogTable({
   error: boolean;
   onPrevious: () => void;
   onNext: () => void;
-  labels: {
-    provider: string;
-    model: string;
-    type: string;
-    capabilities: string;
-    context: string;
-    output: string;
-    flags: string;
-    custom: string;
-    free: string;
-  };
+  labels: ModelCatalogLabels;
   selectedIds?: Set<string>;
   onToggleSelect?: (id: string) => void;
   onToggleSelectAll?: () => void;
@@ -134,7 +395,6 @@ export default function ModelCatalogTable({
   bulkRunning?: boolean;
 }) {
   const t = useTranslations("modelCatalog");
-  const common = useTranslations("common");
   const firstResult = startIndex + 1;
   const lastResult = startIndex + rows.length;
 
@@ -147,246 +407,44 @@ export default function ModelCatalogTable({
       <div className="overflow-x-auto" role="region" aria-label={t("tableRegion")} tabIndex={0}>
         <table className="min-w-[1100px] w-full border-collapse text-sm">
           <caption className="sr-only">{t("tableCaption")}</caption>
-          <thead className="border-b border-border bg-black/[0.02] dark:bg-white/[0.02]">
-            <tr>
-              {onToggleSelectAll && (
-                <th scope="col" className="w-10 px-4 py-3">
-                  <input
-                    type="checkbox"
-                    checked={allOnPageSelected}
-                    ref={(el) => {
-                      if (el) el.indeterminate = someOnPageSelected;
-                    }}
-                    onChange={onToggleSelectAll}
-                    aria-label={t("selectAllModels")}
-                    className="rounded border-black/20 text-primary focus:ring-primary dark:border-white/20"
-                  />
-                </th>
-              )}
-              <SortableHeading
-                field="provider"
-                label={labels.provider || t("provider")}
-                activeField={sortField}
-                direction={sortDirection}
-                onSort={onSort}
-              />
-              <SortableHeading
-                field="id"
-                label={labels.model || t("model")}
-                activeField={sortField}
-                direction={sortDirection}
-                onSort={onSort}
-              />
-              <SortableHeading
-                field="type"
-                label={labels.type || t("type")}
-                activeField={sortField}
-                direction={sortDirection}
-                onSort={onSort}
-              />
-              <th
-                scope="col"
-                className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-text-muted"
-              >
-                {labels.capabilities || t("capabilities")}
-              </th>
-              <SortableHeading
-                field="context_length"
-                label={labels.context || t("context")}
-                activeField={sortField}
-                direction={sortDirection}
-                onSort={onSort}
-              />
-              <SortableHeading
-                field="max_output_tokens"
-                label={labels.output || t("output")}
-                activeField={sortField}
-                direction={sortDirection}
-                onSort={onSort}
-              />
-              <th
-                scope="col"
-                className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-text-muted"
-              >
-                {labels.flags || t("flags")}
-              </th>
-              <th
-                scope="col"
-                className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-text-muted"
-              >
-                {t("healthTest")}
-              </th>
-              {onTestModel && (
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-text-muted"
-                >
-                  {t("actions")}
-                </th>
-              )}
-            </tr>
-          </thead>
+          <ModelCatalogTableHead
+            labels={labels}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={onSort}
+            allOnPageSelected={allOnPageSelected}
+            someOnPageSelected={someOnPageSelected}
+            onToggleSelectAll={onToggleSelectAll}
+            showActions={Boolean(onTestModel)}
+          />
           <tbody className="divide-y divide-border">
-            {rows.map((model) => {
-              const rowId = `${model.providerId}:${model.id}`;
-              const isSelected = selectedIds.has(rowId);
-              const testKey = getModelTestKey(model.providerId, model.id);
-              const isTesting = activeTestingKeys.has(testKey);
-              const result = testResults[testKey];
-              const providerHealth = providerHealthMap[model.providerId];
-
-              const capabilities = capabilityLabels(model, {
-                input: common("input"),
-                output: common("output"),
-              });
-              const additionalCapabilities = capabilities.slice(3);
-              return (
-                <tr
-                  key={rowId}
-                  className={`align-top transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.02] ${
-                    isSelected ? "bg-primary/[0.03]" : ""
-                  }`}
-                >
-                  {onToggleSelect && (
-                    <td className="w-10 px-4 py-3">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => onToggleSelect(rowId)}
-                        aria-label={t("selectModel", { name: model.name })}
-                        className="rounded border-black/20 text-primary focus:ring-primary dark:border-white/20"
-                      />
-                    </td>
-                  )}
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-medium text-text-main">{model.provider}</span>
-                      {providerHealth && providerHealth !== "healthy" && (
-                        <Badge
-                          size="sm"
-                          variant={providerHealth === "degraded" ? "warning" : "error"}
-                          dot
-                        >
-                          {providerHealth === "degraded" ? t("degraded") : t("down")}
-                        </Badge>
-                      )}
-                    </div>
-                    <span className="mt-0.5 block font-mono text-xs text-text-muted">
-                      {model.providerId}
-                    </span>
-                  </td>
-                  <td className="max-w-sm px-4 py-3">
-                    <span className="block break-words font-medium text-text-main">
-                      {model.name}
-                    </span>
-                    <span className="mt-0.5 block break-all font-mono text-xs text-text-muted">
-                      {model.id}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-text-main">
-                    {humanize(model.type)}
-                    {model.subtype && (
-                      <span className="mt-0.5 block text-xs text-text-muted">
-                        {humanize(model.subtype)}
-                      </span>
-                    )}
-                  </td>
-                  <td className="max-w-xs px-4 py-3">
-                    {capabilities.length > 0 ? (
-                      <div className="flex flex-wrap gap-1.5">
-                        {capabilities.slice(0, 3).map((capability) => (
-                          <Badge key={capability} size="sm" variant="default">
-                            {capability}
-                          </Badge>
-                        ))}
-                        {additionalCapabilities.length > 0 && (
-                          <span
-                            role="img"
-                            aria-label={t("additionalCapabilities", {
-                              list: additionalCapabilities.join(", "),
-                            })}
-                            title={additionalCapabilities.join(", ")}
-                          >
-                            <Badge size="sm" variant="default">
-                              +{additionalCapabilities.length}
-                            </Badge>
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <span className="text-text-muted" title={t("noCapabilities")}>
-                        —
-                      </span>
-                    )}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3 tabular-nums text-text-main">
-                    {formatOptionalCount(model.context_length)}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3 tabular-nums text-text-main">
-                    {formatOptionalCount(model.max_output_tokens)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1.5">
-                      {model.custom === true && (
-                        <Badge size="sm" variant="info">
-                          {labels.custom || t("custom")}
-                        </Badge>
-                      )}
-                      {model.free === true && (
-                        <Badge size="sm" variant="success">
-                          {labels.free || t("free")}
-                        </Badge>
-                      )}
-                      {model.custom !== true && model.free !== true && (
-                        <span className="text-text-muted" title={t("noFlags")}>
-                          —
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3">
-                    <CatalogTestBadge result={result} loading={isTesting} />
-                  </td>
-                  {onTestModel && (
-                    <td className="whitespace-nowrap px-4 py-3 text-right">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        disabled={isTesting || bulkRunning}
-                        onClick={() => onTestModel(model.providerId, model.id)}
-                        data-testid={`test-model-${model.id}`}
-                      >
-                        {t("test")}
-                      </Button>
-                    </td>
-                  )}
-                </tr>
-              );
-            })}
+            {rows.map((model) => (
+              <ModelCatalogTableRow
+                key={`${model.providerId}:${model.id}`}
+                model={model}
+                labels={labels}
+                selectedIds={selectedIds}
+                testResults={testResults}
+                activeTestingKeys={activeTestingKeys}
+                providerHealthMap={providerHealthMap}
+                onToggleSelect={onToggleSelect}
+                onTestModel={onTestModel}
+                bulkRunning={bulkRunning}
+              />
+            ))}
           </tbody>
         </table>
       </div>
 
-      <footer className="flex flex-col gap-3 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-text-muted" aria-live="polite">
-          {t("showingModels", {
-            first: formatCount(firstResult),
-            last: formatCount(lastResult),
-            total: formatCount(totalCount),
-          })}
-          {loading && <span className="ml-2">{t("refreshing")}</span>}
-          {error && <span className="ml-2 text-red-500">{t("refreshFailed")}</span>}
-        </p>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-text-muted">{t("page", { page, pageCount })}</span>
-          <Button variant="secondary" size="sm" disabled={page === 1} onClick={onPrevious}>
-            {t("previous")}
-          </Button>
-          <Button variant="secondary" size="sm" disabled={page >= pageCount} onClick={onNext}>
-            {t("next")}
-          </Button>
-        </div>
-      </footer>
+      <CatalogTableFooter page={page} pageCount={pageCount} onPrevious={onPrevious} onNext={onNext}>
+        {t("showingModels", {
+          first: formatCount(firstResult),
+          last: formatCount(lastResult),
+          total: formatCount(totalCount),
+        })}
+        {loading && <span className="ml-2">{t("refreshing")}</span>}
+        {error && <span className="ml-2 text-red-500">{t("refreshFailed")}</span>}
+      </CatalogTableFooter>
     </>
   );
 }
