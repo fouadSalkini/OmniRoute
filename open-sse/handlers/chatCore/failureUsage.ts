@@ -9,6 +9,7 @@
  */
 
 import { buildErrorBody } from "../../utils/error.ts";
+import { type AgentContext } from "./agentContext.ts";
 
 export function projectFailureUsageErrorCode(opts: {
   statusCode: number;
@@ -66,6 +67,7 @@ export function buildFailureUsageRecord(opts: {
   latencyMs: number;
   endpoint?: string | null | undefined;
   aggregate?: FailureUsageAggregate | null;
+  agentContext?: AgentContext | null;
 }) {
   return {
     provider: opts.provider || "unknown",
@@ -89,5 +91,6 @@ export function buildFailureUsageRecord(opts: {
     serviceTier: opts.effectiveServiceTier,
     comboStrategy: opts.isCombo ? opts.comboStrategy || undefined : undefined,
     endpoint: opts.endpoint || undefined,
+    agentContext: opts.agentContext ?? null,
   };
 }

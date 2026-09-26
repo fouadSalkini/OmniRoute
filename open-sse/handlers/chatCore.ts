@@ -42,6 +42,7 @@ import { maybeWrapForcedNonStreamingResponsesJson } from "./chatCore/responsesJs
 import { enforceOutputTokenBudget } from "./chatCore/outputTokenBudget.ts";
 import { maybeConvertJsonBodyToSse } from "./chatCore/jsonBodyToSse.ts";
 import { assembleStreamingResponseHeaders } from "./chatCore/streamingResponseHeaders.ts";
+import { shouldStripAnthropicAccountHeaders } from "./chatCore/upstreamAccountHeaders.ts";
 import { storeStreamingSemanticCacheResponse } from "./chatCore/streamingSemanticCacheStore.ts";
 import { assembleStreamingPipeline } from "./chatCore/streamingPipeline.ts";
 import { sanitizeChatRequestBody } from "./chatCore/sanitization.ts";
@@ -85,6 +86,7 @@ import {
   shouldUseNativeOpenAICompatibleResponsesPassthrough,
   stampNativeResponsesPassthroughBody,
   redactPassthroughThinkingSignatures,
+  stripClaudeRejectedTopLevelFields,
   isClaudeCodeSemanticPassthroughRequest,
 } from "./chatCore/passthroughHelpers.ts";
 import { recoverAnthropicThinkingSignature } from "./chatCore/thinkingSignatureRecovery.ts";
@@ -309,6 +311,7 @@ import {
 } from "./chatCore/pluginOnResponse.ts";
 import { scheduleStreamingQuotaShareConsumption } from "./chatCore/streamingQuotaShare.ts";
 import { recordStreamingUsageStats } from "./chatCore/streamingUsageStats.ts";
+import { resolveUsageAgentContext, resolveSessionTurn } from "./chatCore/agentContext.ts";
 import { recordStreamingCost } from "./chatCore/streamingCost.ts";
 import { isJsonRecord } from "./chatCore/nonStreamingResponseParse.ts";
 import { recordNonStreamingUsageStats } from "./chatCore/nonStreamingUsageStats.ts";
@@ -673,6 +676,7 @@ export async function handleChatCore({
     payload?: unknown,
     maxDepth = 3
   ): EffectiveServiceTier | null => resolveReportedServiceTierFor(provider, payload, maxDepth);
+  const agentContext = resolveUsageAgentContext(body, clientRawRequest?.headers, apiKeyInfo);
   // Failure usage record building extracted to chatCore/failureUsage.ts (#3501); the handler keeps
   // the fire-and-forget save + computes latencyMs, so the call sites stay byte-identical.
   const persistFailureUsage = (
@@ -693,6 +697,7 @@ export async function handleChatCore({
         errorCode,
         latencyMs: Date.now() - startTime,
         endpoint: endpointPath,
+        agentContext,
         aggregate: aggregate ?? undefined,
       })
     ).catch(() => {});
@@ -2428,11 +2433,7 @@ export async function handleChatCore({
           DEFAULT_THINKING_CLAUDE_SIGNATURE
         ) as typeof translatedBody.messages;
 
-        // Anthropic API rejects requests with both temperature and top_p.
-        // VS Code Claude extension and similar clients send both; strip top_p.
-        if (translatedBody.temperature !== undefined && translatedBody.top_p !== undefined) {
-          delete translatedBody.top_p;
-        }
+        stripClaudeRejectedTopLevelFields(translatedBody, clientRawRequest?.headers);
       }
 
       // Legacy models reject role:"system" messages. Supported models accept
@@ -5378,6 +5379,8 @@ export async function handleChatCore({
         isCombo,
         comboStrategy,
         endpoint: endpointPath,
+        agentContext,
+        sessionTurn: resolveSessionTurn(body, memoryExtractionResponse, agentContext, apiKeyInfo),
       });
 
       // #12150 P1b surface 3 (fix round 1): a video-bridge-observed request's
@@ -5829,6 +5832,7 @@ export async function handleChatCore({
     compressionResponseMeta,
     comboStrategy,
     fallbackAttempts,
+    stripAnthropicAccountHeaders: shouldStripAnthropicAccountHeaders(apiKeyInfo, provider),
   });
 
   // The streaming headers (turn-state included, when present) are committed to
@@ -5971,6 +5975,8 @@ export async function handleChatCore({
       isCombo,
       comboStrategy,
       endpoint: endpointPath,
+      agentContext,
+      sessionTurn: resolveSessionTurn(body, streamResponseBody, agentContext, apiKeyInfo),
     });
 
     // Routing event (feedback foundation) — fire-and-forget, cheap, never blocks
