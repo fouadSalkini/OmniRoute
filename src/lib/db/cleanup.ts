@@ -97,20 +97,23 @@ export async function cleanupCallLogs(): Promise<CleanupResult> {
   return result;
 }
 
-/**
- * Clean up old usage_history based on retention settings.
- */
-
-export async function cleanupAgentSessionMessages(): Promise<CleanupResult> {
-  const db = getDbInstance();
-  const retention = getRetentionSettings();
-  const retentionDays = retention.usageHistory;
+/** First day (YYYY-MM-DD) kept by usage_history retention; older rows are removed. */
+function usageHistoryCutoffDay(retentionDays: number): string {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
-  const cutoffISO = cutoffDate.toISOString();
+  return cutoffDate.toISOString().split("T")[0];
+}
+
+/**
+ * Clean up old agent_session_messages with the same day boundary as usage_history.
+ */
+export async function cleanupAgentSessionMessages(): Promise<CleanupResult> {
+  const db = getDbInstance();
+  const cutoffDay = usageHistoryCutoffDay(getRetentionSettings().usageHistory);
+
   const result: CleanupResult = { deleted: 0, errors: 0 };
   try {
-    result.deleted = deleteAgentSessionMessagesBefore(db, cutoffISO);
+    result.deleted = deleteAgentSessionMessagesBefore(db, cutoffDay);
   } catch (err) {
     result.errors++;
     console.error("[Cleanup] Error cleaning agent_session_messages:", err);
@@ -118,15 +121,15 @@ export async function cleanupAgentSessionMessages(): Promise<CleanupResult> {
   return result;
 }
 
+/**
+ * Clean up old usage_history based on retention settings.
+ */
 export async function cleanupUsageHistory(): Promise<CleanupResult> {
   const db = getDbInstance();
   const retention = getRetentionSettings();
 
   const retentionDays = retention.usageHistory;
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
-  const cutoffISO = cutoffDate.toISOString();
-  const cutoffDateStr = cutoffISO.split("T")[0];
+  const cutoffDateStr = usageHistoryCutoffDay(retentionDays);
 
   const result: CleanupResult = { deleted: 0, errors: 0 };
 
@@ -801,6 +804,7 @@ const RESET_USAGE_HISTORY_PERIOD_MS: Record<TimedResetUsageHistoryPeriod, number
 
 export interface ResetUsageHistoryResult extends CleanupResult {
   deletedUsageHistory: number;
+  deletedAgentSessionMessages: number;
   deletedDailySummary: number;
   deletedHourlySummary: number;
   deletedCallLogs: number;
@@ -922,6 +926,7 @@ export async function resetUsageHistory(period: string): Promise<ResetUsageHisto
   const result: ResetUsageHistoryResult = {
     deleted: 0,
     deletedUsageHistory: 0,
+    deletedAgentSessionMessages: 0,
     deletedDailySummary: 0,
     deletedHourlySummary: 0,
     deletedCallLogs: 0,

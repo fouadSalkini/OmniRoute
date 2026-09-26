@@ -23,6 +23,7 @@ import { sanitizeErrorMessage } from "../../utils/error.ts";
 import { isEstimatedUsage } from "../../utils/usageTracking.ts";
 import { cloneBoundedChatLogPayload, truncateForLog } from "./logTruncation.ts";
 import { attachLogMeta } from "./cacheUsageMeta.ts";
+import { discardSessionTurnAttempt } from "./sessionTurnAttempts.ts";
 
 /**
  * Apply the video-bridge redaction shadow (P1a's `meta.videoBridgeLogRedaction`,
@@ -223,7 +224,9 @@ export type PersistAttemptLogsContext = {
   detailedLoggingEnabled: boolean;
   reqLogger: { getPipelinePayloads?: () => Record<string, unknown> | undefined } | null | undefined;
   pendingRequestId: unknown;
-  clientRawRequest: { endpoint?: string } | null | undefined;
+  clientRawRequest: { endpoint?: string; body?: unknown } | null | undefined;
+  /** This attempt's agent context; identifies the attempt whose session turn a failure drops. */
+  agentContext?: object | null;
   requestedModel: unknown;
   credentials: { connectionId?: string } | null | undefined;
   startTime: number;
@@ -379,6 +382,8 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
     videoBridgeLogRedaction,
     videoContentRemoved,
   } = ctx;
+  // A non-200 outcome means the client did not get this attempt's reply.
+  if (status !== 200) discardSessionTurnAttempt(clientRawRequest?.body, ctx.agentContext);
   const initialConnectionId = toConnectionId(connectionId);
   const finalConnectionId = toConnectionId(credentials?.connectionId) || initialConnectionId;
   const accountRotationMeta = buildAccountRotationMeta(

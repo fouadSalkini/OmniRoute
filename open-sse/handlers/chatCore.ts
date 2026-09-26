@@ -1092,7 +1092,7 @@ export async function handleChatCore({
       detailedLoggingEnabled,
       reqLogger,
       pendingRequestId,
-      clientRawRequest,
+      clientRawRequest, agentContext,
       requestedModel,
       credentials,
       startTime,
@@ -5380,7 +5380,13 @@ export async function handleChatCore({
         comboStrategy,
         endpoint: endpointPath,
         agentContext,
-        sessionTurn: resolveSessionTurn(body, memoryExtractionResponse, agentContext, apiKeyInfo),
+        sessionTurn: resolveSessionTurn({
+          clientRawRequest,
+          body,
+          responses: [okLeg.response],
+          agentContext,
+          apiKeyInfo,
+        }),
       });
 
       // #12150 P1b surface 3 (fix round 1): a video-bridge-observed request's
@@ -5976,7 +5982,14 @@ export async function handleChatCore({
       comboStrategy,
       endpoint: endpointPath,
       agentContext,
-      sessionTurn: resolveSessionTurn(body, streamResponseBody, agentContext, apiKeyInfo),
+      sessionTurn: resolveSessionTurn({
+        clientRawRequest,
+        body,
+        responses: [clientPayload?.summary, streamResponseBody],
+        streamStatus: normalizedStreamStatus,
+        agentContext,
+        apiKeyInfo,
+      }),
     });
 
     // Routing event (feedback foundation) — fire-and-forget, cheap, never blocks

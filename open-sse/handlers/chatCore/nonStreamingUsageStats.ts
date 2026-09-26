@@ -17,7 +17,7 @@ import { recordTokenUsage } from "../../services/tokenLimitCounter.ts";
 import { computeBillableTokens } from "./upstreamTimeouts.ts";
 import { type EffectiveServiceTier } from "./serviceTier.ts";
 import { type AgentContext } from "./agentContext.ts";
-import { type ExtractedAgentSessionTurn } from "./agentSessionTurn.ts";
+import { type AgentSessionTurn } from "./agentSessionTurn.ts";
 
 export type RecordNonStreamingUsageStatsContext = {
   traceEnabled: boolean;
@@ -31,7 +31,7 @@ export type RecordNonStreamingUsageStatsContext = {
   comboStrategy: string | null | undefined;
   endpoint?: string | null | undefined;
   agentContext?: AgentContext | null;
-  sessionTurn?: ExtractedAgentSessionTurn | null;
+  sessionTurn?: AgentSessionTurn | null;
 };
 
 function logUsageTrace(
