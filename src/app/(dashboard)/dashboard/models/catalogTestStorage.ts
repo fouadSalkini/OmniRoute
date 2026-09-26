@@ -1,4 +1,4 @@
-export const CATALOG_TEST_RESULTS_KEY = "omniroute.catalogTestResults.v1";
+export const CATALOG_TEST_RESULTS_STORAGE_NAME = "omniroute.catalogTestResults.v1";
 export const MAX_TEST_RESULTS_CAP = 2000;
 
 export type CatalogTestStatus = "ok" | "slow" | "error";
@@ -83,7 +83,7 @@ export function loadCatalogTestResults(): Record<string, CatalogTestResult> {
     return {};
   }
   try {
-    const raw = window.localStorage.getItem(CATALOG_TEST_RESULTS_KEY);
+    const raw = window.localStorage.getItem(CATALOG_TEST_RESULTS_STORAGE_NAME);
     if (!raw) return {};
     const parsed: unknown = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
@@ -117,7 +117,7 @@ export function saveCatalogTestResults(
   const capped = capTestResults(results);
   if (typeof window !== "undefined" && window.localStorage) {
     try {
-      window.localStorage.setItem(CATALOG_TEST_RESULTS_KEY, JSON.stringify(capped));
+      window.localStorage.setItem(CATALOG_TEST_RESULTS_STORAGE_NAME, JSON.stringify(capped));
     } catch {
       // Ignore quota errors or storage restrictions
     }
@@ -144,7 +144,7 @@ export function saveBatchTestResults(
 export function clearCatalogTestResults(): void {
   if (typeof window !== "undefined" && window.localStorage) {
     try {
-      window.localStorage.removeItem(CATALOG_TEST_RESULTS_KEY);
+      window.localStorage.removeItem(CATALOG_TEST_RESULTS_STORAGE_NAME);
     } catch {
       // Ignore
     }

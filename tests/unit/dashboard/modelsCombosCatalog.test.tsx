@@ -24,7 +24,7 @@ vi.mock("next-intl", () => ({
 
 import ModelCatalogPage from "@/app/(dashboard)/dashboard/models/page";
 import {
-  CATALOG_TEST_RESULTS_KEY,
+  CATALOG_TEST_RESULTS_STORAGE_NAME,
   getComboTestKey,
   getModelTestKey,
 } from "@/app/(dashboard)/dashboard/models/catalogTestStorage";
@@ -210,7 +210,7 @@ function deferredTestAll() {
 }
 
 function readStoredResults(): Record<string, { status: string; error?: string }> {
-  return JSON.parse(localStorage.getItem(CATALOG_TEST_RESULTS_KEY) || "{}");
+  return JSON.parse(localStorage.getItem(CATALOG_TEST_RESULTS_STORAGE_NAME) || "{}");
 }
 
 describe("Models and Combos Catalog Page UI", () => {
@@ -326,7 +326,7 @@ describe("Models and Combos Catalog Page UI", () => {
     window.history.replaceState(null, "", "/dashboard/models?tab=combos&provider=beta");
     const key = getModelTestKey("alpha", "alpha-chat");
     localStorage.setItem(
-      CATALOG_TEST_RESULTS_KEY,
+      CATALOG_TEST_RESULTS_STORAGE_NAME,
       JSON.stringify({
         [key]: { id: key, targetType: "model", status: "ok", latencyMs: 99, testedAt: Date.now() },
       })
@@ -514,7 +514,7 @@ describe("Models and Combos Catalog Page UI", () => {
     const quotaKey = getModelTestKey("alpha", "alpha-embed");
     const httpKey = getModelTestKey("beta", "beta-coder");
     localStorage.setItem(
-      CATALOG_TEST_RESULTS_KEY,
+      CATALOG_TEST_RESULTS_STORAGE_NAME,
       JSON.stringify({
         [okKey]: {
           id: okKey,
@@ -697,7 +697,7 @@ describe("Models and Combos Catalog Page UI", () => {
     await flush();
 
     expect(testAll.calls).toHaveLength(2);
-    expect(localStorage.getItem(CATALOG_TEST_RESULTS_KEY)).toBeNull();
+    expect(localStorage.getItem(CATALOG_TEST_RESULTS_STORAGE_NAME)).toBeNull();
   });
 
   it("cancels run A, and A's late completions leave run B running and cancellable", async () => {
@@ -749,7 +749,7 @@ describe("Models and Combos Catalog Page UI", () => {
     expect(query<HTMLButtonElement>("button[data-testid='test-combo-combo-1']")?.disabled).toBe(
       true
     );
-    expect(localStorage.getItem(CATALOG_TEST_RESULTS_KEY)).toBeNull();
+    expect(localStorage.getItem(CATALOG_TEST_RESULTS_STORAGE_NAME)).toBeNull();
 
     await click(query("button[data-testid='cancel-tests-btn']"));
     expect(comboCalls[2].signal?.aborted).toBe(true);
