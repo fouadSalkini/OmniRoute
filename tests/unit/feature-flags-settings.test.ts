@@ -40,7 +40,9 @@ const {
 // the dead ONEPROXY_ENABLED (readerless since the 1proxy purge, #12091)
 // brought it back to 53. UNIVERSAL_CONTEXT_HANDOFF_ENABLED bumped it to 54.
 // #13641 added SEARCH_STATS_HIDE_DELETED_CONNECTIONS, bumping the count to 56.
-const EXPECTED_FEATURE_FLAG_COUNT = 75;
+// This base registers 79 flags before #14799; USAGE_LIMIT_IGNORE_UNPRICED (opt-in flag
+// to count unpriced usage as $0 in USD quotas, default off) takes it to 80.
+const EXPECTED_FEATURE_FLAG_COUNT = 80;
 
 // ──────────────────────────────────────────────────────
 // Test group 1 — Flag definitions registry
