@@ -2,12 +2,12 @@ import {
   CODEX_CLI_RS_ORIGINATOR,
   DEFAULT_CODEX_CLIENT_VERSION,
   getCodexCliRsHeaders as buildCodexCliRsHeaders,
-} from "@/shared/constants/codexClient";
+} from "@/shared/constants/codexClient.ts";
 
 export {
   DEFAULT_CODEX_CLIENT_VERSION,
   CODEX_CLI_RS_ORIGINATOR,
-} from "@/shared/constants/codexClient";
+} from "@/shared/constants/codexClient.ts";
 const DEFAULT_CODEX_USER_AGENT_PLATFORM = "Windows 10.0.26200";
 const DEFAULT_CODEX_USER_AGENT_ARCH = "x64";
 const CODEX_VERSION_OVERRIDE_ENV = "CODEX_CLIENT_VERSION";
