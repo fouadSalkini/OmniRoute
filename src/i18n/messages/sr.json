@@ -14456,6 +14456,7 @@
     "colRequests": "Захтеви",
     "colErrors": "Грешке",
     "colTokens": "Токени",
+    "colCache": "Кеш",
     "colTokensInOut": "Токени улаз / излаз",
     "colCost": "Трошак",
     "colFirstSeen": "Започето",

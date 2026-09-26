@@ -14456,6 +14456,7 @@
     "colRequests": "অনুরোধ",
     "colErrors": "ত্রুটি",
     "colTokens": "টোকেন",
+    "colCache": "ক্যাশ",
     "colTokensInOut": "টোকেন ইন / আউট",
     "colCost": "খরচ",
     "colFirstSeen": "শুরু হয়েছে",

@@ -14456,6 +14456,7 @@
     "colRequests": "คำขอ",
     "colErrors": "ข้อผิดพลาด",
     "colTokens": "โทเค็น",
+    "colCache": "แคช",
     "colTokensInOut": "โทเค็นเข้า / ออก",
     "colCost": "ค่าใช้จ่าย",
     "colFirstSeen": "เริ่มเมื่อ",
