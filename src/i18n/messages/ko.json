@@ -14563,7 +14563,7 @@
     "strategy": "전략",
     "allStrategies": "모든 전략",
     "keyAccessButton": "API 키 액세스",
-    "allowedInKeys": "허용된 키: {count}개",
+    "allowedInKeys": "허용 대상: {count, plural, one {#개 키} other {#개 키}}",
     "keysLoading": "API 키 불러오는 중…",
     "keysRetry": "키 다시 불러오기",
     "accessViaPattern": "{pattern} 경유",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "모든 콤보",
     "modelAccessCount": "모델: {count}",
     "comboAccessCount": "콤보: {count}",
-    "keyActive": "활성",
     "keyInactive": "비활성",
     "keyBanned": "차단됨",
     "switchRestrictedConfirm": "이 키를 제한된 액세스로 전환: 선택한 항목만 허용됩니다",
@@ -14657,6 +14656,14 @@
     "httpError": "HTTP {status} 오류로 요청 실패",
     "testFailedNoDetail": "오류 메시지 없이 테스트 실패",
     "additionalCapabilities": "추가 기능: {list}",
-    "comboRefMember": "조합 → {name}"
+    "comboRefMember": "조합 → {name}",
+    "accessBlocked": "{pattern}에 의해 차단됨",
+    "resultWouldEmptyModels": "이 키에 허용된 모델이 남지 않게 됩니다. 대신 키 액세스를 수정하세요",
+    "resultWouldEmptyCombos": "이 키에 허용된 콤보가 남지 않게 됩니다. 대신 키 액세스를 수정하세요",
+    "keyUpdatePending": "{name}이(가) 아직 업데이트 중입니다. 잠시 후 다시 시도해 주세요.",
+    "assignNoChanges": "변경된 API 키 액세스가 없습니다",
+    "assignExcludedCombos": "{count, plural, one {선택한 #개의 콤보 행은 모델이 아니므로 건너뜁니다} other {선택한 #개의 콤보 행은 모델이 아니므로 건너뜁니다}}. Combos 탭에서 콤보를 할당하세요.",
+    "keyRevoked": "취소됨",
+    "removeStaysAllowedHint": "{patterns}을(를) 통해 이 키에서 계속 허용됨"
   }
 }

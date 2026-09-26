@@ -14563,7 +14563,7 @@
     "strategy": "Strategie",
     "allStrategies": "Alle Strategien",
     "keyAccessButton": "API-Schlüssel-Zugriff",
-    "allowedInKeys": "Erlaubt in: {count} Schlüsseln",
+    "allowedInKeys": "Zulässig in: {count, plural, one {# Schlüssel} other {# Schlüsseln}}",
     "keysLoading": "API-Schlüssel werden geladen…",
     "keysRetry": "Laden der Schlüssel wiederholen",
     "accessViaPattern": "über {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Alle Combos",
     "modelAccessCount": "Modelle: {count}",
     "comboAccessCount": "Combos: {count}",
-    "keyActive": "Aktiv",
     "keyInactive": "Inaktiv",
     "keyBanned": "Gesperrt",
     "switchRestrictedConfirm": "Diesen Schlüssel auf eingeschränkten Zugriff umstellen: Nur die ausgewählten Elemente werden erlaubt",
@@ -14657,6 +14656,14 @@
     "httpError": "Anfrage fehlgeschlagen mit HTTP {status}",
     "testFailedNoDetail": "Test ohne Fehlermeldung fehlgeschlagen",
     "additionalCapabilities": "Zusätzliche Fähigkeiten: {list}",
-    "comboRefMember": "Combo → {name}"
+    "comboRefMember": "Combo → {name}",
+    "accessBlocked": "Blockiert durch {pattern}",
+    "resultWouldEmptyModels": "Würde diesen Schlüssel ohne erlaubte Modelle hinterlassen – bearbeiten Sie stattdessen den Schlüsselzugriff",
+    "resultWouldEmptyCombos": "Würde diesen Schlüssel ohne erlaubte Combos hinterlassen – bearbeiten Sie stattdessen den Schlüsselzugriff",
+    "keyUpdatePending": "{name} wird noch aktualisiert. Versuchen Sie es gleich noch einmal.",
+    "assignNoChanges": "Kein API-Schlüsselzugriff geändert",
+    "assignExcludedCombos": "{count, plural, one {# ausgewählte Combo-Zeile ist kein Modell und wird hier übersprungen} other {# ausgewählte Combo-Zeilen sind keine Modelle und werden hier übersprungen}}. Weisen Sie Combos über den Tab „Combos“ zu.",
+    "keyRevoked": "Widerrufen",
+    "removeStaysAllowedHint": "Für diesen Schlüssel über {patterns} weiterhin erlaubt"
   }
 }

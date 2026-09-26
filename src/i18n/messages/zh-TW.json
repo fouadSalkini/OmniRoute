@@ -14563,7 +14563,7 @@
     "strategy": "策略",
     "allStrategies": "所有策略",
     "keyAccessButton": "API 金鑰存取權限",
-    "allowedInKeys": "已允許於：{count} 個金鑰",
+    "allowedInKeys": "允許於：{count, plural, one {# 個金鑰} other {# 個金鑰}}",
     "keysLoading": "正在載入 API 金鑰…",
     "keysRetry": "重試載入金鑰",
     "accessViaPattern": "透過 {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "所有組合",
     "modelAccessCount": "模型：{count}",
     "comboAccessCount": "組合：{count}",
-    "keyActive": "有效",
     "keyInactive": "無效",
     "keyBanned": "已封鎖",
     "switchRestrictedConfirm": "將此金鑰切換為受限制存取：僅允許選取的項目",
@@ -14657,6 +14656,14 @@
     "httpError": "請求失敗，HTTP {status}",
     "testFailedNoDetail": "測試失敗且無錯誤訊息",
     "additionalCapabilities": "其他功能：{list}",
-    "comboRefMember": "組合 → {name}"
+    "comboRefMember": "組合 → {name}",
+    "accessBlocked": "受 {pattern} 阻擋",
+    "resultWouldEmptyModels": "這會導致此金鑰沒有任何允許的模型 — 請改為編輯金鑰存取權限",
+    "resultWouldEmptyCombos": "這會導致此金鑰沒有任何允許的組合 — 請改為編輯金鑰存取權限",
+    "keyUpdatePending": "{name} 仍在更新中。請稍後再試。",
+    "assignNoChanges": "未變更任何 API 金鑰存取權限",
+    "assignExcludedCombos": "{count, plural, one {所選的 # 個組合列不是模型，在此將予略過} other {所選的 # 個組合列不是模型，在此將予略過}}。請從 Combos 分頁指派組合。",
+    "keyRevoked": "已撤銷",
+    "removeStaysAllowedHint": "仍透過 {patterns} 允許在此金鑰使用"
   }
 }

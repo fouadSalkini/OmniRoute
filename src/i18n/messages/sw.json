@@ -14563,7 +14563,7 @@
     "strategy": "Mkakati",
     "allStrategies": "Mikakati yote",
     "keyAccessButton": "Ufikiaji wa ufunguo wa API",
-    "allowedInKeys": "Imeruhusiwa katika: funguo {count}",
+    "allowedInKeys": "Inaruhusiwa katika: {count, plural, one {ufunguo #} other {funguo #}}",
     "keysLoading": "Inapakia funguo za API…",
     "keysRetry": "Jaribu tena kupakia funguo",
     "accessViaPattern": "kupitia {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Mchanganyiko yote",
     "modelAccessCount": "Miundo: {count}",
     "comboAccessCount": "Mchanganyiko: {count}",
-    "keyActive": "Amilifu",
     "keyInactive": "Isiyo amilifu",
     "keyBanned": "Iliyopigwa marufuku",
     "switchRestrictedConfirm": "Badilisha ufunguo huu kuwa na ufikiaji uliowekewa vikwazo: vipengee vilivyochaguliwa pekee ndivyo vitakavyoruhusiwa",
@@ -14657,6 +14656,14 @@
     "httpError": "Ombi limeshindwa likiwa na HTTP {status}",
     "testFailedNoDetail": "Jaribio limeshindwa bila ujumbe wa hitilafu",
     "additionalCapabilities": "Uwezo wa ziada: {list}",
-    "comboRefMember": "Mchanganyiko → {name}"
+    "comboRefMember": "Mchanganyiko → {name}",
+    "accessBlocked": "Imezuiwa na {pattern}",
+    "resultWouldEmptyModels": "Itaacha ufunguo huu bila miundo yoyote inayoruhusiwa — badala yake hariri ufikiaji wa ufunguo",
+    "resultWouldEmptyCombos": "Itaacha ufunguo huu bila combo zozote zinazoruhusiwa — badala yake hariri ufikiaji wa ufunguo",
+    "keyUpdatePending": "{name} bado inasasishwa. Jaribu tena baada ya muda mfupi.",
+    "assignNoChanges": "Hakuna ufikiaji wa ufunguo wa API uliobadilishwa",
+    "assignExcludedCombos": "{count, plural, one {safu # ya combo iliyochaguliwa si muundo na itarukwa hapa} other {safu # za combo zilizochaguliwa si miundo na zitarukwa hapa}}. Panga combo kutoka kwenye kichupo cha Combos.",
+    "keyRevoked": "Imebatilishwa",
+    "removeStaysAllowedHint": "Bado inaruhusiwa kwenye ufunguo huu kupitia {patterns}"
   }
 }

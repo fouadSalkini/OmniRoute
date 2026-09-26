@@ -14563,7 +14563,7 @@
     "strategy": "Strategi",
     "allStrategies": "Alla strategier",
     "keyAccessButton": "API-nyckelåtkomst",
-    "allowedInKeys": "Tillåten i: {count} nycklar",
+    "allowedInKeys": "Tillåten i: {count, plural, one {# nyckel} other {# nycklar}}",
     "keysLoading": "Läser in API-nycklar…",
     "keysRetry": "Försök läsa in nycklar igen",
     "accessViaPattern": "via {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Alla kombinationer",
     "modelAccessCount": "Modeller: {count}",
     "comboAccessCount": "Kombinationer: {count}",
-    "keyActive": "Aktiv",
     "keyInactive": "Inaktiv",
     "keyBanned": "Spärrad",
     "switchRestrictedConfirm": "Växla denna nyckel till begränsad åtkomst: endast de valda objekten kommer att tillåtas",
@@ -14657,6 +14656,14 @@
     "httpError": "Förfrågan misslyckades med HTTP {status}",
     "testFailedNoDetail": "Testet misslyckades utan något felmeddelande",
     "additionalCapabilities": "Ytterligare förmågor: {list}",
-    "comboRefMember": "Kombination → {name}"
+    "comboRefMember": "Kombination → {name}",
+    "accessBlocked": "Blockerad av {pattern}",
+    "resultWouldEmptyModels": "Skulle lämna denna nyckel utan tillåtna modeller — redigera nyckelåtkomst istället",
+    "resultWouldEmptyCombos": "Skulle lämna denna nyckel utan tillåtna kombinationer — redigera nyckelåtkomst istället",
+    "keyUpdatePending": "{name} uppdateras fortfarande. Försök igen om ett ögonblick.",
+    "assignNoChanges": "Ingen API-nyckelåtkomst ändrades",
+    "assignExcludedCombos": "{count, plural, one {# vald kombinationsrad är inte en modell och kommer att hoppas över här} other {# valda kombinationsrader är inte modeller och kommer att hoppas över här}}. Tilldela kombinationer från fliken Combos.",
+    "keyRevoked": "Återkallad",
+    "removeStaysAllowedHint": "Fortfarande tillåten på denna nyckel via {patterns}"
   }
 }

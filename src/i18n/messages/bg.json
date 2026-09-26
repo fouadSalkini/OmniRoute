@@ -14563,7 +14563,7 @@
     "strategy": "Стратегия",
     "allStrategies": "Всички стратегии",
     "keyAccessButton": "Достъп на API ключ",
-    "allowedInKeys": "Разрешено в: {count} ключа",
+    "allowedInKeys": "Разрешено в: {count, plural, one {# ключ} other {# ключа}}",
     "keysLoading": "Зареждане на API ключове…",
     "keysRetry": "Повторен опит за зареждане на ключове",
     "accessViaPattern": "чрез {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Всички комбинации",
     "modelAccessCount": "Модели: {count}",
     "comboAccessCount": "Комбинации: {count}",
-    "keyActive": "Активен",
     "keyInactive": "Неактивен",
     "keyBanned": "Блокиран",
     "switchRestrictedConfirm": "Превключване на този ключ към ограничен достъп: ще бъдат разрешени само избраните елементи",
@@ -14657,6 +14656,14 @@
     "httpError": "Заявката е неуспешна с HTTP {status}",
     "testFailedNoDetail": "Тестът е неуспешен без съобщение за грешка",
     "additionalCapabilities": "Допълнителни възможности: {list}",
-    "comboRefMember": "Комбинация → {name}"
+    "comboRefMember": "Комбинация → {name}",
+    "accessBlocked": "Блокирано от {pattern}",
+    "resultWouldEmptyModels": "Това би оставило този ключ без разрешени модели — вместо това редактирайте достъпа на ключа",
+    "resultWouldEmptyCombos": "Това би оставило този ключ без разрешени комбинации — вместо това редактирайте достъпа на ключа",
+    "keyUpdatePending": "{name} все още се актуализира. Опитайте отново след малко.",
+    "assignNoChanges": "Няма променен достъп до API ключ",
+    "assignExcludedCombos": "{count, plural, one {# избран ред с комбинация не е модел и ще бъде пропуснат тук} other {# избрани реда с комбинации не са модели и ще бъдат пропуснати тук}}. Задайте комбинации от раздела Combos.",
+    "keyRevoked": "Анулиран",
+    "removeStaysAllowedHint": "Все още разрешено за този ключ чрез {patterns}"
   }
 }

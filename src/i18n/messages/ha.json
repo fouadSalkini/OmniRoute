@@ -14563,7 +14563,7 @@
     "strategy": "Dabara",
     "allStrategies": "Duk dabaru",
     "keyAccessButton": "Damar maɓallin API",
-    "allowedInKeys": "An ba da izini a: maɓallai {count}",
+    "allowedInKeys": "An ba da izini a cikin: {count, plural, one {# mabuɗi} other {# mabuɗai}}",
     "keysLoading": "Ana loda maɓallan API…",
     "keysRetry": "Sake gwada loda maɓallai",
     "accessViaPattern": "ta hanyar {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Duk haɗe-haɗe",
     "modelAccessCount": "Samfura: {count}",
     "comboAccessCount": "Haɗe-haɗe: {count}",
-    "keyActive": "Mai aiki",
     "keyInactive": "Mara aiki",
     "keyBanned": "An toshe",
     "switchRestrictedConfirm": "Sauya wannan maɓalli zuwa damar da aka iyakance: abubuwan da aka zaɓa kawai za a ba da izini",
@@ -14657,6 +14656,14 @@
     "httpError": "Buƙata ta gaza tare da HTTP {status}",
     "testFailedNoDetail": "Gwaji ya gaza ba tare da saƙon kuskure ba",
     "additionalCapabilities": "Ƙarin damammaki: {list}",
-    "comboRefMember": "Combo → {name}"
+    "comboRefMember": "Combo → {name}",
+    "accessBlocked": "An toshe ta {pattern}",
+    "resultWouldEmptyModels": "Zai bar wannan mabuɗi ba tare da samfuran da aka ba da izini ba — gyara damar mabuɗin a maimakon haka",
+    "resultWouldEmptyCombos": "Zai bar wannan mabuɗi ba tare da combos da aka ba da izini ba — gyara damar mabuɗin a maimakon haka",
+    "keyUpdatePending": "Har yanzu ana sabunta {name}. Sake gwadawa nan da ɗan lokaci.",
+    "assignNoChanges": "Babu damar shiga mabuɗin API da aka canza",
+    "assignExcludedCombos": "{count, plural, one {# layin combo da aka zaɓa ba samfuri ba ne kuma za a tsallake shi a nan} other {# layukan combo da aka zaɓa ba samfura ba ne kuma za a tsallake su a nan}}. Sanya combos daga shafin Combos.",
+    "keyRevoked": "An soke",
+    "removeStaysAllowedHint": "Har yanzu an ba da izini a kan wannan mabuɗi ta hanyar {patterns}"
   }
 }

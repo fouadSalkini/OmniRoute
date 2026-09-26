@@ -14563,7 +14563,7 @@
     "strategy": "Stratēģija",
     "allStrategies": "Visas stratēģijas",
     "keyAccessButton": "API atslēgas piekļuve",
-    "allowedInKeys": "Atļauts: {count} atslēgās",
+    "allowedInKeys": "Atļauts: {count, plural, one {# atslēgā} other {# atslēgās}}",
     "keysLoading": "Ielādē API atslēgas…",
     "keysRetry": "Mēģināt vēlreiz ielādēt atslēgas",
     "accessViaPattern": "izmantojot {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Visas kombinācijas",
     "modelAccessCount": "Modeļi: {count}",
     "comboAccessCount": "Kombinācijas: {count}",
-    "keyActive": "Aktīvs",
     "keyInactive": "Neaktīvs",
     "keyBanned": "Bloķēts",
     "switchRestrictedConfirm": "Pārslēgt šo atslēgu uz ierobežotu piekļuvi: būs atļauti tikai atlasītie vienumi",
@@ -14657,6 +14656,14 @@
     "httpError": "Pieprasījums neizdevās ar HTTP {status}",
     "testFailedNoDetail": "Tests neizdevās bez kļūdas ziņojuma",
     "additionalCapabilities": "Papildu iespējas: {list}",
-    "comboRefMember": "Kombinācija → {name}"
+    "comboRefMember": "Kombinācija → {name}",
+    "accessBlocked": "Bloķēts ar {pattern}",
+    "resultWouldEmptyModels": "Šai atslēgai neatliktu neviena atļauta modeļa — tā vietā rediģējiet atslēgas piekļuvi",
+    "resultWouldEmptyCombos": "Šai atslēgai neatliktu nevienas atļautas kombinācijas — tā vietā rediģējiet atslēgas piekļuvi",
+    "keyUpdatePending": "{name} joprojām tiek atjaunināts. Mēģiniet vēlreiz pēc brīža.",
+    "assignNoChanges": "API atslēgu piekļuve netika mainīta",
+    "assignExcludedCombos": "{count, plural, one {# atlasītā kombināciju rinda nav modelis un šeit tiks izlaista} other {# atlasītās kombināciju rindas nav modeļi un šeit tiks izlaistas}}. Piešķiriet kombinācijas no cilnes Combos.",
+    "keyRevoked": "Atsaukts",
+    "removeStaysAllowedHint": "Joprojām atļauts šai atslēgai, izmantojot {patterns}"
   }
 }

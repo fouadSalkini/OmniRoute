@@ -14563,7 +14563,7 @@
     "strategy": "Strategija",
     "allStrategies": "Sve strategije",
     "keyAccessButton": "Pristup API ključu",
-    "allowedInKeys": "Dopušteno u: {count} ključeva",
+    "allowedInKeys": "Dopušteno u: {count, plural, one {# ključu} few {# ključa} other {# ključeva}}",
     "keysLoading": "Učitavanje API ključeva…",
     "keysRetry": "Pokušaj ponovno učitati ključeve",
     "accessViaPattern": "putem {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Sve kombinacije",
     "modelAccessCount": "Modeli: {count}",
     "comboAccessCount": "Kombinacije: {count}",
-    "keyActive": "Aktivan",
     "keyInactive": "Neaktivan",
     "keyBanned": "Blokiran",
     "switchRestrictedConfirm": "Prebaci ovaj ključ na ograničeni pristup: samo će odabrane stavke biti dopuštene",
@@ -14657,6 +14656,14 @@
     "httpError": "Zahtjev nije uspio uz HTTP {status}",
     "testFailedNoDetail": "Test nije uspio bez poruke o pogrešci",
     "additionalCapabilities": "Dodatne mogućnosti: {list}",
-    "comboRefMember": "Kombinacija → {name}"
+    "comboRefMember": "Kombinacija → {name}",
+    "accessBlocked": "Blokira {pattern}",
+    "resultWouldEmptyModels": "Ovim bi ovaj ključ ostao bez dopuštenih modela — umjesto toga uredite pristup ključu",
+    "resultWouldEmptyCombos": "Ovim bi ovaj ključ ostao bez dopuštenih kombinacija — umjesto toga uredite pristup ključu",
+    "keyUpdatePending": "{name} se još uvijek ažurira. Pokušajte ponovno za trenutak.",
+    "assignNoChanges": "Nije promijenjen pristup API ključevima",
+    "assignExcludedCombos": "{count, plural, one {# odabrani redak kombinacije nije model i ovdje će biti preskočen} few {# odabrana retka kombinacije nisu modeli i ovdje će biti preskočena} other {# odabranih redaka kombinacije nisu modeli i ovdje će biti preskočeno}}. Dodijelite kombinacije s kartice Combos.",
+    "keyRevoked": "Opozvano",
+    "removeStaysAllowedHint": "I dalje dopušteno na ovom ključu putem {patterns}"
   }
 }

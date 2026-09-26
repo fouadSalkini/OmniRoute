@@ -14563,7 +14563,7 @@
     "strategy": "策略",
     "allStrategies": "所有策略",
     "keyAccessButton": "API 密钥访问权限",
-    "allowedInKeys": "已允许于：{count} 个密钥",
+    "allowedInKeys": "允许用于：{count, plural, one {# 个密钥} other {# 个密钥}}",
     "keysLoading": "正在加载 API 密钥…",
     "keysRetry": "重试加载密钥",
     "accessViaPattern": "通过 {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "所有组合",
     "modelAccessCount": "模型：{count}",
     "comboAccessCount": "组合：{count}",
-    "keyActive": "已启用",
     "keyInactive": "已停用",
     "keyBanned": "已封禁",
     "switchRestrictedConfirm": "将此密钥切换为受限访问：仅允许所选项目",
@@ -14657,6 +14656,14 @@
     "httpError": "请求失败，HTTP {status}",
     "testFailedNoDetail": "测试失败且未提供错误信息",
     "additionalCapabilities": "额外能力：{list}",
-    "comboRefMember": "组合 → {name}"
+    "comboRefMember": "组合 → {name}",
+    "accessBlocked": "被 {pattern} 阻止",
+    "resultWouldEmptyModels": "这将导致此密钥没有允许的模型 — 请改为编辑密钥访问权限",
+    "resultWouldEmptyCombos": "这将导致此密钥没有允许的组合 — 请改为编辑密钥访问权限",
+    "keyUpdatePending": "{name} 仍在更新中。请稍后重试。",
+    "assignNoChanges": "未更改 API 密钥访问权限",
+    "assignExcludedCombos": "{count, plural, one {# 个选中的组合行不是模型，将在此跳过} other {# 个选中的组合行不是模型，将在此跳过}}。请从 Combos 选项卡分配组合。",
+    "keyRevoked": "已撤销",
+    "removeStaysAllowedHint": "仍通过 {patterns} 允许在此密钥上使用"
   }
 }

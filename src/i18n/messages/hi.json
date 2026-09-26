@@ -14563,7 +14563,7 @@
     "strategy": "रणनीति",
     "allStrategies": "सभी रणनीतियाँ",
     "keyAccessButton": "API कुंजी एक्सेस",
-    "allowedInKeys": "{count} कुंजियों में अनुमत",
+    "allowedInKeys": "इनमें अनुमत: {count, plural, one {# कुंजी} other {# कुंजियाँ}}",
     "keysLoading": "API कुंजियाँ लोड हो रही हैं…",
     "keysRetry": "कुंजियों को लोड करने का पुनः प्रयास करें",
     "accessViaPattern": "{pattern} के माध्यम से",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "सभी कॉम्बो",
     "modelAccessCount": "मॉडल: {count}",
     "comboAccessCount": "कॉम्बो: {count}",
-    "keyActive": "सक्रिय",
     "keyInactive": "निष्क्रिय",
     "keyBanned": "प्रतिबंधित",
     "switchRestrictedConfirm": "इस कुंजी को प्रतिबंधित एक्सेस पर स्विच करें: केवल चयनित आइटमों की अनुमति होगी",
@@ -14657,6 +14656,14 @@
     "httpError": "अनुरोध HTTP {status} के साथ विफल रहा",
     "testFailedNoDetail": "बिना किसी त्रुटि संदेश के परीक्षण विफल रहा",
     "additionalCapabilities": "अतिरिक्त क्षमताएं: {list}",
-    "comboRefMember": "कॉम्बो → {name}"
+    "comboRefMember": "कॉम्बो → {name}",
+    "accessBlocked": "{pattern} द्वारा अवरोधित",
+    "resultWouldEmptyModels": "इससे इस कुंजी के पास कोई अनुमत मॉडल नहीं बचेगा — इसके बजाय कुंजी एक्सेस को संपादित करें",
+    "resultWouldEmptyCombos": "इससे इस कुंजी के पास कोई अनुमत कॉम्बो नहीं बचेगा — इसके बजाय कुंजी एक्सेस को संपादित करें",
+    "keyUpdatePending": "{name} को अभी भी अपडेट किया जा रहा है। कुछ क्षणों में पुनः प्रयास करें।",
+    "assignNoChanges": "किसी भी API कुंजी का एक्सेस नहीं बदला गया",
+    "assignExcludedCombos": "{count, plural, one {# चयनित कॉम्बो पंक्ति एक मॉडल नहीं है और इसे यहाँ छोड़ दिया जाएगा} other {# चयनित कॉम्बो पंक्तियाँ मॉडल नहीं हैं और उन्हें यहाँ छोड़ दिया जाएगा}}। Combos टैब से कॉम्बो असाइन करें।",
+    "keyRevoked": "निरस्त",
+    "removeStaysAllowedHint": "{patterns} के माध्यम से इस कुंजी पर अभी भी अनुमत है"
   }
 }

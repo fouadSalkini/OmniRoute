@@ -14563,7 +14563,7 @@
     "strategy": "Strategiya",
     "allStrategies": "Bütün strategiyalar",
     "keyAccessButton": "API açarı girişi",
-    "allowedInKeys": "İcazə verildiyi açarlar: {count}",
+    "allowedInKeys": "İcazə verildiyi yer: {count, plural, one {# açar} other {# açar}}",
     "keysLoading": "API açarları yüklənir…",
     "keysRetry": "Açarların yüklənməsini yenidən cəhd edin",
     "accessViaPattern": "{pattern} vasitəsilə",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Bütün kombinasiyalar",
     "modelAccessCount": "Modellər: {count}",
     "comboAccessCount": "Kombinasiyalar: {count}",
-    "keyActive": "Aktiv",
     "keyInactive": "Qeyri-aktiv",
     "keyBanned": "Bloklanıb",
     "switchRestrictedConfirm": "Bu açarı məhdud girişə keçirin: yalnız seçilmiş elementlərə icazə veriləcək",
@@ -14657,6 +14656,14 @@
     "httpError": "Sorğu HTTP {status} ilə uğursuz oldu",
     "testFailedNoDetail": "Test xəta mesajı olmadan uğursuz oldu",
     "additionalCapabilities": "Əlavə imkanlar: {list}",
-    "comboRefMember": "Kombo → {name}"
+    "comboRefMember": "Kombo → {name}",
+    "accessBlocked": "{pattern} tərəfindən bloklanıb",
+    "resultWouldEmptyModels": "Bu açarda heç bir icazə verilən model qalmayacaq — əvəzinə açar girişini redaktə edin",
+    "resultWouldEmptyCombos": "Bu açarda heç bir icazə verilən kombo qalmayacaq — əvəzinə açar girişini redaktə edin",
+    "keyUpdatePending": "{name} hələ də yenilənir. Bir azdan yenidən cəhd edin.",
+    "assignNoChanges": "Heç bir API açarı girişi dəyişdirilmədi",
+    "assignExcludedCombos": "{count, plural, one {# seçilmiş kombo sətri model deyil və burada ötürüləcək} other {# seçilmiş kombo sətri model deyil və burada ötürüləcək}}. Komboları Combos nişanından təyin edin.",
+    "keyRevoked": "Ləğv edildi",
+    "removeStaysAllowedHint": "{patterns} vasitəsilə bu açarda hələ də icazə verilir"
   }
 }

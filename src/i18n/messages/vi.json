@@ -14563,7 +14563,7 @@
     "strategy": "Chiến lược",
     "allStrategies": "Tất cả chiến lược",
     "keyAccessButton": "Quyền truy cập khóa API",
-    "allowedInKeys": "Được phép trong: {count} khóa",
+    "allowedInKeys": "Được phép trong: {count, plural, one {# khóa} other {# khóa}}",
     "keysLoading": "Đang tải các khóa API…",
     "keysRetry": "Thử tải lại khóa",
     "accessViaPattern": "qua {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Tất cả combo",
     "modelAccessCount": "Mô hình: {count}",
     "comboAccessCount": "Combo: {count}",
-    "keyActive": "Đang hoạt động",
     "keyInactive": "Không hoạt động",
     "keyBanned": "Bị cấm",
     "switchRestrictedConfirm": "Chuyển khóa này sang quyền truy cập bị hạn chế: chỉ các mục đã chọn mới được phép",
@@ -14657,6 +14656,14 @@
     "httpError": "Yêu cầu thất bại với mã HTTP {status}",
     "testFailedNoDetail": "Kiểm thử thất bại mà không có thông báo lỗi",
     "additionalCapabilities": "Khả năng bổ sung: {list}",
-    "comboRefMember": "Combo → {name}"
+    "comboRefMember": "Combo → {name}",
+    "accessBlocked": "Bị chặn bởi {pattern}",
+    "resultWouldEmptyModels": "Sẽ khiến khóa này không có mô hình nào được phép — thay vào đó hãy chỉnh sửa quyền truy cập khóa",
+    "resultWouldEmptyCombos": "Sẽ khiến khóa này không có combo nào được phép — thay vào đó hãy chỉnh sửa quyền truy cập khóa",
+    "keyUpdatePending": "{name} vẫn đang được cập nhật. Vui lòng thử lại sau giây lát.",
+    "assignNoChanges": "Không có quyền truy cập khóa API nào được thay đổi",
+    "assignExcludedCombos": "{count, plural, one {# hàng combo được chọn không phải là mô hình và sẽ bị bỏ qua ở đây} other {# hàng combo được chọn không phải là mô hình và sẽ bị bỏ qua ở đây}}. Hãy gán combo từ tab Combos.",
+    "keyRevoked": "Đã thu hồi",
+    "removeStaysAllowedHint": "Vẫn được phép trên khóa này thông qua {patterns}"
   }
 }

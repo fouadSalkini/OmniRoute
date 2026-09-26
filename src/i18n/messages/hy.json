@@ -14563,7 +14563,7 @@
     "strategy": "Ռազմավարություն",
     "allStrategies": "Բոլոր ռազմավարությունները",
     "keyAccessButton": "API բանալու հասանելիություն",
-    "allowedInKeys": "Թույլատրված է՝ {count} բանալիներում",
+    "allowedInKeys": "Թույլատրված է՝ {count, plural, one {# բանալիում} other {# բանալիներում}}",
     "keysLoading": "API բանալիների բեռնում…",
     "keysRetry": "Կրկնել բանալիների բեռնումը",
     "accessViaPattern": "{pattern}-ի միջոցով",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Բոլոր համակցությունները",
     "modelAccessCount": "Մոդելներ՝ {count}",
     "comboAccessCount": "Համակցություններ՝ {count}",
-    "keyActive": "Ակտիվ",
     "keyInactive": "Ոչ ակտիվ",
     "keyBanned": "Արգելափակված",
     "switchRestrictedConfirm": "Այս բանալին փոխարկել սահմանափակ հասանելիության. կթույլատրվեն միայն ընտրված տարրերը",
@@ -14657,6 +14656,14 @@
     "httpError": "Հարցումը ձախողվեց HTTP {status} կոդով",
     "testFailedNoDetail": "Թեստը ձախողվեց առանց սխալի հաղորդագրության",
     "additionalCapabilities": "Լրացուցիչ հնարավորություններ՝ {list}",
-    "comboRefMember": "Համակցություն → {name}"
+    "comboRefMember": "Համակցություն → {name}",
+    "accessBlocked": "Արգելափակված է {pattern}-ի կողմից",
+    "resultWouldEmptyModels": "Այս բանալին կմնա առանց թույլատրված մոդելների — փոխարենը խմբագրեք բանալու մուտքի իրավունքները",
+    "resultWouldEmptyCombos": "Այս բանալին կմնա առանց թույլատրված կոմբոների — փոխարենը խմբագրեք բանալու մուտքի իրավունքները",
+    "keyUpdatePending": "{name}-ը դեռ թարմացվում է: Փորձեք կրկին մի փոքր ուշ:",
+    "assignNoChanges": "API բանալու հասանելիության որևէ փոփոխություն չի կատարվել",
+    "assignExcludedCombos": "{count, plural, one {Ընտրված # կոմբո տողը մոդել չէ և այստեղ բաց կթողնվի} other {Ընտրված # կոմբո տողերը մոդել չեն և այստեղ բաց կթողնվեն}}: Նշանակեք կոմբոները Combos ներդիրից:",
+    "keyRevoked": "Հետկանչված",
+    "removeStaysAllowedHint": "Դեռևս թույլատրված է այս բանալու վրա {patterns}-ի միջոցով"
   }
 }

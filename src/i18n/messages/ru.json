@@ -14563,7 +14563,7 @@
     "strategy": "Стратегия",
     "allStrategies": "Все стратегии",
     "keyAccessButton": "Доступ API-ключей",
-    "allowedInKeys": "Разрешено в ключах: {count}",
+    "allowedInKeys": "Разрешено в: {count, plural, one {# ключе} few {# ключах} many {# ключах} other {# ключах}}",
     "keysLoading": "Загрузка API-ключей…",
     "keysRetry": "Повторить загрузку ключей",
     "accessViaPattern": "через {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Все комбинации",
     "modelAccessCount": "Модели: {count}",
     "comboAccessCount": "Комбинации: {count}",
-    "keyActive": "Активен",
     "keyInactive": "Неактивен",
     "keyBanned": "Заблокирован",
     "switchRestrictedConfirm": "Переключить этот ключ на ограниченный доступ: будут разрешены только выбранные элементы",
@@ -14657,6 +14656,14 @@
     "httpError": "Запрос завершился ошибкой HTTP {status}",
     "testFailedNoDetail": "Тест завершился сбоем без сообщения об ошибке",
     "additionalCapabilities": "Дополнительные возможности: {list}",
-    "comboRefMember": "Комбинация → {name}"
+    "comboRefMember": "Комбинация → {name}",
+    "accessBlocked": "Заблокировано {pattern}",
+    "resultWouldEmptyModels": "У этого ключа не останется разрешенных моделей — вместо этого измените права доступа ключа",
+    "resultWouldEmptyCombos": "У этого ключа не останется разрешенных комбинаций — вместо этого измените права доступа ключа",
+    "keyUpdatePending": "{name} все еще обновляется. Повторите попытку чуть позже.",
+    "assignNoChanges": "Права доступа API-ключа не изменились",
+    "assignExcludedCombos": "{count, plural, one {# выбранная строка комбинации не является моделью и будет пропущена} few {# выбранные строки комбинаций не являются моделями и будут пропущены} many {# выбранных строк комбинаций не являются моделями и будут пропущены} other {# выбранных строк комбинаций не являются моделями и будут пропущены}}. Назначайте комбинации на вкладке Combos.",
+    "keyRevoked": "Отозван",
+    "removeStaysAllowedHint": "По-прежнему разрешено для этого ключа через {patterns}"
   }
 }

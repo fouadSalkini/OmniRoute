@@ -14563,7 +14563,7 @@
     "strategy": "Strategia",
     "allStrategies": "Kaikki strategiat",
     "keyAccessButton": "API-avainten käyttöoikeudet",
-    "allowedInKeys": "Sallittu: {count} avaimessa",
+    "allowedInKeys": "Sallittu kohteissa: {count, plural, one {# avain} other {# avainta}}",
     "keysLoading": "Ladataan API-avaimia…",
     "keysRetry": "Yritä ladata avaimet uudelleen",
     "accessViaPattern": "kautta: {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Kaikki yhdistelmät",
     "modelAccessCount": "Mallit: {count}",
     "comboAccessCount": "Yhdistelmät: {count}",
-    "keyActive": "Aktiivinen",
     "keyInactive": "Ei-aktiivinen",
     "keyBanned": "Estetty",
     "switchRestrictedConfirm": "Vaihda tämä avain rajoitettuun pääsyyn: vain valitut kohteet sallitaan",
@@ -14657,6 +14656,14 @@
     "httpError": "Pyyntö epäonnistui: HTTP {status}",
     "testFailedNoDetail": "Testi epäonnistui ilman virheilmoitusta",
     "additionalCapabilities": "Lisäominaisuudet: {list}",
-    "comboRefMember": "Yhdistelmä → {name}"
+    "comboRefMember": "Yhdistelmä → {name}",
+    "accessBlocked": "Estetty kuviolla {pattern}",
+    "resultWouldEmptyModels": "Jättäisi tämän avaimen ilman sallittuja malleja — muokkaa sen sijaan avaimen käyttöoikeuksia",
+    "resultWouldEmptyCombos": "Jättäisi tämän avaimen ilman sallittuja comboja — muokkaa sen sijaan avaimen käyttöoikeuksia",
+    "keyUpdatePending": "Kohdetta {name} päivitetään vielä. Yritä hetken kuluttua uudelleen.",
+    "assignNoChanges": "API-avainten käyttöoikeuksia ei muutettu",
+    "assignExcludedCombos": "{count, plural, one {# valittu combo-rivi ei ole malli ja se ohitetaan tässä} other {# valittua combo-riviä eivät ole malleja ja ne ohitetaan tässä}}. Määritä combot Combos-välilehdeltä.",
+    "keyRevoked": "Kumottu",
+    "removeStaysAllowedHint": "Sallittu yhä tälle avaimelle kuvioiden {patterns} kautta"
   }
 }

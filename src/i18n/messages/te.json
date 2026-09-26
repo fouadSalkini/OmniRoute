@@ -14563,7 +14563,7 @@
     "strategy": "వ్యూహం",
     "allStrategies": "అన్ని వ్యూహాలు",
     "keyAccessButton": "API కీ యాక్సెస్",
-    "allowedInKeys": "అనుమతించబడినవి: {count} కీలు",
+    "allowedInKeys": "వీటిలో అనుమతించబడింది: {count, plural, one {# కీ} other {# కీలు}}",
     "keysLoading": "API కీలను లోడ్ చేస్తోంది…",
     "keysRetry": "కీలను మళ్లీ లోడ్ చేయడానికి ప్రయత్నించండి",
     "accessViaPattern": "{pattern} ద్వారా",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "అన్ని కాంబోలు",
     "modelAccessCount": "మోడల్స్: {count}",
     "comboAccessCount": "కాంబోలు: {count}",
-    "keyActive": "యాక్టివ్",
     "keyInactive": "ఇన్‌యాక్టివ్",
     "keyBanned": "నిషేధించబడింది",
     "switchRestrictedConfirm": "ఈ కీని పరిమిత యాక్సెస్‌కి మార్చండి: ఎంచుకున్న అంశాలు మాత్రమే అనుమతించబడతాయి",
@@ -14657,6 +14656,14 @@
     "httpError": "HTTP {status} తో అభ్యర్థన విఫలమైంది",
     "testFailedNoDetail": "లోపం సందేశం లేకుండా పరీక్ష విఫలమైంది",
     "additionalCapabilities": "అదనపు సామర్థ్యాలు: {list}",
-    "comboRefMember": "కాంబో → {name}"
+    "comboRefMember": "కాంబో → {name}",
+    "accessBlocked": "{pattern} ద్వారా బ్లాక్ చేయబడింది",
+    "resultWouldEmptyModels": "ఇది ఈ కీని ఎటువంటి అనుమతించబడిన మోడల్స్ లేకుండా చేస్తుంది — బదులుగా కీ యాక్సెస్‌ను సవరించండి",
+    "resultWouldEmptyCombos": "ఇది ఈ కీని ఎటువంటి అనుమతించబడిన కాంబోలు లేకుండా చేస్తుంది — బదులుగా కీ యాక్సెస్‌ను సవరించండి",
+    "keyUpdatePending": "{name} ఇంకా అప్‌డేట్ అవుతోంది. కాసేపటి తర్వాత మళ్లీ ప్రయత్నించండి.",
+    "assignNoChanges": "ఏ API కీ యాక్సెస్ మార్చబడలేదు",
+    "assignExcludedCombos": "{count, plural, one {ఎంచుకున్న # కాంబో వరుస మోడల్ కాదు మరియు ఇక్కడ దాటవేయబడుతుంది} other {ఎంచుకున్న # కాంబో వరుసలు మోడల్స్ కావు మరియు ఇక్కడ దాటవేయబడతాయి}}. Combos ట్యాబ్ నుండి కాంబోలను కేటాయించండి.",
+    "keyRevoked": "రద్దు చేయబడింది",
+    "removeStaysAllowedHint": "{patterns} ద్వారా ఈ కీపై ఇంకా అనుమతించబడుతుంది"
   }
 }

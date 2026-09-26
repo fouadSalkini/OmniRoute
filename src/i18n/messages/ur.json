@@ -14563,7 +14563,7 @@
     "strategy": "حکمت عملی",
     "allStrategies": "تمام حکمت عملیاں",
     "keyAccessButton": "API کلید تک رسائی",
-    "allowedInKeys": "اجازت دی گئی ہے: {count} کلیدوں میں",
+    "allowedInKeys": "مجاز برائے: {count, plural, one {# کلید} other {# کلیدیں}}",
     "keysLoading": "API کلیدیں لوڈ ہو رہی ہیں…",
     "keysRetry": "کلیدیں دوبارہ لوڈ کریں",
     "accessViaPattern": "بذریعہ {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "تمام کمبوز",
     "modelAccessCount": "ماڈلز: {count}",
     "comboAccessCount": "کمبوز: {count}",
-    "keyActive": "فعال",
     "keyInactive": "غیر فعال",
     "keyBanned": "ممنوع",
     "switchRestrictedConfirm": "اس کلید کو محدود رسائی پر سوئچ کریں: صرف منتخب اشیاء کی اجازت ہوگی",
@@ -14657,6 +14656,14 @@
     "httpError": "درخواست HTTP {status} کے ساتھ ناکام ہو گئی",
     "testFailedNoDetail": "ٹیسٹ بغیر کسی خرابی کے پیغام کے ناکام ہو گیا",
     "additionalCapabilities": "اضافی صلاحیتیں: {list}",
-    "comboRefMember": "کمبو → {name}"
+    "comboRefMember": "کمبو → {name}",
+    "accessBlocked": "{pattern} کے ذریعے مسدود",
+    "resultWouldEmptyModels": "اس سے اس کلید کے پاس کوئی مجاز ماڈل باقی نہیں رہے گا — اس کے بجائے کلید کی رسائی میں ترمیم کریں",
+    "resultWouldEmptyCombos": "اس سے اس کلید کے پاس کوئی مجاز کومبو باقی نہیں رہے گا — اس کے بجائے کلید کی رسائی میں ترمیم کریں",
+    "keyUpdatePending": "{name} کو ابھی اپ ڈیٹ کیا جا رہا ہے۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔",
+    "assignNoChanges": "API کلید کی رسائی میں کوئی تبدیلی نہیں ہوئی",
+    "assignExcludedCombos": "{count, plural, one {# منتخب کردہ کومبو قطار ماڈل نہیں ہے اور اسے یہاں چھوڑ دیا جائے گا} other {# منتخب کردہ کومبو قطاریں ماڈل نہیں ہیں اور انہیں یہاں چھوڑ دیا جائے گا}}۔ Combos ٹیب سے کومبوز تفویض کریں۔",
+    "keyRevoked": "منسوخ شدہ",
+    "removeStaysAllowedHint": "{patterns} کے ذریعے اس کلید پر اب بھی اجازت ہے"
   }
 }

@@ -14563,7 +14563,7 @@
     "strategy": "Strategija",
     "allStrategies": "Vse strategije",
     "keyAccessButton": "Dostop z API-ključem",
-    "allowedInKeys": "Dovoljeno v: {count} ključih",
+    "allowedInKeys": "Dovoljeno v: {count, plural, one {# ključ} two {# ključa} few {# ključi} other {# ključev}}",
     "keysLoading": "Nalaganje API-ključev …",
     "keysRetry": "Ponovno poskusi naložiti ključe",
     "accessViaPattern": "prek {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Vse kombinacije",
     "modelAccessCount": "Modeli: {count}",
     "comboAccessCount": "Kombinacije: {count}",
-    "keyActive": "Aktivno",
     "keyInactive": "Neaktivno",
     "keyBanned": "Blokirano",
     "switchRestrictedConfirm": "Preklopi ta ključ na omejen dostop: dovoljeni bodo le izbrani elementi",
@@ -14657,6 +14656,14 @@
     "httpError": "Zahteva ni uspela s kodo HTTP {status}",
     "testFailedNoDetail": "Test ni uspel brez sporočila o napaki",
     "additionalCapabilities": "Dodatne zmožnosti: {list}",
-    "comboRefMember": "Kombinacija → {name}"
+    "comboRefMember": "Kombinacija → {name}",
+    "accessBlocked": "Blokira {pattern}",
+    "resultWouldEmptyModels": "Ta ključ bi ostal brez dovoljenih modelov — namesto tega uredite dostop do ključa",
+    "resultWouldEmptyCombos": "Ta ključ bi ostal brez dovoljenih kombinacij — namesto tega uredite dostop do ključa",
+    "keyUpdatePending": "{name} se še vedno posodablja. Poskusite znova čez trenutek.",
+    "assignNoChanges": "Dostop do ključa API ni bil spremenjen",
+    "assignExcludedCombos": "{count, plural, one {# izbrana vrstica kombinacije ni model in bo tukaj preskočena} two {# izbrani vrstici kombinacije nista modela in bosta tukaj preskočeni} few {# izbrane vrstice kombinacije niso modeli in bodo tukaj preskočene} other {# izbranih vrstic kombinacije niso modeli in bodo tukaj preskočene}}. Dodelite kombinacije na zavihku Kombinacije.",
+    "keyRevoked": "Preklicano",
+    "removeStaysAllowedHint": "Še vedno dovoljeno na tem ključu prek {patterns}"
   }
 }

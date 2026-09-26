@@ -14563,7 +14563,7 @@
     "strategy": "Strateegia",
     "allStrategies": "Kõik strateegiad",
     "keyAccessButton": "API-võtme juurdepääs",
-    "allowedInKeys": "Lubatud: {count} võtmes",
+    "allowedInKeys": "Lubatud: {count, plural, one {# võtmes} other {# võtmes}}",
     "keysLoading": "API-võtmete laadimine…",
     "keysRetry": "Proovi võtmete laadimist uuesti",
     "accessViaPattern": "{pattern} kaudu",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Kõik kombinatsioonid",
     "modelAccessCount": "Mudelid: {count}",
     "comboAccessCount": "Kombinatsioonid: {count}",
-    "keyActive": "Aktiivne",
     "keyInactive": "Mitteaktiivne",
     "keyBanned": "Blokeeritud",
     "switchRestrictedConfirm": "Lülita see võti piiratud juurdepääsule: lubatakse ainult valitud üksused",
@@ -14657,6 +14656,14 @@
     "httpError": "Päring ebaõnnestus HTTP-staatusega {status}",
     "testFailedNoDetail": "Test ebaõnnestus ilma veateateta",
     "additionalCapabilities": "Täiendavad võimekused: {list}",
-    "comboRefMember": "Kombinatsioon → {name}"
+    "comboRefMember": "Kombinatsioon → {name}",
+    "accessBlocked": "Blokeeritud mustriga {pattern}",
+    "resultWouldEmptyModels": "Jätaks selle võtme ilma lubatud mudeliteta — muuda selle asemel võtme juurdepääsu",
+    "resultWouldEmptyCombos": "Jätaks selle võtme ilma lubatud kombodeta — muuda selle asemel võtme juurdepääsu",
+    "keyUpdatePending": "{name} on veel uuendamisel. Proovi hetke pärast uuesti.",
+    "assignNoChanges": "Ühtegi API-võtme juurdepääsu ei muudetud",
+    "assignExcludedCombos": "{count, plural, one {# valitud komborida pole mudel ja jäetakse siin vahele} other {# valitud komborida pole mudelid ja jäetakse siin vahele}}. Määra kombod vahekaardilt Combos.",
+    "keyRevoked": "Tühistatud",
+    "removeStaysAllowedHint": "Sellel võtmel endiselt lubatud mustrite {patterns} kaudu"
   }
 }

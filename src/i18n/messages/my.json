@@ -14563,7 +14563,7 @@
     "strategy": "မဟာဗျူဟာ",
     "allStrategies": "မဟာဗျူဟာ အားလုံး",
     "keyAccessButton": "API key အသုံးပြုခွင့်",
-    "allowedInKeys": "{count} keys တွင် ခွင့်ပြုထားသည်",
+    "allowedInKeys": "ခွင့်ပြုထားသည် - {count, plural, one {ကီး # ခု} other {ကီး # ခု}}",
     "keysLoading": "API key များကို တင်နေသည်…",
     "keysRetry": "Key များ ပြန်လည်ရယူရန် ထပ်ကြိုးစားပါ",
     "accessViaPattern": "{pattern} မှတစ်ဆင့်",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Combo အားလုံး",
     "modelAccessCount": "မော်ဒယ်များ- {count}",
     "comboAccessCount": "Combo များ- {count}",
-    "keyActive": "အသုံးပြုနေသည်",
     "keyInactive": "အသုံးမပြုပါ",
     "keyBanned": "ပိတ်ပင်ထားသည်",
     "switchRestrictedConfirm": "ဤ key ကို ကန့်သတ်အသုံးပြုခွင့်သို့ ပြောင်းပါ- ရွေးချယ်ထားသော အရာများကိုသာ ခွင့်ပြုပါမည်",
@@ -14657,6 +14656,14 @@
     "httpError": "တောင်းဆိုမှုသည် HTTP {status} ဖြင့် မအောင်မြင်ပါ",
     "testFailedNoDetail": "အမှားသတင်းစကား မပါဘဲ စမ်းသပ်မှု မအောင်မြင်ပါ",
     "additionalCapabilities": "ထပ်ဆောင်း လုပ်ဆောင်နိုင်စွမ်းများ- {list}",
-    "comboRefMember": "Combo → {name}"
+    "comboRefMember": "Combo → {name}",
+    "accessBlocked": "{pattern} ကြောင့် ပိတ်ဆို့ထားသည်",
+    "resultWouldEmptyModels": "ဤကီးတွင် ခွင့်ပြုထားသော မော်ဒယ်များ မကျန်တော့ဘဲ ဖြစ်သွားပါမည် — ၎င်းအစား ကီးအသုံးပြုခွင့်ကို တည်းဖြတ်ပါ",
+    "resultWouldEmptyCombos": "ဤကီးတွင် ခွင့်ပြုထားသော combo များ မကျန်တော့ဘဲ ဖြစ်သွားပါမည် — ၎င်းအစား ကီးအသုံးပြုခွင့်ကို တည်းဖြတ်ပါ",
+    "keyUpdatePending": "{name} ကို အပ်ဒိတ်လုပ်နေဆဲဖြစ်သည်။ ခဏအကြာတွင် ထပ်စမ်းကြည့်ပါ။",
+    "assignNoChanges": "API ကီး အသုံးပြုခွင့် ပြောင်းလဲမှု မရှိပါ",
+    "assignExcludedCombos": "{count, plural, one {ရွေးချယ်ထားသော combo အတန်း # ခုသည် မော်ဒယ်မဟုတ်သဖြင့် ဤနေရာတွင် ကျော်သွားပါမည်} other {ရွေးချယ်ထားသော combo အတန်း # ခုသည် မော်ဒယ်များမဟုတ်သဖြင့် ဤနေရာတွင် ကျော်သွားပါမည်}}။ Combos တက်ဘ်မှ combo များကို သတ်မှတ်ပါ။",
+    "keyRevoked": "ရုပ်သိမ်းထားသည်",
+    "removeStaysAllowedHint": "{patterns} မှတစ်ဆင့် ဤကီးတွင် ဆက်လက်ခွင့်ပြုထားဆဲဖြစ်သည်"
   }
 }

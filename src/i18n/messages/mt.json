@@ -14563,7 +14563,7 @@
     "strategy": "Strateġija",
     "allStrategies": "L-istrateġiji kollha",
     "keyAccessButton": "Aċċess għaċ-ċavetta tal-API",
-    "allowedInKeys": "Permess fi: {count} ċwievet",
+    "allowedInKeys": "Permess fi: {count, plural, one {# ċavetta} other {# ċwievet}}",
     "keysLoading": "Qed jitgħabbew iċ-ċwievet tal-API…",
     "keysRetry": "Erġa' pprova għabbi ċ-ċwievet",
     "accessViaPattern": "permezz ta' {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Il-combos kollha",
     "modelAccessCount": "Mudelli: {count}",
     "comboAccessCount": "Combos: {count}",
-    "keyActive": "Attiv",
     "keyInactive": "Mhux attiv",
     "keyBanned": "Ipprojbit",
     "switchRestrictedConfirm": "Aqleb din iċ-ċavetta għal aċċess ristrett: l-oġġetti magħżula biss se jkunu permessi",
@@ -14657,6 +14656,14 @@
     "httpError": "It-talba falliet b'HTTP {status}",
     "testFailedNoDetail": "It-test falla mingħajr messaġġ ta' żball",
     "additionalCapabilities": "Kapaċitajiet addizzjonali: {list}",
-    "comboRefMember": "Combo → {name}"
+    "comboRefMember": "Combo → {name}",
+    "accessBlocked": "Imblukkat minn {pattern}",
+    "resultWouldEmptyModels": "Iħalli din iċ-ċavetta mingħajr l-ebda mudell permess — minflok editja l-aċċess taċ-ċavetta",
+    "resultWouldEmptyCombos": "Iħalli din iċ-ċavetta mingħajr l-ebda combo permessa — minflok editja l-aċċess taċ-ċavetta",
+    "keyUpdatePending": "{name} għadu qed jiġi aġġornat. Erġa' pprova fi ftit ħin.",
+    "assignNoChanges": "L-ebda aċċess għaċ-ċavetta tal-API ma nbidel",
+    "assignExcludedCombos": "{count, plural, one {# ringiela tal-combo magħżula mhijiex mudell u se tinqabeż hawnhekk} other {# ringieli tal-combo magħżula mhumiex mudelli u se jinqabżu hawnhekk}}. Assenja combos mit-tab Combos.",
+    "keyRevoked": "Revokat",
+    "removeStaysAllowedHint": "Għadu permess fuq din iċ-ċavetta permezz ta' {patterns}"
   }
 }

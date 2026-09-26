@@ -14563,7 +14563,7 @@
     "strategy": "Strategija",
     "allStrategies": "Visos strategijos",
     "keyAccessButton": "API rakto prieiga",
-    "allowedInKeys": "Leidžiama: {count} raktuose",
+    "allowedInKeys": "Leidžiama: {count, plural, one {# rakte} few {# raktuose} other {# raktų}}",
     "keysLoading": "Įkeliami API raktai…",
     "keysRetry": "Bandyti įkelti raktus iš naujo",
     "accessViaPattern": "per {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Visi deriniai",
     "modelAccessCount": "Modeliai: {count}",
     "comboAccessCount": "Deriniai: {count}",
-    "keyActive": "Aktyvus",
     "keyInactive": "Neaktyvus",
     "keyBanned": "Užblokuotas",
     "switchRestrictedConfirm": "Perjungti šį raktą į ribotą prieigą: bus leidžiami tik pasirinkti elementai",
@@ -14657,6 +14656,14 @@
     "httpError": "Užklausa nepavyko su HTTP {status}",
     "testFailedNoDetail": "Testas nepavyko be klaidos pranešimo",
     "additionalCapabilities": "Papildomos galimybės: {list}",
-    "comboRefMember": "Derinys → {name}"
+    "comboRefMember": "Derinys → {name}",
+    "accessBlocked": "Užblokuota pagal {pattern}",
+    "resultWouldEmptyModels": "Šis raktas liktų be leidžiamų modelių – verčiau redaguokite rakto prieigą",
+    "resultWouldEmptyCombos": "Šis raktas liktų be leidžiamų kombinacijų – verčiau redaguokite rakto prieigą",
+    "keyUpdatePending": "{name} vis dar atnaujinamas. Bandykite dar kartą po akimirkos.",
+    "assignNoChanges": "API rakto prieiga nepakeista",
+    "assignExcludedCombos": "{count, plural, one {# pasirinkta kombinacijos eilutė nėra modelis ir čia bus praleista} few {# pasirinktos kombinacijų eilutės nėra modeliai ir čia bus praleistos} other {# pasirinktų kombinacijų eilučių nėra modeliai ir čia bus praleista}}. Priskirkite kombinacijas skirtuke „Combos“.",
+    "keyRevoked": "Atšaukta",
+    "removeStaysAllowedHint": "Vis dar leidžiama šiam raktui per {patterns}"
   }
 }

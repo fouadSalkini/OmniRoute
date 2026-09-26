@@ -14563,7 +14563,7 @@
     "strategy": "কৌশল",
     "allStrategies": "সব কৌশল",
     "keyAccessButton": "API কী অ্যাক্সেস",
-    "allowedInKeys": "অনুমোদিত: {count}টি কীতে",
+    "allowedInKeys": "অনুমোদিত: {count, plural, one {#টি কী} other {#টি কী}}",
     "keysLoading": "API কী লোড হচ্ছে…",
     "keysRetry": "কী পুনরায় লোড করার চেষ্টা করুন",
     "accessViaPattern": "{pattern}-এর মাধ্যমে",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "সকল কম্বো",
     "modelAccessCount": "মডেল: {count}টি",
     "comboAccessCount": "কম্বো: {count}টি",
-    "keyActive": "সক্রিয়",
     "keyInactive": "নিষ্ক্রিয়",
     "keyBanned": "নিষিদ্ধ",
     "switchRestrictedConfirm": "এই কী-টিকে সীমাবদ্ধ অ্যাক্সেসে পরিবর্তন করুন: কেবল নির্বাচিত আইটেমগুলোর অনুমতি থাকবে",
@@ -14657,6 +14656,14 @@
     "httpError": "HTTP {status} সহ অনুরোধ ব্যর্থ হয়েছে",
     "testFailedNoDetail": "কোনো ত্রুটি বার্তা ছাড়াই পরীক্ষা ব্যর্থ হয়েছে",
     "additionalCapabilities": "অতিরিক্ত সক্ষমতা: {list}",
-    "comboRefMember": "কম্বো → {name}"
+    "comboRefMember": "কম্বো → {name}",
+    "accessBlocked": "{pattern} দ্বারা ব্লক করা হয়েছে",
+    "resultWouldEmptyModels": "এটি এই কী-তে কোনো অনুমোদিত মডেল রাখবে না — এর পরিবর্তে কী অ্যাক্সেস সম্পাদনা করুন",
+    "resultWouldEmptyCombos": "এটি এই কী-তে কোনো অনুমোদিত কম্বো রাখবে না — এর পরিবর্তে কী অ্যাক্সেস সম্পাদনা করুন",
+    "keyUpdatePending": "{name} এখনও আপডেট করা হচ্ছে। কিছুক্ষণের মধ্যে আবার চেষ্টা করুন।",
+    "assignNoChanges": "কোনো API কী অ্যাক্সেস পরিবর্তন করা হয়নি",
+    "assignExcludedCombos": "{count, plural, one {#টি নির্বাচিত কম্বো সারি কোনো মডেল নয় এবং এখানে এড়িয়ে যাওয়া হবে} other {#টি নির্বাচিত কম্বো সারি কোনো মডেল নয় এবং এখানে এড়িয়ে যাওয়া হবে}}। Combos ট্যাব থেকে কম্বো বরাদ্দ করুন।",
+    "keyRevoked": "বাতিল করা হয়েছে",
+    "removeStaysAllowedHint": "{patterns}-এর মাধ্যমে এখনও এই কী-তে অনুমোদিত"
   }
 }

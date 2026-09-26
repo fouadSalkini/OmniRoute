@@ -14563,7 +14563,7 @@
     "strategy": "Straitéis",
     "allStrategies": "Gach straitéis",
     "keyAccessButton": "Rochtain ar eochair API",
-    "allowedInKeys": "Ceadaithe i: {count} eochair",
+    "allowedInKeys": "Ceadaithe i: {count, plural, one {# eochair} other {# eochracha}}",
     "keysLoading": "Eochracha API á lódáil…",
     "keysRetry": "Bain triail eile as eochracha a lódáil",
     "accessViaPattern": "trí {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Gach teaglaim",
     "modelAccessCount": "Múnlaí: {count}",
     "comboAccessCount": "Teaglamaí: {count}",
-    "keyActive": "Gníomhach",
     "keyInactive": "Neamhghníomhach",
     "keyBanned": "Toirmiscthe",
     "switchRestrictedConfirm": "Athraigh an eochair seo go rochtain shrianta: ní bheidh ach na míreanna roghnaithe ceadaithe",
@@ -14657,6 +14656,14 @@
     "httpError": "Theip ar an iarratas le HTTP {status}",
     "testFailedNoDetail": "Theip ar an tástáil gan teachtaireacht earráide",
     "additionalCapabilities": "Cumais bhreise: {list}",
-    "comboRefMember": "Teaglaim → {name}"
+    "comboRefMember": "Teaglaim → {name}",
+    "accessBlocked": "Blocáilte ag {pattern}",
+    "resultWouldEmptyModels": "D'fhágfadh sé seo an eochair seo gan aon mhúnlaí ceadaithe — cuir rochtain na heochrach in eagar ina ionad sin",
+    "resultWouldEmptyCombos": "D'fhágfadh sé seo an eochair seo gan aon teaglamaí ceadaithe — cuir rochtain na heochrach in eagar ina ionad sin",
+    "keyUpdatePending": "Tá {name} á nuashonrú fós. Bain triail eile as i gceann nóiméid.",
+    "assignNoChanges": "Níor athraíodh aon rochtain ar eochair API",
+    "assignExcludedCombos": "{count, plural, one {Ní múnla é # ró teaglaim roghnaithe agus rachfar thairis anseo} other {Ní múnlaí iad # ró teaglaim roghnaithe agus rachfar tharstu anseo}}. Sann teaglamaí ón táb Combos.",
+    "keyRevoked": "Aisghairthe",
+    "removeStaysAllowedHint": "Ceadaithe ar an eochair seo fós trí {patterns}"
   }
 }

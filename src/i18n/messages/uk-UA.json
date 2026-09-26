@@ -14563,7 +14563,7 @@
     "strategy": "Стратегія",
     "allStrategies": "Усі стратегії",
     "keyAccessButton": "Доступ API-ключа",
-    "allowedInKeys": "Дозволено в: {count} ключів",
+    "allowedInKeys": "Дозволено у: {count, plural, one {# ключі} few {# ключах} many {# ключах} other {# ключах}}",
     "keysLoading": "Завантаження API-ключів…",
     "keysRetry": "Повторити завантаження ключів",
     "accessViaPattern": "через {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Усі комбінації",
     "modelAccessCount": "Моделі: {count}",
     "comboAccessCount": "Комбінації: {count}",
-    "keyActive": "Активний",
     "keyInactive": "Неактивний",
     "keyBanned": "Заблокований",
     "switchRestrictedConfirm": "Перемкнути цей ключ на обмежений доступ: буде дозволено лише вибрані елементи",
@@ -14657,6 +14656,14 @@
     "httpError": "Запит завершився помилкою HTTP {status}",
     "testFailedNoDetail": "Тест завершився помилкою без повідомлення про помилку",
     "additionalCapabilities": "Додаткові можливості: {list}",
-    "comboRefMember": "Комбінація → {name}"
+    "comboRefMember": "Комбінація → {name}",
+    "accessBlocked": "Заблоковано {pattern}",
+    "resultWouldEmptyModels": "Це залишить цей ключ без дозволених моделей — натомість змініть доступ до ключа",
+    "resultWouldEmptyCombos": "Це залишить цей ключ без дозволених комбо — натомість змініть доступ до ключа",
+    "keyUpdatePending": "{name} все ще оновлюється. Спробуйте знову за мить.",
+    "assignNoChanges": "Доступ до API-ключа не змінено",
+    "assignExcludedCombos": "{count, plural, one {# вибраний рядок комбо не є моделлю і буде пропущений тут} few {# вибрані рядки комбо не є моделями і будуть пропущені тут} many {# вибраних рядків комбо не є моделями і будуть пропущені тут} other {# вибраних рядків комбо не є моделями і будуть пропущені тут}}. Призначайте комбо на вкладці Combos.",
+    "keyRevoked": "Відкликано",
+    "removeStaysAllowedHint": "Все ще дозволено для цього ключа через {patterns}"
   }
 }

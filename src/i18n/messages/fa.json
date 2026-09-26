@@ -14563,7 +14563,7 @@
     "strategy": "استراتژی",
     "allStrategies": "همه استراتژی‌ها",
     "keyAccessButton": "دسترسی کلید API",
-    "allowedInKeys": "مجاز در: {count} کلید",
+    "allowedInKeys": "مجاز در: {count, plural, one {# کلید} other {# کلید}}",
     "keysLoading": "در حال بارگذاری کلیدهای API…",
     "keysRetry": "تلاش مجدد برای بارگذاری کلیدها",
     "accessViaPattern": "از طریق {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "همه ترکیب‌ها",
     "modelAccessCount": "مدل‌ها: {count}",
     "comboAccessCount": "ترکیب‌ها: {count}",
-    "keyActive": "فعال",
     "keyInactive": "غیرفعال",
     "keyBanned": "مسدودشده",
     "switchRestrictedConfirm": "تغییر این کلید به دسترسی محدود: فقط موارد انتخاب‌شده مجاز خواهند بود",
@@ -14657,6 +14656,14 @@
     "httpError": "درخواست با HTTP {status} ناموفق بود",
     "testFailedNoDetail": "آزمایش بدون پیام خطا با شکست مواجه شد",
     "additionalCapabilities": "قابلیت‌های اضافی: {list}",
-    "comboRefMember": "ترکیب → {name}"
+    "comboRefMember": "ترکیب → {name}",
+    "accessBlocked": "مسدودشده توسط {pattern}",
+    "resultWouldEmptyModels": "باعث می‌شود این کلید هیچ مدل مجازی نداشته باشد — به‌جای آن دسترسی کلید را ویرایش کنید",
+    "resultWouldEmptyCombos": "باعث می‌شود این کلید هیچ ترکیب (combo) مجازی نداشته باشد — به‌جای آن دسترسی کلید را ویرایش کنید",
+    "keyUpdatePending": "{name} هنوز در حال به‌روزرسانی است. چند لحظه دیگر دوباره تلاش کنید.",
+    "assignNoChanges": "هیچ تغییری در دسترسی کلید API ایجاد نشد",
+    "assignExcludedCombos": "{count, plural, one {# ردیف ترکیب انتخاب‌شده مدل نیست و در اینجا نادیده گرفته می‌شود} other {# ردیف ترکیب انتخاب‌شده مدل نیستند و در اینجا نادیده گرفته می‌شوند}}. ترکیب‌ها را از تب Combos اختصاص دهید.",
+    "keyRevoked": "باطل‌شده",
+    "removeStaysAllowedHint": "همچنان از طریق {patterns} روی این کلید مجاز است"
   }
 }

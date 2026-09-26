@@ -14563,7 +14563,7 @@
     "strategy": "Strategi",
     "allStrategies": "Alle strategier",
     "keyAccessButton": "API-nøkkeltilgang",
-    "allowedInKeys": "Tillatt i: {count} nøkler",
+    "allowedInKeys": "Tillatt i: {count, plural, one {# nøkkel} other {# nøkler}}",
     "keysLoading": "Laster API-nøkler…",
     "keysRetry": "Prøv å laste inn nøkler på nytt",
     "accessViaPattern": "via {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Alle kombinasjoner",
     "modelAccessCount": "Modeller: {count}",
     "comboAccessCount": "Kombinasjoner: {count}",
-    "keyActive": "Aktiv",
     "keyInactive": "Inaktiv",
     "keyBanned": "Utestengt",
     "switchRestrictedConfirm": "Bytt denne nøkkelen til begrenset tilgang: kun de valgte elementene vil være tillatt",
@@ -14657,6 +14656,14 @@
     "httpError": "Forespørselen mislyktes med HTTP {status}",
     "testFailedNoDetail": "Testen mislyktes uten en feilmelding",
     "additionalCapabilities": "Ytterligere funksjoner: {list}",
-    "comboRefMember": "Kombinasjon → {name}"
+    "comboRefMember": "Kombinasjon → {name}",
+    "accessBlocked": "Blokkert av {pattern}",
+    "resultWouldEmptyModels": "Vil føre til at denne nøkkelen ikke har noen tillatte modeller — rediger nøkkeltilgang i stedet",
+    "resultWouldEmptyCombos": "Vil føre til at denne nøkkelen ikke har noen tillatte kombinasjoner — rediger nøkkeltilgang i stedet",
+    "keyUpdatePending": "{name} oppdateres fortsatt. Prøv igjen om et øyeblikk.",
+    "assignNoChanges": "Ingen API-nøkkeltilgang endret",
+    "assignExcludedCombos": "{count, plural, one {# valgt kombinasjonsrad er ikke en modell og blir hoppet over her} other {# valgte kombinasjonsrader er ikke modeller og blir hoppet over her}}. Tilordne kombinasjoner fra Combos-fanen.",
+    "keyRevoked": "Tilbakekalt",
+    "removeStaysAllowedHint": "Fortsatt tillatt på denne nøkkelen via {patterns}"
   }
 }

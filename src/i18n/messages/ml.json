@@ -14563,7 +14563,7 @@
     "strategy": "സ്ട്രാറ്റജി",
     "allStrategies": "എല്ലാ സ്ട്രാറ്റജികളും",
     "keyAccessButton": "API കീ ആക്സസ്",
-    "allowedInKeys": "അനുവദിച്ചത്: {count} കീകൾ",
+    "allowedInKeys": "ഇതിൽ അനുവദിച്ചിരിക്കുന്നു: {count, plural, one {# കീ} other {# കീകൾ}}",
     "keysLoading": "API കീകൾ ലോഡ് ചെയ്യുന്നു…",
     "keysRetry": "കീകൾ വീണ്ടും ലോഡ് ചെയ്യാൻ ശ്രമിക്കുക",
     "accessViaPattern": "{pattern} വഴി",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "എല്ലാ കോംബോകളും",
     "modelAccessCount": "മോഡലുകൾ: {count}",
     "comboAccessCount": "കോംബോകൾ: {count}",
-    "keyActive": "സജീവം",
     "keyInactive": "നിഷ്‌ക്രിയം",
     "keyBanned": "നിരോധിച്ചത്",
     "switchRestrictedConfirm": "ഈ കീ നിയന്ത്രിത ആക്സസിലേക്ക് മാറ്റുക: തിരഞ്ഞെടുത്ത ഇനങ്ങൾ മാത്രമേ അനുവദിക്കൂ",
@@ -14657,6 +14656,14 @@
     "httpError": "HTTP {status} സഹിതം അഭ്യർത്ഥന പരാജയപ്പെട്ടു",
     "testFailedNoDetail": "പിശക് സന്ദേശമൊന്നുമില്ലാതെ ടെസ്റ്റ് പരാജയപ്പെട്ടു",
     "additionalCapabilities": "അധിക ശേഷികൾ: {list}",
-    "comboRefMember": "കോമ്പോ → {name}"
+    "comboRefMember": "കോമ്പോ → {name}",
+    "accessBlocked": "{pattern} മുഖേന തടഞ്ഞു",
+    "resultWouldEmptyModels": "ഇത് ഈ കീയിൽ അനുവദനീയമായ മോഡലുകൾ ഒന്നും ഇല്ലാതാക്കും — പകരം കീ ആക്സസ് എഡിറ്റ് ചെയ്യുക",
+    "resultWouldEmptyCombos": "ഇത് ഈ കീയിൽ അനുവദനീയമായ കോമ്പോകൾ ഒന്നും ഇല്ലാതാക്കും — പകരം കീ ആക്സസ് എഡിറ്റ് ചെയ്യുക",
+    "keyUpdatePending": "{name} ഇപ്പോഴും അപ്‌ഡേറ്റ് ചെയ്തുകൊണ്ടിരിക്കുകയാണ്. അൽപ്പസമയത്തിനകം വീണ്ടും ശ്രമിക്കുക.",
+    "assignNoChanges": "API കീ ആക്സസിലൊന്നും മാറ്റം വരുത്തിയിട്ടില്ല",
+    "assignExcludedCombos": "{count, plural, one {തിരഞ്ഞെടുത്ത # കോമ്പോ വരി ഒരു മോഡൽ അല്ല, അതിനാൽ ഇവിടെ ഒഴിവാക്കപ്പെടും} other {തിരഞ്ഞെടുത്ത # കോമ്പോ വരികൾ മോഡലുകൾ അല്ല, അതിനാൽ ഇവിടെ ഒഴിവാക്കപ്പെടും}}. Combos ടാബിൽ നിന്ന് കോമ്പോകൾ അസൈൻ ചെയ്യുക.",
+    "keyRevoked": "റദ്ദാക്കി",
+    "removeStaysAllowedHint": "{patterns} വഴി ഈ കീയിൽ ഇപ്പോഴും അനുവദിച്ചിരിക്കുന്നു"
   }
 }

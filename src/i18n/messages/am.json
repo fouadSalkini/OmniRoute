@@ -14563,7 +14563,7 @@
     "strategy": "ስትራቴጂ",
     "allStrategies": "ሁሉም ስትራቴጂዎች",
     "keyAccessButton": "የAPI ቁልፍ መዳረሻ",
-    "allowedInKeys": "የተፈቀደበት፡ {count} ቁልፎች",
+    "allowedInKeys": "የተፈቀደው በ፦ {count, plural, one {# ቁልፍ} other {# ቁልፎች}}",
     "keysLoading": "የAPI ቁልፎችን በመጫን ላይ…",
     "keysRetry": "ቁልፎችን እንደገና ለመጫን ይሞክሩ",
     "accessViaPattern": "በ{pattern} በኩል",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "ሁሉም ጥንብሮች",
     "modelAccessCount": "ሞዴሎች፡ {count}",
     "comboAccessCount": "ጥንብሮች፡ {count}",
-    "keyActive": "ንቁ",
     "keyInactive": "ንቁ ያልሆነ",
     "keyBanned": "የታገደ",
     "switchRestrictedConfirm": "ይህን ቁልፍ ወደ ተገደበ መዳረሻ ቀይር፡ የተመረጡት ንጥሎች ብቻ ይፈቀዳሉ",
@@ -14657,6 +14656,14 @@
     "httpError": "ጥያቄው በHTTP {status} አልተሳካም",
     "testFailedNoDetail": "ሙከራው ያለ ምንም የስህተት መልእክት አልተሳካም",
     "additionalCapabilities": "ተጨማሪ አቅሞች፡ {list}",
-    "comboRefMember": "ጥምረት → {name}"
+    "comboRefMember": "ጥምረት → {name}",
+    "accessBlocked": "በ{pattern} የታገደ",
+    "resultWouldEmptyModels": "ይህ ይህን ቁልፍ ያለምንም የተፈቀዱ ሞዴሎች ያስቀረዋል — ይልቁንስ የቁልፍ መዳረሻን ያርትዑ",
+    "resultWouldEmptyCombos": "ይህ ይህን ቁልፍ ያለምንም የተፈቀዱ combos ያስቀረዋል — ይልቁንስ የቁልፍ መዳረሻን ያርትዑ",
+    "keyUpdatePending": "{name} አሁንም እየተዘመነ ነው። እባክዎ ከጥቂት ቆይታ በኋላ እንደገና ይሞክሩ።",
+    "assignNoChanges": "ምንም የተቀየረ የAPI ቁልፍ መዳረሻ የለም",
+    "assignExcludedCombos": "{count, plural, one {# የተመረጠ የcombo ረድፍ ሞዴል ባለመሆኑ እዚህ ይታለፋል} other {# የተመረጡ የcombo ረድፎች ሞዴሎች ባለመሆናቸው እዚህ ይታለፋሉ}}። combosን ከCombos ትር ይመድቡ።",
+    "keyRevoked": "ተሰርዟል",
+    "removeStaysAllowedHint": "አሁንም በዚህ ቁልፍ ላይ በ{patterns} በኩል ተፈቅዷል"
   }
 }

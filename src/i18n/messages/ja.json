@@ -14563,7 +14563,7 @@
     "strategy": "ストラテジー",
     "allStrategies": "すべてのストラテジー",
     "keyAccessButton": "APIキーアクセス",
-    "allowedInKeys": "許可対象: {count} 個のキー",
+    "allowedInKeys": "許可対象: {count, plural, one {# 件のキー} other {# 件のキー}}",
     "keysLoading": "APIキーを読み込み中…",
     "keysRetry": "キーの読み込みを再試行",
     "accessViaPattern": "{pattern} 経由",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "すべてのコンボ",
     "modelAccessCount": "モデル: {count}",
     "comboAccessCount": "コンボ: {count}",
-    "keyActive": "アクティブ",
     "keyInactive": "非アクティブ",
     "keyBanned": "利用停止",
     "switchRestrictedConfirm": "このキーを制限アクセスに切り替える: 選択したアイテムのみが許可されます",
@@ -14657,6 +14656,14 @@
     "httpError": "HTTP {status} でリクエストが失敗しました",
     "testFailedNoDetail": "エラーメッセージなしでテストが失敗しました",
     "additionalCapabilities": "追加機能: {list}",
-    "comboRefMember": "コンボ → {name}"
+    "comboRefMember": "コンボ → {name}",
+    "accessBlocked": "{pattern} によりブロックされています",
+    "resultWouldEmptyModels": "このキーで許可されたモデルがなくなります。代わりにキーのアクセス権限を編集してください",
+    "resultWouldEmptyCombos": "このキーで許可されたコンボがなくなります。代わりにキーのアクセス権限を編集してください",
+    "keyUpdatePending": "{name} は現在更新中です。しばらくしてから再試行してください。",
+    "assignNoChanges": "API キーのアクセス権限は変更されませんでした",
+    "assignExcludedCombos": "{count, plural, one {選択された # 件のコンボ行はモデルではないため、ここではスキップされます} other {選択された # 件のコンボ行はモデルではないため、ここではスキップされます}}。コンボの割り当ては [Combos] タブから行ってください。",
+    "keyRevoked": "失効済み",
+    "removeStaysAllowedHint": "{patterns} により、このキーでは引き続き許可されています"
   }
 }

@@ -14563,7 +14563,7 @@
     "strategy": "Stratégie",
     "allStrategies": "Toutes les stratégies",
     "keyAccessButton": "Accès par clé API",
-    "allowedInKeys": "Autorisé dans : {count} clés",
+    "allowedInKeys": "Autorisé dans : {count, plural, one {# clé} other {# clés}}",
     "keysLoading": "Chargement des clés API…",
     "keysRetry": "Réessayer le chargement des clés",
     "accessViaPattern": "via {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Tous les combos",
     "modelAccessCount": "Modèles : {count}",
     "comboAccessCount": "Combos : {count}",
-    "keyActive": "Actif",
     "keyInactive": "Inactif",
     "keyBanned": "Banni",
     "switchRestrictedConfirm": "Passer cette clé en accès restreint : seuls les éléments sélectionnés seront autorisés",
@@ -14657,6 +14656,14 @@
     "httpError": "La requête a échoué avec HTTP {status}",
     "testFailedNoDetail": "Le test a échoué sans message d'erreur",
     "additionalCapabilities": "Capacités supplémentaires : {list}",
-    "comboRefMember": "Combinaison → {name}"
+    "comboRefMember": "Combinaison → {name}",
+    "accessBlocked": "Bloqué par {pattern}",
+    "resultWouldEmptyModels": "Laisserait cette clé sans aucun modèle autorisé — modifiez plutôt l'accès de la clé",
+    "resultWouldEmptyCombos": "Laisserait cette clé sans aucun combo autorisé — modifiez plutôt l'accès de la clé",
+    "keyUpdatePending": "{name} est toujours en cours de mise à jour. Réessayez dans un instant.",
+    "assignNoChanges": "Aucun accès de clé API modifié",
+    "assignExcludedCombos": "{count, plural, one {# ligne de combo sélectionnée n'est pas un modèle et sera ignorée ici} other {# lignes de combo sélectionnées ne sont pas des modèles et seront ignorées ici}}. Attribuez les combos depuis l'onglet Combos.",
+    "keyRevoked": "Révoqué",
+    "removeStaysAllowedHint": "Toujours autorisé sur cette clé via {patterns}"
   }
 }

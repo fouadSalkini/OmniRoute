@@ -14563,7 +14563,7 @@
     "strategy": "Ìlànà",
     "allStrategies": "Gbogbo àwọn ìlànà",
     "keyAccessButton": "Ìwọlé kọ́kọ́rọ́ API",
-    "allowedInKeys": "Gbígbà láàyè nínú: àwọn kọ́kọ́rọ́ {count}",
+    "allowedInKeys": "Gbà láàyè nínú: {count, plural, one {# kọ́kọ́rọ́} other {# àwọn kọ́kọ́rọ́}}",
     "keysLoading": "Ń gbé àwọn kọ́kọ́rọ́ API wá…",
     "keysRetry": "Tún gbìyànjú láti gbé àwọn kọ́kọ́rọ́ wá",
     "accessViaPattern": "nípasẹ̀ {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Gbogbo àwọn àpapọ̀",
     "modelAccessCount": "Àwọn àwòṣe: {count}",
     "comboAccessCount": "Àwọn àpapọ̀: {count}",
-    "keyActive": "Ń ṣiṣẹ́",
     "keyInactive": "Kò ṣiṣẹ́",
     "keyBanned": "Tí a dènà",
     "switchRestrictedConfirm": "Yí kọ́kọ́rọ́ yìí padà sí àǹfààní tí a dènà: àwọn ohun tí a yàn nìkan ni a ó gbà láàyè",
@@ -14657,6 +14656,14 @@
     "httpError": "Ìbéèrè kùnà pẹ̀lú HTTP {status}",
     "testFailedNoDetail": "Àdánwò kùnà láìsí ìránṣẹ́ àṣìṣe",
     "additionalCapabilities": "Àwọn agbára àfikún: {list}",
-    "comboRefMember": "Àkópọ̀ → {name}"
+    "comboRefMember": "Àkópọ̀ → {name}",
+    "accessBlocked": "Díwọ́ nípasẹ̀ {pattern}",
+    "resultWouldEmptyModels": "Yóò fi kọ́kọ́rọ́ yìí sílẹ̀ láìní àwọn àwòṣe tí a gbà láàyè kankan — ṣàtúnṣe àyè kọ́kọ́rọ́ dípò rẹ̀",
+    "resultWouldEmptyCombos": "Yóò fi kọ́kọ́rọ́ yìí sílẹ̀ láìní àwọn combo tí a gbà láàyè kankan — ṣàtúnṣe àyè kọ́kọ́rọ́ dípò rẹ̀",
+    "keyUpdatePending": "A ṣì ń sọ {name} dọ̀tun. Gbìyànjú lẹ́ẹ̀kan síi láìpẹ́.",
+    "assignNoChanges": "Kò sí àyè kọ́kọ́rọ́ API tí a yípadà",
+    "assignExcludedCombos": "{count, plural, one {# ìlà combo tí a yàn kì í ṣe àwòṣe, a ó sì fò kọjá níhìn-ín} other {# àwọn ìlà combo tí a yàn kì í ṣe àwòṣe, a ó sì fò wọ́n kọjá níhìn-ín}}. Yan àwọn combo láti inú táàbù Combos.",
+    "keyRevoked": "Ti fagilé",
+    "removeStaysAllowedHint": "A ṣì gbà á láàyè lórí kọ́kọ́rọ́ yìí nípasẹ̀ {patterns}"
   }
 }

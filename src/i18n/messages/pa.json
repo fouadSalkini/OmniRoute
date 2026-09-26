@@ -14563,7 +14563,7 @@
     "strategy": "ਰਣਨੀਤੀ",
     "allStrategies": "ਸਾਰੀਆਂ ਰਣਨੀਤੀਆਂ",
     "keyAccessButton": "API ਕੁੰਜੀ ਪਹੁੰਚ",
-    "allowedInKeys": "ਇਸ ਵਿੱਚ ਮਨਜ਼ੂਰ ਹੈ: {count} ਕੁੰਜੀਆਂ",
+    "allowedInKeys": "ਇਹਨਾਂ ਵਿੱਚ ਇਜਾਜ਼ਤ ਹੈ: {count, plural, one {# ਕੁੰਜੀ} other {# ਕੁੰਜੀਆਂ}}",
     "keysLoading": "API ਕੁੰਜੀਆਂ ਲੋਡ ਹੋ ਰਹੀਆਂ ਹਨ…",
     "keysRetry": "ਕੁੰਜੀਆਂ ਲੋਡ ਕਰਨ ਦੀ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
     "accessViaPattern": "{pattern} ਰਾਹੀਂ",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "ਸਾਰੇ ਕੰਬੋਜ਼",
     "modelAccessCount": "ਮਾਡਲ: {count}",
     "comboAccessCount": "ਕੰਬੋਜ਼: {count}",
-    "keyActive": "ਸਰਗਰਮ",
     "keyInactive": "ਅਕਿਰਿਆਸ਼ੀਲ",
     "keyBanned": "ਪਾਬੰਦੀਸ਼ੁਦਾ",
     "switchRestrictedConfirm": "ਇਸ ਕੁੰਜੀ ਨੂੰ ਪ੍ਰਤਿਬੰਧਿਤ ਪਹੁੰਚ 'ਤੇ ਬਦਲੋ: ਸਿਰਫ਼ ਚੁਣੀਆਂ ਗਈਆਂ ਆਈਟਮਾਂ ਦੀ ਆਗਿਆ ਹੋਵੇਗੀ",
@@ -14657,6 +14656,14 @@
     "httpError": "HTTP {status} ਨਾਲ ਬੇਨਤੀ ਅਸਫ਼ਲ ਰਹੀ",
     "testFailedNoDetail": "ਬਿਨਾਂ ਕਿਸੇ ਗਲਤੀ ਸੁਨੇਹੇ ਦੇ ਟੈਸਟ ਅਸਫ਼ਲ ਰਿਹਾ",
     "additionalCapabilities": "ਵਾਧੂ ਸਮਰੱਥਾਵਾਂ: {list}",
-    "comboRefMember": "ਕੰਬੋ → {name}"
+    "comboRefMember": "ਕੰਬੋ → {name}",
+    "accessBlocked": "{pattern} ਦੁਆਰਾ ਬਲੌਕ ਕੀਤਾ ਗਿਆ",
+    "resultWouldEmptyModels": "ਇਸ ਕੁੰਜੀ ਕੋਲ ਕੋਈ ਵੀ ਮਨਜ਼ੂਰਸ਼ੁਦਾ ਮਾਡਲ ਨਹੀਂ ਬਚੇਗਾ — ਇਸਦੀ ਬਜਾਏ ਕੁੰਜੀ ਪਹੁੰਚ ਨੂੰ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "resultWouldEmptyCombos": "ਇਸ ਕੁੰਜੀ ਕੋਲ ਕੋਈ ਵੀ ਮਨਜ਼ੂਰਸ਼ੁਦਾ ਕੰਬੋ ਨਹੀਂ ਬਚੇਗਾ — ਇਸਦੀ ਬਜਾਏ ਕੁੰਜੀ ਪਹੁੰਚ ਨੂੰ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "keyUpdatePending": "{name} ਨੂੰ ਅਜੇ ਵੀ ਅੱਪਡੇਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ। ਕੁਝ ਪਲਾਂ ਬਾਅਦ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+    "assignNoChanges": "ਕੋਈ API ਕੁੰਜੀ ਪਹੁੰਚ ਨਹੀਂ ਬਦਲੀ ਗਈ",
+    "assignExcludedCombos": "{count, plural, one {# ਚੁਣੀ ਗਈ ਕੰਬੋ ਕਤਾਰ ਇੱਕ ਮਾਡਲ ਨਹੀਂ ਹੈ ਅਤੇ ਇਸਨੂੰ ਇੱਥੇ ਛੱਡ ਦਿੱਤਾ ਜਾਵੇਗਾ} other {# ਚੁਣੀਆਂ ਗਈਆਂ ਕੰਬੋ ਕਤਾਰਾਂ ਮਾਡਲ ਨਹੀਂ ਹਨ ਅਤੇ ਉਹਨਾਂ ਨੂੰ ਇੱਥੇ ਛੱਡ ਦਿੱਤਾ ਜਾਵੇਗਾ}}। Combos ਟੈਬ ਤੋਂ ਕੰਬੋ ਨਿਰਧਾਰਿਤ ਕਰੋ।",
+    "keyRevoked": "ਰੱਦ ਕੀਤਾ ਗਿਆ",
+    "removeStaysAllowedHint": "{patterns} ਰਾਹੀਂ ਅਜੇ ਵੀ ਇਸ ਕੁੰਜੀ 'ਤੇ ਇਜਾਜ਼ਤ ਹੈ"
   }
 }

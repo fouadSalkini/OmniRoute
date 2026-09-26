@@ -14563,7 +14563,7 @@
     "strategy": "Strategie",
     "allStrategies": "Všechny strategie",
     "keyAccessButton": "Přístup k API klíčům",
-    "allowedInKeys": "Povoleno v: {count} klíčích",
+    "allowedInKeys": "Povoleno v: {count, plural, one {# klíči} few {# klíčích} other {# klíčích}}",
     "keysLoading": "Načítání API klíčů…",
     "keysRetry": "Zkusit znovu načíst klíče",
     "accessViaPattern": "přes {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Všechny kombinace",
     "modelAccessCount": "Modely: {count}",
     "comboAccessCount": "Kombinace: {count}",
-    "keyActive": "Aktivní",
     "keyInactive": "Neaktivní",
     "keyBanned": "Zablokováno",
     "switchRestrictedConfirm": "Přepnout tento klíč na omezený přístup: povoleny budou pouze vybrané položky",
@@ -14657,6 +14656,14 @@
     "httpError": "Požadavek selhal s kódem HTTP {status}",
     "testFailedNoDetail": "Test selhal bez chybové zprávy",
     "additionalCapabilities": "Další schopnosti: {list}",
-    "comboRefMember": "Kombinace → {name}"
+    "comboRefMember": "Kombinace → {name}",
+    "accessBlocked": "Blokováno pravidlem {pattern}",
+    "resultWouldEmptyModels": "Tímto by klíč zůstal bez povolených modelů – místo toho upravte přístup ke klíči",
+    "resultWouldEmptyCombos": "Tímto by klíč zůstal bez povolených kombinací – místo toho upravte přístup ke klíči",
+    "keyUpdatePending": "{name} se stále aktualizuje. Zkuste to za chvíli znovu.",
+    "assignNoChanges": "Přístup k žádnému klíči API nebyl změněn",
+    "assignExcludedCombos": "{count, plural, one {# vybraný řádek kombinace není model a bude zde přeskočen} few {# vybrané řádky kombinací nejsou modely a budou zde přeskočeny} other {# vybraných řádků kombinací nejsou modely a budou zde přeskočeny}}. Kombinace přiřaďte na kartě Combos.",
+    "keyRevoked": "Odvoláno",
+    "removeStaysAllowedHint": "Na tomto klíči stále povoleno prostřednictvím {patterns}"
   }
 }

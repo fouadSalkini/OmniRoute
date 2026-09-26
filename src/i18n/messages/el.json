@@ -14563,7 +14563,7 @@
     "strategy": "Στρατηγική",
     "allStrategies": "Όλες οι στρατηγικές",
     "keyAccessButton": "Πρόσβαση κλειδιού API",
-    "allowedInKeys": "Επιτρέπεται σε: {count} κλειδιά",
+    "allowedInKeys": "Επιτρέπεται σε: {count, plural, one {# κλειδί} other {# κλειδιά}}",
     "keysLoading": "Φόρτωση κλειδιών API…",
     "keysRetry": "Επανάληψη φόρτωσης κλειδιών",
     "accessViaPattern": "μέσω {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Όλοι οι συνδυασμοί",
     "modelAccessCount": "Μοντέλα: {count}",
     "comboAccessCount": "Συνδυασμοί: {count}",
-    "keyActive": "Ενεργό",
     "keyInactive": "Ανενεργό",
     "keyBanned": "Αποκλεισμένο",
     "switchRestrictedConfirm": "Αλλαγή αυτού του κλειδιού σε περιορισμένη πρόσβαση: θα επιτρέπονται μόνο τα επιλεγμένα στοιχεία",
@@ -14657,6 +14656,14 @@
     "httpError": "Το αίτημα απέτυχε με HTTP {status}",
     "testFailedNoDetail": "Η δοκιμή απέτυχε χωρίς μήνυμα σφάλματος",
     "additionalCapabilities": "Πρόσθετες δυνατότητες: {list}",
-    "comboRefMember": "Συνδυασμός → {name}"
+    "comboRefMember": "Συνδυασμός → {name}",
+    "accessBlocked": "Αποκλείστηκε από {pattern}",
+    "resultWouldEmptyModels": "Θα άφηνε αυτό το κλειδί χωρίς επιτρεπόμενα μοντέλα — επεξεργαστείτε την πρόσβαση του κλειδιού αντ' αυτού",
+    "resultWouldEmptyCombos": "Θα άφηνε αυτό το κλειδί χωρίς επιτρεπόμενα combos — επεξεργαστείτε την πρόσβαση του κλειδιού αντ' αυτού",
+    "keyUpdatePending": "Το {name} ενημερώνεται ακόμη. Δοκιμάστε ξανά σε λίγο.",
+    "assignNoChanges": "Δεν άλλαξε καμία πρόσβαση κλειδιού API",
+    "assignExcludedCombos": "{count, plural, one {# επιλεγμένη γραμμή combo δεν είναι μοντέλο και θα παραλειφθεί εδώ} other {# επιλεγμένες γραμμές combo δεν είναι μοντέλα και θα παραλειφθούν εδώ}}. Αντιστοιχίστε combos από την καρτέλα Combos.",
+    "keyRevoked": "Ανακλήθηκε",
+    "removeStaysAllowedHint": "Εξακολουθεί να επιτρέπεται σε αυτό το κλειδί μέσω {patterns}"
   }
 }

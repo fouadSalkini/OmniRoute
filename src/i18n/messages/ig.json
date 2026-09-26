@@ -14563,7 +14563,7 @@
     "strategy": "Atụmatụ",
     "allStrategies": "Atụmatụ niile",
     "keyAccessButton": "Nnweta igodo API",
-    "allowedInKeys": "E kwere na: igodo {count}",
+    "allowedInKeys": "E kwere na: {count, plural, one {# igodo} other {# igodo}}",
     "keysLoading": "Na-ebudata igodo API…",
     "keysRetry": "Nwaa ọzọ ibudata igodo",
     "accessViaPattern": "site na {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Nchịkọta niile",
     "modelAccessCount": "Ụdị: {count}",
     "comboAccessCount": "Nchịkọta: {count}",
-    "keyActive": "Na-arụ ọrụ",
     "keyInactive": "Anaghị arụ ọrụ",
     "keyBanned": "Amachibidoro",
     "switchRestrictedConfirm": "Gbanwee igodo a ka ọ bụrụ nnweta amachibidoro: naanị ihe ndị ahọpụtara ka a ga-ekwe",
@@ -14657,6 +14656,14 @@
     "httpError": "Arịrịọ dara na HTTP {status}",
     "testFailedNoDetail": "Nnwale dara na-enweghị ozi njehie",
     "additionalCapabilities": "Ikike ndị ọzọ: {list}",
-    "comboRefMember": "Ngwakọta → {name}"
+    "comboRefMember": "Ngwakọta → {name}",
+    "accessBlocked": "Egbochiri site na {pattern}",
+    "resultWouldEmptyModels": "Ọ ga-ahapụ igodo a n'enweghị ụdị ekwere — dezie ohere igodo kama",
+    "resultWouldEmptyCombos": "Ọ ga-ahapụ igodo a n'enweghị combos ekwere — dezie ohere igodo kama",
+    "keyUpdatePending": "A ka na-emelite {name}. Nwaa ọzọ n'obere oge.",
+    "assignNoChanges": "Enweghị ohere igodo API agbanwere",
+    "assignExcludedCombos": "{count, plural, one {# ahịrị combo ahọpụtara abụghị ụdị ma a ga-awụpụ ya ebe a} other {# ahịrị combo ahọpụtara abụghị ụdị ma a ga-awụpụ ha ebe a}}. Kenye combos site na taabụ Combos.",
+    "keyRevoked": "Kagburu",
+    "removeStaysAllowedHint": "A ka kwere na igodo a site na {patterns}"
   }
 }

@@ -14563,7 +14563,7 @@
     "strategy": "យុទ្ធសាស្ត្រ",
     "allStrategies": "យុទ្ធសាស្ត្រទាំងអស់",
     "keyAccessButton": "ការចូលប្រើ API key",
-    "allowedInKeys": "បានអនុញ្ញាតក្នុង៖ {count} កូនសោ",
+    "allowedInKeys": "បានអនុញ្ញាតក្នុង៖ {count, plural, one {# កូនសោ} other {# កូនសោ}}",
     "keysLoading": "កំពុងផ្ទុក API keys…",
     "keysRetry": "ព្យាយាមផ្ទុកកូនសោឡើងវិញ",
     "accessViaPattern": "តាមរយៈ {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "បន្សំទាំងអស់",
     "modelAccessCount": "ម៉ូដែល៖ {count}",
     "comboAccessCount": "បន្សំ៖ {count}",
-    "keyActive": "សកម្ម",
     "keyInactive": "អសកម្ម",
     "keyBanned": "ត្រូវបានហាមឃាត់",
     "switchRestrictedConfirm": "ប្ដូរកូនសោនេះទៅការចូលប្រើកម្រិតកំណត់៖ អនុញ្ញាតតែធាតុដែលបានជ្រើសរើសប៉ុណ្ណោះ",
@@ -14657,6 +14656,14 @@
     "httpError": "សំណើបានបរាជ័យជាមួយ HTTP {status}",
     "testFailedNoDetail": "ការធ្វើតេស្តបានបរាជ័យដោយគ្មានសារកំហុស",
     "additionalCapabilities": "សមត្ថភាពបន្ថែម៖ {list}",
-    "comboRefMember": "បន្សំ → {name}"
+    "comboRefMember": "បន្សំ → {name}",
+    "accessBlocked": "ត្រូវបានរារាំងដោយ {pattern}",
+    "resultWouldEmptyModels": "នឹងធ្វើឱ្យកូនសោនេះគ្មានម៉ូឌែលដែលបានអនុញ្ញាត — សូមកែសម្រួលសិទ្ធិចូលប្រើកូនសោជំនួសវិញ",
+    "resultWouldEmptyCombos": "នឹងធ្វើឱ្យកូនសោនេះគ្មាន combo ដែលបានអនុញ្ញាត — សូមកែសម្រួលសិទ្ធិចូលប្រើកូនសោជំនួសវិញ",
+    "keyUpdatePending": "{name} កំពុងត្រូវបានធ្វើបច្ចុប្បន្នភាពនៅឡើយ។ សូមព្យាយាមម្តងទៀតក្នុងពេលបន្តិចទៀត។",
+    "assignNoChanges": "មិនមានការផ្លាស់ប្តូរសិទ្ធិចូលប្រើ API key ទេ",
+    "assignExcludedCombos": "{count, plural, one {ជួរដេក combo ដែលបានជ្រើសរើសចំនួន # មិនមែនជាម៉ូឌែលទេ ហើយនឹងត្រូវបានរំលងនៅទីនេះ} other {ជួរដេក combo ដែលបានជ្រើសរើសចំនួន # មិនមែនជាម៉ូឌែលទេ ហើយនឹងត្រូវបានរំលងនៅទីនេះ}}។ ចាត់ចែង combo ពីផ្ទាំង Combos។",
+    "keyRevoked": "បានដកហូត",
+    "removeStaysAllowedHint": "នៅតែត្រូវបានអនុញ្ញាតនៅលើកូនសោនេះតាមរយៈ {patterns}"
   }
 }

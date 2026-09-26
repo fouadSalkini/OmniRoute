@@ -14563,7 +14563,7 @@
     "strategy": "Strateji",
     "allStrategies": "Tüm stratejiler",
     "keyAccessButton": "API anahtarı erişimi",
-    "allowedInKeys": "İzin verilen: {count} anahtar",
+    "allowedInKeys": "İzin verilen: {count, plural, one {# anahtar} other {# anahtar}}",
     "keysLoading": "API anahtarları yükleniyor…",
     "keysRetry": "Anahtarları yüklemeyi yeniden dene",
     "accessViaPattern": "{pattern} üzerinden",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Tüm kombinasyonlar",
     "modelAccessCount": "Modeller: {count}",
     "comboAccessCount": "Kombinasyonlar: {count}",
-    "keyActive": "Aktif",
     "keyInactive": "Devre dışı",
     "keyBanned": "Engellendi",
     "switchRestrictedConfirm": "Bu anahtarı kısıtlı erişime geçirin: yalnızca seçilen öğelere izin verilecektir",
@@ -14657,6 +14656,14 @@
     "httpError": "İstek HTTP {status} ile başarısız oldu",
     "testFailedNoDetail": "Test bir hata mesajı olmadan başarısız oldu",
     "additionalCapabilities": "Ek yetenekler: {list}",
-    "comboRefMember": "Kombinasyon → {name}"
+    "comboRefMember": "Kombinasyon → {name}",
+    "accessBlocked": "{pattern} tarafından engellendi",
+    "resultWouldEmptyModels": "Bu işlem anahtarda izin verilen hiçbir model bırakmaz — bunun yerine anahtar erişimini düzenleyin",
+    "resultWouldEmptyCombos": "Bu işlem anahtarda izin verilen hiçbir kombo bırakmaz — bunun yerine anahtar erişimini düzenleyin",
+    "keyUpdatePending": "{name} hâlâ güncelleniyor. Kısa süre sonra tekrar deneyin.",
+    "assignNoChanges": "Hiçbir API anahtarı erişimi değiştirilmedi",
+    "assignExcludedCombos": "{count, plural, one {# seçilen kombo satırı bir model değildir ve burada atlanacaktır} other {# seçilen kombo satırı model değildir ve burada atlanacaktır}}. Komboları Kombolar sekmesinden atayın.",
+    "keyRevoked": "İptal edildi",
+    "removeStaysAllowedHint": "{patterns} aracılığıyla bu anahtarda hâlâ izinli"
   }
 }

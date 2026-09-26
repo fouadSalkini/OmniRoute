@@ -14563,7 +14563,7 @@
     "strategy": "Estratehiya",
     "allStrategies": "Lahat ng estratehiya",
     "keyAccessButton": "Access sa API key",
-    "allowedInKeys": "Pinapayagan sa: {count} key",
+    "allowedInKeys": "Pinapayagan sa: {count, plural, one {# key} other {# mga key}}",
     "keysLoading": "Naglo-load ng mga API key…",
     "keysRetry": "Subukang muli ang pag-load ng mga key",
     "accessViaPattern": "sa pamamagitan ng {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Lahat ng combo",
     "modelAccessCount": "Mga modelo: {count}",
     "comboAccessCount": "Mga combo: {count}",
-    "keyActive": "Aktibo",
     "keyInactive": "Hindi aktibo",
     "keyBanned": "Naka-ban",
     "switchRestrictedConfirm": "Ilipat ang key na ito sa pinaghihigpitang access: ang mga napiling item lamang ang papayagan",
@@ -14657,6 +14656,14 @@
     "httpError": "Nabigo ang kahilingan na may HTTP {status}",
     "testFailedNoDetail": "Nabigo ang pagsusuri nang walang mensahe ng error",
     "additionalCapabilities": "Mga karagdagang kakayahan: {list}",
-    "comboRefMember": "Combo → {name}"
+    "comboRefMember": "Combo → {name}",
+    "accessBlocked": "Hinarang ng {pattern}",
+    "resultWouldEmptyModels": "Maiiwan ang key na ito na walang pinapayagang modelo — sa halip ay i-edit ang access sa key",
+    "resultWouldEmptyCombos": "Maiiwan ang key na ito na walang pinapayagang combo — sa halip ay i-edit ang access sa key",
+    "keyUpdatePending": "Kasalukuyan pang ina-update ang {name}. Subukang muli sa ilang sandali.",
+    "assignNoChanges": "Walang binagong access sa API key",
+    "assignExcludedCombos": "{count, plural, one {# napiling row ng combo ay hindi modelo at lalaktawan dito} other {# napiling mga row ng combo ay hindi mga modelo at lalaktawan dito}}. Magtalaga ng mga combo mula sa tab na Combos.",
+    "keyRevoked": "Binawi",
+    "removeStaysAllowedHint": "Pinapayagan pa rin sa key na ito sa pamamagitan ng {patterns}"
   }
 }

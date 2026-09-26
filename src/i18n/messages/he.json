@@ -14563,7 +14563,7 @@
     "strategy": "אסטרטגיה",
     "allStrategies": "כל האסטרטגיות",
     "keyAccessButton": "גישה למפתח API",
-    "allowedInKeys": "מורשה ב: {count} מפתחות",
+    "allowedInKeys": "מורשה ב: {count, plural, one {# מפתח} other {# מפתחות}}",
     "keysLoading": "טוען מפתחות API…",
     "keysRetry": "נסה שוב לטעון מפתחות",
     "accessViaPattern": "באמצעות {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "כל השילובים",
     "modelAccessCount": "מודלים: {count}",
     "comboAccessCount": "שילובים: {count}",
-    "keyActive": "פעיל",
     "keyInactive": "לא פעיל",
     "keyBanned": "חסום",
     "switchRestrictedConfirm": "העבר מפתח זה לגישה מוגבלת: רק הפריטים שנבחרו יורשו",
@@ -14657,6 +14656,14 @@
     "httpError": "הבקשה נכשלה עם HTTP {status}",
     "testFailedNoDetail": "הבדיקה נכשלה ללא הודעת שגיאה",
     "additionalCapabilities": "יכולות נוספות: {list}",
-    "comboRefMember": "שילוב → {name}"
+    "comboRefMember": "שילוב → {name}",
+    "accessBlocked": "נחסם על ידי {pattern}",
+    "resultWouldEmptyModels": "פעולה זו תשאיר מפתח זה ללא מודלים מורשים — ערוך את הגישה למפתח במקום זאת",
+    "resultWouldEmptyCombos": "פעולה זו תשאיר מפתח זה ללא שילובים מורשים — ערוך את הגישה למפתח במקום זאת",
+    "keyUpdatePending": "העדכון של {name} עדיין נמשך. נסה שוב בעוד רגע.",
+    "assignNoChanges": "לא שונתה הגישה למפתח ה-API",
+    "assignExcludedCombos": "{count, plural, one {# שורת שילוב שנבחרה אינה מודל ותדולג כאן} other {# שורות שילוב שנבחרו אינן מודלים וידולגו כאן}}. הקצה שילובים מכרטיסיית Combos.",
+    "keyRevoked": "נשלל",
+    "removeStaysAllowedHint": "עדיין מורשה במפתח זה באמצעות {patterns}"
   }
 }

@@ -14563,7 +14563,7 @@
     "strategy": "Strategi",
     "allStrategies": "Alle strategier",
     "keyAccessButton": "API-nøgleadgang",
-    "allowedInKeys": "Tilladt i: {count} nøgler",
+    "allowedInKeys": "Tilladt i: {count, plural, one {# nøgle} other {# nøgler}}",
     "keysLoading": "Indlæser API-nøgler…",
     "keysRetry": "Prøv at indlæse nøgler igen",
     "accessViaPattern": "via {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Alle kombinationer",
     "modelAccessCount": "Modeller: {count}",
     "comboAccessCount": "Kombinationer: {count}",
-    "keyActive": "Aktiv",
     "keyInactive": "Inaktiv",
     "keyBanned": "Blokeret",
     "switchRestrictedConfirm": "Skift denne nøgle til begrænset adgang: kun de valgte elementer vil være tilladt",
@@ -14657,6 +14656,14 @@
     "httpError": "Anmodning mislykkedes med HTTP {status}",
     "testFailedNoDetail": "Test mislykkedes uden en fejlmeddelelse",
     "additionalCapabilities": "Yderligere funktioner: {list}",
-    "comboRefMember": "Kombination → {name}"
+    "comboRefMember": "Kombination → {name}",
+    "accessBlocked": "Blokeret af {pattern}",
+    "resultWouldEmptyModels": "Vil efterlade denne nøgle uden tilladte modeller — rediger nøgleadgang i stedet",
+    "resultWouldEmptyCombos": "Vil efterlade denne nøgle uden tilladte combos — rediger nøgleadgang i stedet",
+    "keyUpdatePending": "{name} opdateres stadig. Prøv igen om et øjeblik.",
+    "assignNoChanges": "Ingen API-nøgleadgang ændret",
+    "assignExcludedCombos": "{count, plural, one {# valgt combo-række er ikke en model og springes over her} other {# valgte combo-rækker er ikke modeller og springes over her}}. Tildel combos fra fanen Combos.",
+    "keyRevoked": "Tilbagekaldt",
+    "removeStaysAllowedHint": "Stadig tilladt på denne nøgle via {patterns}"
   }
 }

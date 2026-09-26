@@ -14563,7 +14563,7 @@
     "strategy": "กลยุทธ์",
     "allStrategies": "กลยุทธ์ทั้งหมด",
     "keyAccessButton": "สิทธิ์การเข้าถึงคีย์ API",
-    "allowedInKeys": "อนุญาตใน: {count} คีย์",
+    "allowedInKeys": "อนุญาตใน: {count, plural, one {# คีย์} other {# คีย์}}",
     "keysLoading": "กำลังโหลดคีย์ API…",
     "keysRetry": "ลองโหลดคีย์อีกครั้ง",
     "accessViaPattern": "ผ่าน {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "คอมโบทั้งหมด",
     "modelAccessCount": "โมเดล: {count}",
     "comboAccessCount": "คอมโบ: {count}",
-    "keyActive": "ใช้งานอยู่",
     "keyInactive": "ไม่ได้ใช้งาน",
     "keyBanned": "ถูกแบน",
     "switchRestrictedConfirm": "เปลี่ยนคีย์นี้เป็นแบบจำกัดการเข้าถึง: จะอนุญาตเฉพาะรายการที่เลือกเท่านั้น",
@@ -14657,6 +14656,14 @@
     "httpError": "คำขอไม่สำเร็จด้วย HTTP {status}",
     "testFailedNoDetail": "การทดสอบล้มเหลวโดยไม่มีข้อความแสดงข้อผิดพลาด",
     "additionalCapabilities": "ความสามารถเพิ่มเติม: {list}",
-    "comboRefMember": "คอมโบ → {name}"
+    "comboRefMember": "คอมโบ → {name}",
+    "accessBlocked": "ถูกบล็อกโดย {pattern}",
+    "resultWouldEmptyModels": "จะทำให้คีย์นี้ไม่มีโมเดลที่ได้รับอนุญาต — แก้ไขสิทธิ์เข้าถึงของคีย์แทน",
+    "resultWouldEmptyCombos": "จะทำให้คีย์นี้ไม่มีคอมโบที่ได้รับอนุญาต — แก้ไขสิทธิ์เข้าถึงของคีย์แทน",
+    "keyUpdatePending": "กำลังอัปเดต {name} อยู่ โปรดลองอีกครั้งในอีกสักครู่",
+    "assignNoChanges": "ไม่มีการเปลี่ยนแปลงสิทธิ์การเข้าถึง API key",
+    "assignExcludedCombos": "{count, plural, one {# แถวคอมโบที่เลือกไม่ใช่โมเดลและจะถูกข้ามไป} other {# แถวคอมโบที่เลือกไม่ใช่โมเดลและจะถูกข้ามไป}} กำหนดคอมโบได้จากแท็บ Combos",
+    "keyRevoked": "เพิกถอนแล้ว",
+    "removeStaysAllowedHint": "ยังคงได้รับอนุญาตในคีย์นี้ผ่าน {patterns}"
   }
 }

@@ -14563,7 +14563,7 @@
     "strategy": "Stratégia",
     "allStrategies": "Összes stratégia",
     "keyAccessButton": "API-kulcs hozzáférés",
-    "allowedInKeys": "Engedélyezve: {count} kulcsban",
+    "allowedInKeys": "Engedélyezve itt: {count, plural, one {# kulcs} other {# kulcs}}",
     "keysLoading": "API-kulcsok betöltése…",
     "keysRetry": "Kulcsok betöltésének újrakísérlése",
     "accessViaPattern": "{pattern} útján",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Összes kombináció",
     "modelAccessCount": "Modellek: {count}",
     "comboAccessCount": "Kombinációk: {count}",
-    "keyActive": "Aktív",
     "keyInactive": "Inaktív",
     "keyBanned": "Kitiltva",
     "switchRestrictedConfirm": "Kulcs átváltása korlátozott hozzáférésre: csak a kiválasztott elemek lesznek engedélyezve",
@@ -14657,6 +14656,14 @@
     "httpError": "A kérés meghiúsult HTTP {status} hibakóddal",
     "testFailedNoDetail": "A teszt hibaüzenet nélkül hiúsult meg",
     "additionalCapabilities": "További képességek: {list}",
-    "comboRefMember": "Kombináció → {name}"
+    "comboRefMember": "Kombináció → {name}",
+    "accessBlocked": "Blokkolva a következő által: {pattern}",
+    "resultWouldEmptyModels": "Ez a kulcs engedélyezett modellek nélkül maradna — módosítsa inkább a kulcs hozzáférését",
+    "resultWouldEmptyCombos": "Ez a kulcs engedélyezett kombók nélkül maradna — módosítsa inkább a kulcs hozzáférését",
+    "keyUpdatePending": "{name} frissítése még folyamatban van. Próbálja újra egy pillanat múlva.",
+    "assignNoChanges": "Egyetlen API-kulcs hozzáférése sem változott",
+    "assignExcludedCombos": "{count, plural, one {# kiválasztott kombósor nem modell, ezért át lesz ugorva} other {# kiválasztott kombósor nem modell, ezért át lesz ugorva}}. Rendeljen hozzá kombókat a Combos lapon.",
+    "keyRevoked": "Visszavonva",
+    "removeStaysAllowedHint": "Továbbra is engedélyezve van ezen a kulcson a következő révén: {patterns}"
   }
 }

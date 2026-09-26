@@ -14563,7 +14563,7 @@
     "strategy": "रणनीति",
     "allStrategies": "सबै रणनीतिहरू",
     "keyAccessButton": "API कुञ्जी पहुँच",
-    "allowedInKeys": "अनुमति दिइएको: {count} कुञ्जीहरू",
+    "allowedInKeys": "अनुमति दिइएको: {count, plural, one {# कुञ्जी} other {# कुञ्जीहरू}}",
     "keysLoading": "API कुञ्जीहरू लोड हुँदैछ…",
     "keysRetry": "कुञ्जीहरू लोड गर्न पुन: प्रयास गर्नुहोस्",
     "accessViaPattern": "{pattern} मार्फत",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "सबै कम्बोहरू",
     "modelAccessCount": "मोडेलहरू: {count}",
     "comboAccessCount": "कम्बोहरू: {count}",
-    "keyActive": "सक्रिय",
     "keyInactive": "निष्क्रिय",
     "keyBanned": "प्रतिबन्धित",
     "switchRestrictedConfirm": "यो कुञ्जीलाई प्रतिबन्धित पहुँचमा बदल्नुहोस्: केवल चयन गरिएका वस्तुहरूलाई मात्र अनुमति दिइनेछ",
@@ -14657,6 +14656,14 @@
     "httpError": "HTTP {status} सँग अनुरोध असफल भयो",
     "testFailedNoDetail": "कुनै त्रुटि सन्देश बिना परीक्षण असफल भयो",
     "additionalCapabilities": "थप क्षमताहरू: {list}",
-    "comboRefMember": "कम्बो → {name}"
+    "comboRefMember": "कम्बो → {name}",
+    "accessBlocked": "{pattern} द्वारा ब्लक गरिएको",
+    "resultWouldEmptyModels": "यसले यो कुञ्जीलाई कुनै पनि अनुमति प्राप्त मोडेलहरू बिना छोड्नेछ — यसको सट्टा कुञ्जी पहुँच सम्पादन गर्नुहोस्",
+    "resultWouldEmptyCombos": "यसले यो कुञ्जीलाई कुनै पनि अनुमति प्राप्त combos बिना छोड्नेछ — यसको सट्टा कुञ्जी पहुँच सम्पादन गर्नुहोस्",
+    "keyUpdatePending": "{name} अझै अपडेट हुँदैछ। केही बेरपछि फेरि प्रयास गर्नुहोस्।",
+    "assignNoChanges": "कुनै पनि API कुञ्जी पहुँच परिवर्तन गरिएको छैन",
+    "assignExcludedCombos": "{count, plural, one {# चयन गरिएको combo पङ्क्ति मोडेल होइन र यहाँ छोडिनेछ} other {# चयन गरिएका combo पङ्क्तिहरू मोडेलहरू होइनन् र यहाँ छोडिनेछन्}}। Combos ट्याबबाट combos असाइन गर्नुहोस्।",
+    "keyRevoked": "खारेज गरियो",
+    "removeStaysAllowedHint": "{patterns} मार्फत यो कुञ्जीमा अझै पनि अनुमति दिइएको छ"
   }
 }

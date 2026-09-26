@@ -14563,7 +14563,7 @@
     "strategy": "උපායමාර්ගය",
     "allStrategies": "සියලු උපායමාර්ග",
     "keyAccessButton": "API යතුරු ප්‍රවේශය",
-    "allowedInKeys": "ඉඩ දී ඇත: යතුරු {count} ක",
+    "allowedInKeys": "අවසර දී ඇත්තේ: {count, plural, one {යතුරු # ක} other {යතුරු # ක}}",
     "keysLoading": "API යතුරු පූරණය වෙමින් පවතී…",
     "keysRetry": "යතුරු පූරණය නැවත උත්සාහ කරන්න",
     "accessViaPattern": "{pattern} හරහා",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "සියලු සංයෝජන",
     "modelAccessCount": "මාදිලි: {count}",
     "comboAccessCount": "සංයෝජන: {count}",
-    "keyActive": "සක්‍රිය",
     "keyInactive": "අක්‍රිය",
     "keyBanned": "තහනම් කර ඇත",
     "switchRestrictedConfirm": "මෙම යතුර සීමිත ප්‍රවේශයකට මාරු කරන්න: තෝරාගත් අයිතම සඳහා පමණක් ඉඩ දෙනු ලැබේ",
@@ -14657,6 +14656,14 @@
     "httpError": "ඉල්ලීම HTTP {status} සමඟ අසාර්ථක විය",
     "testFailedNoDetail": "දෝෂ පණිවිඩයක් නොමැතිව පරීක්ෂණය අසාර්ථක විය",
     "additionalCapabilities": "අමතර හැකියාවන්: {list}",
-    "comboRefMember": "සංයෝජනය → {name}"
+    "comboRefMember": "සංයෝජනය → {name}",
+    "accessBlocked": "{pattern} මඟින් අවහිර කර ඇත",
+    "resultWouldEmptyModels": "මෙම යතුරට කිසිදු අවසර ලත් මොඩලයක් නොමැති තත්ත්වයක් ඇති වේ — ඒ වෙනුවට යතුරු ප්‍රවේශය සංස්කරණය කරන්න",
+    "resultWouldEmptyCombos": "මෙම යතුරට කිසිදු අවසර ලත් combo එකක් නොමැති තත්ත්වයක් ඇති වේ — ඒ වෙනුවට යතුරු ප්‍රවේශය සංස්කරණය කරන්න",
+    "keyUpdatePending": "{name} තවමත් යාවත්කාලීන වෙමින් පවතී. සුළු මොහොතකින් නැවත උත්සාහ කරන්න.",
+    "assignNoChanges": "කිසිදු API යතුරු ප්‍රවේශයක් වෙනස් නොවීය",
+    "assignExcludedCombos": "{count, plural, one {තෝරාගත් combo පේළි # මොඩලයක් නොවන අතර මෙහිදී මඟ හරිනු ලැබේ} other {තෝරාගත් combo පේළි # මොඩල නොවන අතර මෙහිදී මඟ හරිනු ලැබේ}}. Combos පටිත්තෙන් combo පවරන්න.",
+    "keyRevoked": "අවලංගු කරන ලදී",
+    "removeStaysAllowedHint": "{patterns} හරහා මෙම යතුර මත තවමත් අවසර ඇත"
   }
 }

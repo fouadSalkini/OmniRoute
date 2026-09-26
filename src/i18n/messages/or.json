@@ -14563,7 +14563,7 @@
     "strategy": "ରଣନୀତି",
     "allStrategies": "ସମସ୍ତ ରଣନୀତି",
     "keyAccessButton": "API କୀ ଆକ୍ସେସ୍",
-    "allowedInKeys": "ଅନୁମତିପ୍ରାପ୍ତ: {count} କୀ",
+    "allowedInKeys": "ଅନୁମୋଦିତ: {count, plural, one {# key} other {# keys}}",
     "keysLoading": "API କୀ ଲୋଡ୍ ହେଉଛି…",
     "keysRetry": "କୀ ଲୋଡ୍ କରିବା ପୁନଃ ଚେଷ୍ଟା କରନ୍ତୁ",
     "accessViaPattern": "{pattern} ମାଧ୍ୟମରେ",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "ସମସ୍ତ କମ୍ବୋ",
     "modelAccessCount": "ମଡେଲ୍: {count}",
     "comboAccessCount": "କମ୍ବୋ: {count}",
-    "keyActive": "ସକ୍ରିୟ",
     "keyInactive": "ନିଷ୍କ୍ରିୟ",
     "keyBanned": "ପ୍ରତିବନ୍ଧିତ",
     "switchRestrictedConfirm": "ଏହି କୀ’କୁ ସୀମିତ ଆକ୍ସେସକୁ ବଦଳାନ୍ତୁ: କେବଳ ଚୟନିତ ଆଇଟମଗୁଡ଼ିକୁ ଅନୁମତି ଦିଆଯିବ",
@@ -14657,6 +14656,14 @@
     "httpError": "HTTP {status} ସହିତ ଅନୁରୋଧ ବିଫଳ ହେଲା",
     "testFailedNoDetail": "କୌଣସି ତ୍ରୁଟି ବାର୍ତ୍ତା ବିନା ପରୀକ୍ଷଣ ବିଫଳ ହେଲା",
     "additionalCapabilities": "ଅତିରିକ୍ତ କ୍ଷମତା: {list}",
-    "comboRefMember": "କମ୍ବୋ → {name}"
+    "comboRefMember": "କମ୍ବୋ → {name}",
+    "accessBlocked": "{pattern} ଦ୍ୱାରା ବ୍ଲକ୍ କରାଯାଇଛି",
+    "resultWouldEmptyModels": "ଏହା ଏହି key କୁ କୌଣସି ଅନୁମତିପ୍ରାପ୍ତ model ବିନା ଛାଡ଼ିଦେବ — ଏହା ବଦଳରେ key access ଏଡିଟ୍ କରନ୍ତୁ",
+    "resultWouldEmptyCombos": "ଏହା ଏହି key କୁ କୌଣସି ଅନୁମତିପ୍ରାପ୍ତ combo ବିନା ଛାଡ଼ିଦେବ — ଏହା ବଦଳରେ key access ଏଡିଟ୍ କରନ୍ତୁ",
+    "keyUpdatePending": "{name} ଏବେ ମଧ୍ୟ ଅପଡେଟ୍ ହେଉଛି। କିଛି ସମୟ ପରେ ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ।",
+    "assignNoChanges": "କୌଣସି API key access ପରିବର୍ତ୍ତନ ହୋଇନାହିଁ",
+    "assignExcludedCombos": "{count, plural, one {# ଚୟନିତ combo ଧାଡ଼ି ଏକ model ନୁହେଁ ଏବଂ ଏଠାରେ ବାଦ୍ ଦିଆଯିବ} other {# ଚୟନିତ combo ଧାଡ଼ି model ନୁହଁନ୍ତି ଏବଂ ଏଠାରେ ବାଦ୍ ଦିଆଯିବ}}। Combos ଟ୍ୟାବ୍‌ରୁ combos ଆସାଇନ୍ କରନ୍ତୁ।",
+    "keyRevoked": "ରଦ୍ଦ କରାଯାଇଛି",
+    "removeStaysAllowedHint": "{patterns} ମାଧ୍ୟମରେ ଏହି key ରେ ଏବେ ମଧ୍ୟ ଅନୁମତି ଅଛି"
   }
 }

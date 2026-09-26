@@ -14563,7 +14563,7 @@
     "strategy": "Strategie",
     "allStrategies": "Alle strategieën",
     "keyAccessButton": "API-sleuteltoegang",
-    "allowedInKeys": "Toegestaan in: {count} sleutels",
+    "allowedInKeys": "Toegestaan in: {count, plural, one {# sleutel} other {# sleutels}}",
     "keysLoading": "API-sleutels laden…",
     "keysRetry": "Sleutels laden opnieuw proberen",
     "accessViaPattern": "via {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Alle combo's",
     "modelAccessCount": "Modellen: {count}",
     "comboAccessCount": "Combo's: {count}",
-    "keyActive": "Actief",
     "keyInactive": "Inactief",
     "keyBanned": "Geblokkeerd",
     "switchRestrictedConfirm": "Schakel deze sleutel over naar beperkte toegang: alleen de geselecteerde items worden toegestaan",
@@ -14657,6 +14656,14 @@
     "httpError": "Verzoek mislukt met HTTP {status}",
     "testFailedNoDetail": "Test mislukt zonder foutmelding",
     "additionalCapabilities": "Aanvullende mogelijkheden: {list}",
-    "comboRefMember": "Combo → {name}"
+    "comboRefMember": "Combo → {name}",
+    "accessBlocked": "Geblokkeerd door {pattern}",
+    "resultWouldEmptyModels": "Zou deze sleutel zonder toegestane modellen achterlaten — bewerk in plaats daarvan sleuteltoegang",
+    "resultWouldEmptyCombos": "Zou deze sleutel zonder toegestane combo's achterlaten — bewerk in plaats daarvan sleuteltoegang",
+    "keyUpdatePending": "{name} wordt nog bijgewerkt. Probeer het over een ogenblik opnieuw.",
+    "assignNoChanges": "Geen API-sleuteltoegang gewijzigd",
+    "assignExcludedCombos": "{count, plural, one {# geselecteerde combo-rij is geen model en wordt hier overgeslagen} other {# geselecteerde combo-rijen zijn geen modellen en worden hier overgeslagen}}. Wijs combo's toe via het tabblad Combos.",
+    "keyRevoked": "Ingetrokken",
+    "removeStaysAllowedHint": "Nog steeds toegestaan op deze sleutel via {patterns}"
   }
 }

@@ -14563,7 +14563,7 @@
     "strategy": "Strategiya",
     "allStrategies": "Barcha strategiyalar",
     "keyAccessButton": "API kaliti ruxsatlari",
-    "allowedInKeys": "Ruxsat berilgan: {count} ta kalitda",
+    "allowedInKeys": "Quyidagilarda ruxsat etilgan: {count, plural, one {# ta kalit} other {# ta kalit}}",
     "keysLoading": "API kalitlari yuklanmoqda…",
     "keysRetry": "Kalitlarni qayta yuklash",
     "accessViaPattern": "{pattern} orqali",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Barcha kombinatsiyalar",
     "modelAccessCount": "Modellar: {count}",
     "comboAccessCount": "Kombinatsiyalar: {count}",
-    "keyActive": "Faol",
     "keyInactive": "Faol emas",
     "keyBanned": "Bloklangan",
     "switchRestrictedConfirm": "Ushbu kalitni cheklangan ruxsatga oʻtkazish: faqat tanlangan elementlarga ruxsat beriladi",
@@ -14657,6 +14656,14 @@
     "httpError": "Soʻrov HTTP {status} bilan muvaffaqiyatsiz tugadi",
     "testFailedNoDetail": "Test xatolik xabarisiz muvaffaqiyatsiz tugadi",
     "additionalCapabilities": "Qoʻshimcha imkoniyatlar: {list}",
-    "comboRefMember": "Kombinatsiya → {name}"
+    "comboRefMember": "Kombinatsiya → {name}",
+    "accessBlocked": "{pattern} tomonidan bloklangan",
+    "resultWouldEmptyModels": "Bu kalitni hech qanday ruxsat etilgan modellsiz qoldiradi — buning oʻrniga kalit ruxsatini tahrirlang",
+    "resultWouldEmptyCombos": "Bu kalitni hech qanday ruxsat etilgan kombolarsiz qoldiradi — buning oʻrniga kalit ruxsatini tahrirlang",
+    "keyUpdatePending": "{name} hali ham yangilanmoqda. Bir ozdan keyin qayta urinib koʻring.",
+    "assignNoChanges": "Hech qanday API kalit ruxsati oʻzgartirilmadi",
+    "assignExcludedCombos": "{count, plural, one {Tanlangan # ta kombo qatori model emas va bu yerda tashlab ketiladi} other {Tanlangan # ta kombo qatori model emas va bu yerda tashlab ketiladi}}. Kombolarni Combos yorligʻidan biriktiring.",
+    "keyRevoked": "Bekor qilingan",
+    "removeStaysAllowedHint": "{patterns} orqali ushbu kalitda hali ham ruxsat berilgan"
   }
 }

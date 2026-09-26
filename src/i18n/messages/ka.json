@@ -14563,7 +14563,7 @@
     "strategy": "სტრატეგია",
     "allStrategies": "ყველა სტრატეგია",
     "keyAccessButton": "API გასაღების წვდომა",
-    "allowedInKeys": "დაშვებულია: {count} გასაღებში",
+    "allowedInKeys": "დაშვებულია: {count, plural, one {# გასაღებში} other {# გასაღებში}}",
     "keysLoading": "API გასაღებები იტვირთება…",
     "keysRetry": "გასაღებების ჩატვირთვის გამეორება",
     "accessViaPattern": "{pattern}-ის მეშვეობით",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "ყველა კომბინაცია",
     "modelAccessCount": "მოდელები: {count}",
     "comboAccessCount": "კომბინაციები: {count}",
-    "keyActive": "აქტიური",
     "keyInactive": "არააქტიური",
     "keyBanned": "დაბლოკილი",
     "switchRestrictedConfirm": "ამ გასაღების შეზღუდულ წვდომაზე გადაყვანა: მხოლოდ არჩეული ელემენტები იქნება დაშვებული",
@@ -14657,6 +14656,14 @@
     "httpError": "მოთხოვნა ვერ შესრულდა HTTP {status} სტატუსით",
     "testFailedNoDetail": "ტესტი ჩაიშალა შეცდომის შეტყობინების გარეშე",
     "additionalCapabilities": "დამატებითი შესაძლებლობები: {list}",
-    "comboRefMember": "კომბინაცია → {name}"
+    "comboRefMember": "კომბინაცია → {name}",
+    "accessBlocked": "დაბლოკილია {pattern}-ის მიერ",
+    "resultWouldEmptyModels": "ეს ამ გასაღებს დაშვებული მოდელების გარეშე დატოვებს — ამის ნაცვლად შეცვალეთ გასაღების წვდომა",
+    "resultWouldEmptyCombos": "ეს ამ გასაღებს დაშვებული კომბოების გარეშე დატოვებს — ამის ნაცვლად შეცვალეთ გასაღების წვდომა",
+    "keyUpdatePending": "{name} ჯერ კიდევ ახლდება. სცადეთ ხელახლა ცოტა ხანში.",
+    "assignNoChanges": "API გასაღების წვდომა არ შეცვლილა",
+    "assignExcludedCombos": "{count, plural, one {# არჩეული კომბოს სტრიქონი არ არის მოდელი და აქ გამოიტოვება} other {# არჩეული კომბოს სტრიქონი არ არის მოდელი და აქ გამოიტოვება}}. მიანიჭეთ კომბოები ჩანართიდან Combos.",
+    "keyRevoked": "გაუქმებულია",
+    "removeStaysAllowedHint": "ამ გასაღებზე კვლავ დაშვებულია {patterns}-ის მეშვეობით"
   }
 }

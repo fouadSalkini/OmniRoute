@@ -14563,7 +14563,7 @@
     "strategy": "Strategi",
     "allStrategies": "Semua strategi",
     "keyAccessButton": "Akses kunci API",
-    "allowedInKeys": "Dibenarkan dalam: {count} kunci",
+    "allowedInKeys": "Dibenarkan dalam: {count, plural, one {# kunci} other {# kunci}}",
     "keysLoading": "Memuatkan kunci API…",
     "keysRetry": "Cuba lagi memuatkan kunci",
     "accessViaPattern": "melalui {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "Semua kombo",
     "modelAccessCount": "Model: {count}",
     "comboAccessCount": "Kombo: {count}",
-    "keyActive": "Aktif",
     "keyInactive": "Tidak aktif",
     "keyBanned": "Disekat",
     "switchRestrictedConfirm": "Tukar kunci ini kepada akses terhad: hanya item yang dipilih akan dibenarkan",
@@ -14657,6 +14656,14 @@
     "httpError": "Permintaan gagal dengan HTTP {status}",
     "testFailedNoDetail": "Ujian gagal tanpa mesej ralat",
     "additionalCapabilities": "Keupayaan tambahan: {list}",
-    "comboRefMember": "Kombo → {name}"
+    "comboRefMember": "Kombo → {name}",
+    "accessBlocked": "Disekat oleh {pattern}",
+    "resultWouldEmptyModels": "Akan menyebabkan kunci ini tidak mempunyai model yang dibenarkan — edit akses kunci sebagai ganti",
+    "resultWouldEmptyCombos": "Akan menyebabkan kunci ini tidak mempunyai kombo yang dibenarkan — edit akses kunci sebagai ganti",
+    "keyUpdatePending": "{name} masih sedang dikemas kini. Cuba lagi sebentar lagi.",
+    "assignNoChanges": "Tiada akses kunci API yang diubah",
+    "assignExcludedCombos": "{count, plural, one {# baris kombo yang dipilih bukan model dan akan dilangkau di sini} other {# baris kombo yang dipilih bukan model dan akan dilangkau di sini}}. Tetapkan kombo daripada tab Combos.",
+    "keyRevoked": "Ditarik balik",
+    "removeStaysAllowedHint": "Masih dibenarkan pada kunci ini melalui {patterns}"
   }
 }
