@@ -12,15 +12,10 @@ import {
   type ModelTestTarget,
 } from "./catalogBulkUtils";
 import {
-  mapBatchResponse,
-  mapComboResponse,
-  mapRequestFailure,
-  mapSingleModelResponse,
-  readJsonBody,
-  type BatchModelTestResponse,
-  type ComboTestResponse,
-  type SingleModelTestResponse,
-} from "./catalogTestResponses";
+  requestComboTest,
+  requestSingleModelTest,
+  requestModelBatchTest,
+} from "./catalogTestRequests";
 import {
   clearCatalogTestResults,
   getComboTestKey,
@@ -40,7 +35,6 @@ export interface ProgressState {
 }
 
 const IDLE_PROGRESS: ProgressState = { kind: "models", completed: 0, total: 0, cancelled: false };
-const JSON_HEADERS = { "Content-Type": "application/json" };
 
 export function useCatalogTestRunner() {
   const [testResults, setTestResults] = useState<Record<string, CatalogTestResult>>({});
@@ -108,19 +102,7 @@ export function useCatalogTestRunner() {
       const key = getComboTestKey(comboName);
       if (!claimActiveKey(key, signal)) return;
       try {
-        const res = await fetch("/api/combos/test", {
-          method: "POST",
-          headers: JSON_HEADERS,
-          body: JSON.stringify({ comboName }),
-          signal,
-        });
-        const body = await readJsonBody<ComboTestResponse>(res);
-        persist([mapComboResponse(comboName, res, body, Date.now())], signal);
-      } catch (failure) {
-        persist(
-          [mapRequestFailure({ targetType: "combo", comboName }, failure, Date.now())],
-          signal
-        );
+        persist([await requestComboTest(comboName, signal)], signal);
       } finally {
         releaseActiveKey(key, signal);
       }
@@ -134,19 +116,7 @@ export function useCatalogTestRunner() {
         const key = getModelTestKey(providerId, modelId);
         if (!claimActiveKey(key, signal)) return;
         try {
-          const res = await fetch("/api/models/test", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ providerId, modelId }),
-            signal,
-          });
-          const body = await readJsonBody<SingleModelTestResponse>(res);
-          persist([mapSingleModelResponse(providerId, modelId, res, body, Date.now())], signal);
-        } catch (failure) {
-          persist(
-            [mapRequestFailure({ targetType: "model", providerId, modelId }, failure, Date.now())],
-            signal
-          );
+          persist([await requestSingleModelTest(providerId, modelId, signal)], signal);
         } finally {
           releaseActiveKey(key, signal);
         }
@@ -192,30 +162,7 @@ export function useCatalogTestRunner() {
       try {
         await runModelBatches(buildModelBatches(unique), signal, async (batch) => {
           try {
-            const res = await fetch("/api/models/test-all", {
-              method: "POST",
-              headers: JSON_HEADERS,
-              body: JSON.stringify({
-                providerId: batch.providerId,
-                modelIds: batch.modelIds,
-                respectRateLimit: true,
-              }),
-              signal,
-            });
-            const body = await readJsonBody<BatchModelTestResponse>(res);
-            persist(mapBatchResponse(batch, res, body, Date.now()), signal);
-          } catch (failure) {
-            const testedAt = Date.now();
-            persist(
-              batch.modelIds.map((modelId) =>
-                mapRequestFailure(
-                  { targetType: "model", providerId: batch.providerId, modelId },
-                  failure,
-                  testedAt
-                )
-              ),
-              signal
-            );
+            persist(await requestModelBatchTest(batch, signal), signal);
           } finally {
             advanceRun(controller, batch.modelIds.length);
           }
