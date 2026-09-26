@@ -615,17 +615,6 @@ export function useApiKeyAccessForm(
     }));
   }, []);
 
-  const setSelectedEndpoints = useCallback(
-    (endpoints: string[] | ((prev: string[]) => string[])) => {
-      setFormState((prev) => ({
-        ...prev,
-        selectedEndpoints:
-          typeof endpoints === "function" ? endpoints(prev.selectedEndpoints) : endpoints,
-      }));
-    },
-    []
-  );
-
   const toggleEndpoint = useCallback((endpointId: string) => {
     setFormState((prev) => {
       if (prev.allowAllEndpoints) return prev;
@@ -810,7 +799,6 @@ export function useApiKeyAccessForm(
     setAllowAllConnections,
     setSelectedConnections,
     setAllowAllEndpoints,
-    setSelectedEndpoints,
     toggleEndpoint,
     setNoLog,
     setAutoResolve,
