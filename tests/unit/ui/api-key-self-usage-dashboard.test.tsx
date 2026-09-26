@@ -231,6 +231,17 @@ describe("API key details page", () => {
     expect(screen.getByText("No token limits yet.")).toBeTruthy();
   });
 
+  it("hides the key-quota section when no key-quota data is available", async () => {
+    // The deploy base has no key-quota backend, so the details page must not offer an
+    // editor that would save to a missing route.
+    routeDetails(SELF_SERVICE_FIXTURE);
+    render(<ApiKeyDetailsPageClient keyId="key-1" />);
+    expect(await screen.findByRole("heading", { level: 1, name: "Team key" })).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Limits" })).toBeTruthy();
+    expect(screen.queryByRole("region", { name: "Rate and spend quota" })).toBeNull();
+    expect(screen.queryByText("Could not load this key's quota.")).toBeNull();
+  });
+
   it("shows empty states when the key has no limits or shared quota", async () => {
     routeDetails({
       ...SELF_SERVICE_FIXTURE,
