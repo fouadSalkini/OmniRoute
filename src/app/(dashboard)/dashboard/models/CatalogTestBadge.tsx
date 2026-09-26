@@ -37,34 +37,30 @@ function testAge(testedAt: number, now = Date.now()): TestAge {
   return { unit: "date" };
 }
 
-export default function CatalogTestBadge({
-  result,
-  loading = false,
-}: {
-  result?: CatalogTestResult;
-  loading?: boolean;
-}) {
+function TestingIndicator() {
   const t = useTranslations("modelCatalog");
+  return (
+    <div className="flex items-center gap-1.5 text-xs text-text-muted">
+      <span
+        className="inline-block size-3 animate-spin rounded-full border-2 border-primary border-t-transparent"
+        aria-hidden="true"
+      />
+      <span>{t("testing")}</span>
+    </div>
+  );
+}
 
-  if (loading) {
-    return (
-      <div className="flex items-center gap-1.5 text-xs text-text-muted">
-        <span
-          className="inline-block size-3 animate-spin rounded-full border-2 border-primary border-t-transparent"
-          aria-hidden="true"
-        />
-        <span>{t("testing")}</span>
-      </div>
-    );
-  }
+function UntestedMark() {
+  const t = useTranslations("modelCatalog");
+  return (
+    <span className="text-xs text-text-muted/60" title={t("untested")}>
+      —
+    </span>
+  );
+}
 
-  if (!result) {
-    return (
-      <span className="text-xs text-text-muted/60" title={t("untested")}>
-        —
-      </span>
-    );
-  }
+function TestResultSummary({ result }: { result: CatalogTestResult }) {
+  const t = useTranslations("modelCatalog");
 
   const variant =
     result.status === "ok" ? "success" : result.status === "slow" ? "warning" : "error";
@@ -129,4 +125,22 @@ export default function CatalogTestBadge({
       {errorDetail && <span className="sr-only">{t("errorDetail", { detail: errorDetail })}</span>}
     </div>
   );
+}
+
+export default function CatalogTestBadge({
+  result,
+  loading = false,
+}: {
+  result?: CatalogTestResult;
+  loading?: boolean;
+}) {
+  if (loading) {
+    return <TestingIndicator />;
+  }
+
+  if (!result) {
+    return <UntestedMark />;
+  }
+
+  return <TestResultSummary result={result} />;
 }
