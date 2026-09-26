@@ -48,39 +48,47 @@ import {
   parseCatalogTab,
   parseComboFilters,
   parseModelFilters,
+  restrictComboFiltersToOptions,
+  restrictModelFiltersToOptions,
   type CatalogTab,
 } from "./catalogUrlState";
-import { useCatalogTestRunner } from "./useCatalogTestRunner";
 import { useApiKeyAccessIndex } from "./useApiKeyAccessIndex";
 import CatalogKeyAssignDialog from "./CatalogKeyAssignDialog";
 import CatalogKeyAccessButton from "./CatalogKeyAccessButton";
 import { isKeyAssignableModel, type AssignItem } from "./keyAccessAssignUtils";
+import { useCatalogTestRunner } from "./useCatalogTestRunner";
 
 const PAGE_SIZE = 50;
 
 type PendingBulkRun =
   { kind: "models"; targets: ModelTestTarget[] } | { kind: "combos"; targets: ComboTestTarget[] };
 
+/**
+ * Mirror the filters into the URL. Browsers rate-limit history updates (Safari throws a
+ * SecurityError after 100 calls in 10 s), so unchanged URLs are skipped and a refused update is
+ * ignored: the URL is a shareable convenience, never worth taking the page down.
+ */
 function setUrlParams(params: URLSearchParams) {
-  if (typeof window !== "undefined") {
-    const query = params.toString();
-    const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
-    window.history.replaceState(null, "", newUrl);
+  if (typeof window === "undefined") return;
+  const query = params.toString();
+  const { pathname, search } = window.location;
+  const nextUrl = query ? `${pathname}?${query}` : pathname;
+  if (nextUrl === `${pathname}${search}`) return;
+  try {
+    window.history.replaceState(null, "", nextUrl);
+  } catch {
+    // Rate-limited or refused: keep the current URL; the next change retries.
   }
 }
 
-export default function ModelCatalogPage() {
-  const keyIndex = useApiKeyAccessIndex();
-  const [assignKind, setAssignKind] = useState<CatalogTab | null>(null);
-  const openAssign = (kind: CatalogTab) => {
-    setAssignKind(kind);
-    void keyIndex.ensureLoaded();
-  };
+function useCatalogPageState() {
   const t = useTranslations("modelCatalog");
 
   // URL-driven state starts from the defaults the server renders; the mount effect below
   // applies the real query string, so hydration never sees browser-only values.
   const [activeTab, setActiveTab] = useState<CatalogTab>("models");
+  /** True once the query string has been read; the URL is never written before that. */
+  const [urlApplied, setUrlApplied] = useState(false);
   const [pendingBulkRun, setPendingBulkRun] = useState<PendingBulkRun | null>(null);
 
   // Models State
@@ -109,46 +117,92 @@ export default function ModelCatalogPage() {
   const [rawModelFilters, setModelFilters] = useState<CatalogFilters>(DEFAULT_MODEL_FILTERS);
   const [rawComboFilters, setComboFilters] = useState<ComboCatalogFilters>(DEFAULT_COMBO_FILTERS);
 
-  // Test Runner Hook
+  const runner = useCatalogTestRunner();
+  return {
+    ...runner,
+    activeTab,
+    setActiveTab,
+    urlApplied,
+    setUrlApplied,
+    pendingBulkRun,
+    setPendingBulkRun,
+    models,
+    setModels,
+    modelsLoading,
+    setModelsLoading,
+    modelsError,
+    setModelsError,
+    modelSortField,
+    setModelSortField,
+    modelSortDirection,
+    setModelSortDirection,
+    requestedModelPage,
+    setRequestedModelPage,
+    selectedModelIds,
+    setSelectedModelIds,
+    combos,
+    setCombos,
+    combosLoading,
+    setCombosLoading,
+    combosError,
+    setCombosError,
+    comboSortField,
+    setComboSortField,
+    comboSortDirection,
+    setComboSortDirection,
+    requestedComboPage,
+    setRequestedComboPage,
+    selectedComboIds,
+    setSelectedComboIds,
+    providerHealthMap,
+    setProviderHealthMap,
+    rawModelFilters,
+    setModelFilters,
+    rawComboFilters,
+    setComboFilters,
+    t,
+  };
+}
+// Load provider health matrix
+async function fetchCatalogHealth(
+  controller: AbortController,
+  setProviderHealthMap: React.Dispatch<
+    React.SetStateAction<Record<string, "healthy" | "degraded" | "down">>
+  >
+) {
+  try {
+    const response = await fetch("/api/providers/health-matrix", { signal: controller.signal });
+    if (!response.ok) return;
+    const payload: unknown = await response.json();
+    if (typeof payload === "object" && payload !== null && "providers" in payload) {
+      const list = (
+        payload as {
+          providers: Array<{ provider: string; state: "healthy" | "degraded" | "down" }>;
+        }
+      ).providers;
+      const map: Record<string, "healthy" | "degraded" | "down"> = {};
+      for (const item of list || []) {
+        if (item.provider) map[item.provider] = item.state;
+      }
+      setProviderHealthMap(map);
+    }
+  } catch {
+    // Soft fail
+  }
+}
+
+function useCatalogPageLoading(state: ReturnType<typeof useCatalogPageState>) {
   const {
-    testResults,
-    running,
-    activeItemKeys,
-    progress,
-    testSingleModel,
-    testSingleCombo,
-    testBulkModels,
-    testBulkCombos,
-    cancelTest,
-    clearResults,
-  } = useCatalogTestRunner();
+    setModels,
+    setModelsLoading,
+    setModelsError,
 
+    setCombos,
+    setCombosLoading,
+    setCombosError,
+    setProviderHealthMap,
+  } = state;
   const requestController = useRef<AbortController | null>(null);
-
-  // Deep links and Back/Forward: read the query string after mount (DashboardLayout pattern).
-  useEffect(() => {
-    const applyUrlState = () => {
-      const params = new URLSearchParams(window.location.search);
-      setActiveTab(parseCatalogTab(params));
-      setModelFilters(parseModelFilters(params));
-      setComboFilters(parseComboFilters(params));
-    };
-    const timer = window.setTimeout(applyUrlState, 0);
-    window.addEventListener("popstate", applyUrlState);
-    return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener("popstate", applyUrlState);
-    };
-  }, []);
-
-  // Sync state to URL search parameters
-  const syncUrlParams = useCallback(
-    (tab: CatalogTab, mFilters: CatalogFilters, cFilters: ComboCatalogFilters) => {
-      setUrlParams(buildCatalogSearchParams(tab, mFilters, cFilters));
-    },
-    []
-  );
-
   // Data Loading
   const loadData = useCallback(async () => {
     requestController.current?.abort();
@@ -193,31 +247,18 @@ export default function ModelCatalogPage() {
       }
     };
 
-    // Load provider health matrix
-    const fetchHealth = async () => {
-      try {
-        const response = await fetch("/api/providers/health-matrix", { signal: controller.signal });
-        if (!response.ok) return;
-        const payload: unknown = await response.json();
-        if (typeof payload === "object" && payload !== null && "providers" in payload) {
-          const list = (
-            payload as {
-              providers: Array<{ provider: string; state: "healthy" | "degraded" | "down" }>;
-            }
-          ).providers;
-          const map: Record<string, "healthy" | "degraded" | "down"> = {};
-          for (const item of list || []) {
-            if (item.provider) map[item.provider] = item.state;
-          }
-          setProviderHealthMap(map);
-        }
-      } catch {
-        // Soft fail
-      }
-    };
-
+    const fetchHealth = () => fetchCatalogHealth(controller, setProviderHealthMap);
     await Promise.allSettled([fetchModels(), fetchCombos(), fetchHealth()]);
-  }, []);
+  }, [
+    requestController,
+    setCombos,
+    setCombosError,
+    setCombosLoading,
+    setModels,
+    setModelsError,
+    setModelsLoading,
+    setProviderHealthMap,
+  ]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -227,7 +268,7 @@ export default function ModelCatalogPage() {
       window.clearTimeout(timer);
       requestController.current?.abort();
     };
-  }, [loadData]);
+  }, [loadData, requestController]);
 
   const refreshAll = useCallback(() => {
     setModelsLoading(true);
@@ -235,8 +276,13 @@ export default function ModelCatalogPage() {
     setModelsError(false);
     setCombosError(false);
     void loadData();
-  }, [loadData]);
+  }, [loadData, setCombosError, setCombosLoading, setModelsError, setModelsLoading]);
 
+  return { loadData, refreshAll };
+}
+
+function useCatalogPageOptions(state: ReturnType<typeof useCatalogPageState>) {
+  const { models, combos, rawModelFilters, rawComboFilters } = state;
   // Derived filter options for models
   const providerOptions = useMemo(
     () =>
@@ -264,27 +310,25 @@ export default function ModelCatalogPage() {
     [combos]
   );
 
+  // Free-form URL values (provider, type, …) are checked against the loaded options, but only
+  // while options exist. Loading flags are not enough: a Refresh keeps the previous rows, and a
+  // failed load has no options at all, so gating on them would flash an empty table or drop
+  // perfectly valid filters from the URL.
+  const modelOptionsKnown = models.length > 0;
+  const comboOptionsKnown = combos.length > 0;
   const modelFilters = useMemo(
-    () => ({
-      ...rawModelFilters,
-      providerId:
-        modelsLoading || providerOptions.some(([id]) => id === rawModelFilters.providerId)
-          ? rawModelFilters.providerId
-          : "all",
-      type:
-        modelsLoading || typeOptions.includes(rawModelFilters.type) ? rawModelFilters.type : "all",
-      subtype:
-        modelsLoading || subtypeOptions.includes(rawModelFilters.subtype || "all")
-          ? rawModelFilters.subtype
-          : "all",
-      capability:
-        modelsLoading || capabilityOptions.includes(rawModelFilters.capability || "all")
-          ? rawModelFilters.capability
-          : "all",
-    }),
+    () =>
+      modelOptionsKnown
+        ? restrictModelFiltersToOptions(rawModelFilters, {
+            providerIds: providerOptions.map(([id]) => id),
+            types: typeOptions,
+            subtypes: subtypeOptions,
+            capabilities: capabilityOptions,
+          })
+        : rawModelFilters,
     [
       rawModelFilters,
-      modelsLoading,
+      modelOptionsKnown,
       providerOptions,
       typeOptions,
       subtypeOptions,
@@ -292,69 +336,41 @@ export default function ModelCatalogPage() {
     ]
   );
   const comboFilters = useMemo(
-    () => ({
-      ...rawComboFilters,
-      strategy:
-        combosLoading || strategyOptions.includes(rawComboFilters.strategy)
-          ? rawComboFilters.strategy
-          : "all",
-    }),
-    [rawComboFilters, combosLoading, strategyOptions]
+    () =>
+      comboOptionsKnown
+        ? restrictComboFiltersToOptions(rawComboFilters, strategyOptions)
+        : rawComboFilters,
+    [rawComboFilters, comboOptionsKnown, strategyOptions]
   );
 
-  useEffect(() => {
-    if (modelsLoading || combosLoading) return;
-    syncUrlParams(activeTab, modelFilters, comboFilters);
-  }, [activeTab, modelFilters, comboFilters, modelsLoading, combosLoading, syncUrlParams]);
-
-  const switchTab = (tab: CatalogTab) => {
-    setActiveTab(tab);
-    syncUrlParams(tab, modelFilters, comboFilters);
+  return {
+    providerOptions,
+    typeOptions,
+    subtypeOptions,
+    capabilityOptions,
+    strategyOptions,
+    modelOptionsKnown,
+    comboOptionsKnown,
+    modelFilters,
+    comboFilters,
   };
+}
 
-  const updateModelFilters = (patch: Partial<CatalogFilters>) => {
-    const updated = { ...modelFilters, ...patch };
-    setModelFilters(updated);
-    setRequestedModelPage(0);
-    syncUrlParams("models", updated, comboFilters);
-  };
+function useCatalogPageSelection(
+  state: ReturnType<typeof useCatalogPageState> & {
+    modelPage: ReturnType<typeof getCatalogPage<CatalogModelRow>>;
+    comboPage: ReturnType<typeof getComboCatalogPage<ComboCatalogRow>>;
+  }
+) {
+  const {
+    selectedModelIds,
+    setSelectedModelIds,
 
-  const clearModelFilters = () => {
-    setModelFilters(DEFAULT_MODEL_FILTERS);
-    setRequestedModelPage(0);
-    syncUrlParams("models", DEFAULT_MODEL_FILTERS, comboFilters);
-  };
-
-  const updateComboFilters = (patch: Partial<ComboCatalogFilters>) => {
-    const updated = { ...comboFilters, ...patch };
-    setComboFilters(updated);
-    setRequestedComboPage(0);
-    syncUrlParams("combos", modelFilters, updated);
-  };
-
-  const clearComboFilters = () => {
-    setComboFilters(DEFAULT_COMBO_FILTERS);
-    setRequestedComboPage(0);
-    syncUrlParams("combos", modelFilters, DEFAULT_COMBO_FILTERS);
-  };
-
-  // Filtered & Sorted Models
-  const visibleModels = useMemo(() => {
-    const filtered = filterCatalogModels(models, modelFilters, {
-      providerHealthMap,
-      testResults,
-    });
-    return sortCatalogModels(filtered, modelSortField, modelSortDirection);
-  }, [models, modelFilters, providerHealthMap, testResults, modelSortField, modelSortDirection]);
-  const modelPage = getCatalogPage(visibleModels, requestedModelPage, PAGE_SIZE);
-
-  // Filtered & Sorted Combos
-  const visibleCombos = useMemo(() => {
-    const filtered = filterCatalogCombos(combos, comboFilters, testResults);
-    return sortCatalogCombos(filtered, comboSortField, comboSortDirection);
-  }, [combos, comboFilters, testResults, comboSortField, comboSortDirection]);
-  const comboPage = getComboCatalogPage(visibleCombos, requestedComboPage, PAGE_SIZE);
-
+    selectedComboIds,
+    setSelectedComboIds,
+    modelPage,
+    comboPage,
+  } = state;
   // Selection handlers for models
   const toggleSelectModel = (id: string) => {
     setSelectedModelIds((prev) => {
@@ -403,6 +419,135 @@ export default function ModelCatalogPage() {
     });
   };
 
+  return {
+    toggleSelectModel,
+    toggleSelectAllModelsOnPage,
+    toggleSelectCombo,
+    toggleSelectAllCombosOnPage,
+  };
+}
+
+function useCatalogUrlRead(state: ReturnType<typeof useCatalogPageState>) {
+  const { setActiveTab, setComboFilters, setModelFilters, setUrlApplied } = state;
+  // Deep links and Back/Forward: read the query string after mount (DashboardLayout pattern).
+  useEffect(() => {
+    const applyUrlState = () => {
+      const params = new URLSearchParams(window.location.search);
+      setActiveTab(parseCatalogTab(params));
+      setModelFilters(parseModelFilters(params));
+      setComboFilters(parseComboFilters(params));
+      setUrlApplied(true);
+    };
+    const timer = window.setTimeout(applyUrlState, 0);
+    window.addEventListener("popstate", applyUrlState);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("popstate", applyUrlState);
+    };
+  }, [setActiveTab, setComboFilters, setModelFilters, setUrlApplied]);
+}
+function useCatalogPageActions(
+  state: ReturnType<typeof useCatalogPageState>,
+  options: ReturnType<typeof useCatalogPageOptions>
+) {
+  const {
+    activeTab,
+    urlApplied,
+    setActiveTab,
+    setModelFilters,
+    setComboFilters,
+    setRequestedModelPage,
+    setRequestedComboPage,
+    models,
+    combos,
+    providerHealthMap,
+    testResults,
+    modelSortField,
+    modelSortDirection,
+    comboSortField,
+    comboSortDirection,
+    requestedModelPage,
+    requestedComboPage,
+  } = state;
+  const { modelFilters, comboFilters } = options;
+  // The only URL writer: one write per change of tab or (normalised) filters, never before the
+  // query string has been read, and skipped when the URL already matches.
+  useEffect(() => {
+    if (!urlApplied) return;
+    setUrlParams(buildCatalogSearchParams(activeTab, modelFilters, comboFilters));
+  }, [urlApplied, activeTab, modelFilters, comboFilters]);
+
+  const switchTab = (tab: CatalogTab) => {
+    setActiveTab(tab);
+  };
+
+  const updateModelFilters = (patch: Partial<CatalogFilters>) => {
+    setModelFilters({ ...modelFilters, ...patch });
+    setRequestedModelPage(0);
+  };
+
+  const clearModelFilters = () => {
+    setModelFilters(DEFAULT_MODEL_FILTERS);
+    setRequestedModelPage(0);
+  };
+
+  const updateComboFilters = (patch: Partial<ComboCatalogFilters>) => {
+    setComboFilters({ ...comboFilters, ...patch });
+    setRequestedComboPage(0);
+  };
+
+  const clearComboFilters = () => {
+    setComboFilters(DEFAULT_COMBO_FILTERS);
+    setRequestedComboPage(0);
+  };
+
+  // Filtered & Sorted Models
+  const visibleModels = useMemo(() => {
+    const filtered = filterCatalogModels(models, modelFilters, {
+      providerHealthMap,
+      testResults,
+    });
+    return sortCatalogModels(filtered, modelSortField, modelSortDirection);
+  }, [models, modelFilters, providerHealthMap, testResults, modelSortField, modelSortDirection]);
+  const modelPage = getCatalogPage(visibleModels, requestedModelPage, PAGE_SIZE);
+
+  // Filtered & Sorted Combos
+  const visibleCombos = useMemo(() => {
+    const filtered = filterCatalogCombos(combos, comboFilters, testResults);
+    return sortCatalogCombos(filtered, comboSortField, comboSortDirection);
+  }, [combos, comboFilters, testResults, comboSortField, comboSortDirection]);
+  const comboPage = getComboCatalogPage(visibleCombos, requestedComboPage, PAGE_SIZE);
+
+  const selection = useCatalogPageSelection({ ...state, modelPage, comboPage });
+  return {
+    ...selection,
+    switchTab,
+    updateModelFilters,
+    clearModelFilters,
+    updateComboFilters,
+    clearComboFilters,
+    visibleModels,
+    visibleCombos,
+    modelPage,
+    comboPage,
+  };
+}
+function useCatalogPageBulkActions(
+  state: ReturnType<typeof useCatalogPageState>,
+  actions: ReturnType<typeof useCatalogPageActions>
+) {
+  const {
+    testBulkModels,
+    testBulkCombos,
+    pendingBulkRun,
+    setPendingBulkRun,
+    activeTab,
+    models,
+    combos,
+    selectedModelIds,
+    selectedComboIds,
+  } = state;
+  const { visibleModels, visibleCombos } = actions;
   // Bulk test triggers: exact duplicates are dropped before counting, and large runs are
   // confirmed first because every test spends provider quota.
   const startBulkRun = (run: PendingBulkRun) => {
@@ -447,25 +592,68 @@ export default function ModelCatalogPage() {
     }
   };
 
-  // Combo and auto/* rows in the models tab are not models, so they never enter an allow-list.
-  const selectedModelRows = models.filter((m) => selectedModelIds.has(`${m.providerId}:${m.id}`));
+  return { confirmPendingBulkRun, handleTestSelected, handleTestAllFiltered };
+}
+function useCatalogPageAssignment(state: ReturnType<typeof useCatalogPageState>) {
+  const keyIndex = useApiKeyAccessIndex();
+  const [assignKind, setAssignKind] = useState<CatalogTab | null>(null);
+  const openAssign = (kind: CatalogTab) => {
+    setAssignKind(kind);
+    void keyIndex.ensureLoaded();
+  };
+  const selectedModelRows = state.models.filter((m) =>
+    state.selectedModelIds.has(`${m.providerId}:${m.id}`)
+  );
   const assignItems: AssignItem[] =
     assignKind === "models"
       ? selectedModelRows
           .filter(isKeyAssignableModel)
           .map((model) => ({ id: model.id, providerId: model.providerId }))
-      : combos
-          .filter((combo) => selectedComboIds.has(combo.id))
+      : state.combos
+          .filter((combo) => state.selectedComboIds.has(combo.id))
           .map((combo) => ({ id: combo.name }));
   const excludedAssignCount =
     assignKind === "models" ? selectedModelRows.length - assignItems.length : 0;
-
-  const hasModelFiltersActive = hasActiveModelFilters(modelFilters);
-  const hasComboFiltersActive = hasActiveComboFilters(comboFilters);
-  const hasTestResults = Object.keys(testResults).length > 0;
-
+  return { keyIndex, assignKind, setAssignKind, openAssign, assignItems, excludedAssignCount };
+}
+function CatalogAssignmentDialog({ context }: { context: CatalogPageContext }) {
+  const { assignKind, assignItems, excludedAssignCount, keyIndex, setAssignKind } = context;
+  return assignKind ? (
+    <CatalogKeyAssignDialog
+      kind={assignKind}
+      items={assignItems}
+      excludedCount={excludedAssignCount}
+      index={keyIndex}
+      onClose={() => setAssignKind(null)}
+    />
+  ) : null;
+}
+function useCatalogPageContext() {
+  const state = useCatalogPageState();
+  useCatalogUrlRead(state);
+  const loading = useCatalogPageLoading(state);
+  const options = useCatalogPageOptions(state);
+  const actions = useCatalogPageActions(state, options);
+  const bulk = useCatalogPageBulkActions(state, actions);
+  const assignment = useCatalogPageAssignment(state);
+  return {
+    ...assignment,
+    ...state,
+    ...loading,
+    ...options,
+    ...actions,
+    ...bulk,
+    hasModelFiltersActive: hasActiveModelFilters(options.modelFilters),
+    hasComboFiltersActive: hasActiveComboFilters(options.comboFilters),
+    hasTestResults: Object.keys(state.testResults).length > 0,
+  };
+}
+type CatalogPageContext = ReturnType<typeof useCatalogPageContext>;
+function CatalogHeader({ context }: { context: CatalogPageContext }) {
+  const { t, refreshAll, switchTab, activeTab, models, modelsLoading, combos, combosLoading } =
+    context;
   return (
-    <div className="flex min-w-0 flex-col gap-6">
+    <>
       <header className="flex flex-col gap-2">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -492,7 +680,14 @@ export default function ModelCatalogPage() {
           }}
         />
       </header>
+    </>
+  );
+}
 
+function CatalogModelsPanel({ context }: { context: CatalogPageContext }) {
+  const { activeTab } = context;
+  return (
+    <>
       {/* Models Tab Content */}
       {activeTab === "models" && (
         <section
@@ -502,126 +697,204 @@ export default function ModelCatalogPage() {
           className="flex flex-col gap-4"
         >
           <Card padding="none" className="overflow-hidden">
-            <ModelCatalogFiltersComponent
-              filters={modelFilters}
-              onChange={updateModelFilters}
-              onClear={clearModelFilters}
-              providerOptions={providerOptions}
-              typeOptions={typeOptions}
-              subtypeOptions={subtypeOptions}
-              capabilityOptions={capabilityOptions}
-              hasActiveFilters={hasModelFiltersActive}
-              totalCount={visibleModels.length}
-            />
+            <CatalogModelsFilters context={context} />
 
-            <CatalogBulkActionBar
-              selectedCount={selectedModelIds.size}
-              filteredCount={visibleModels.length}
-              running={running}
-              progress={progress}
-              hasTestResults={hasTestResults}
-              onTestSelected={handleTestSelected}
-              onTestFiltered={handleTestAllFiltered}
-              onCancel={cancelTest}
-              onClearResults={clearResults}
-              onAssign={() => openAssign("models")}
-            />
+            <CatalogModelsBulkActions context={context} />
 
-            {modelsLoading && models.length === 0 ? (
-              <div
-                role="status"
-                aria-live="polite"
-                className="flex min-h-64 items-center justify-center p-8 text-sm text-text-muted"
-              >
-                {t("loading")}
-              </div>
-            ) : modelsError && models.length === 0 ? (
-              <div
-                role="alert"
-                className="flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center"
-              >
-                <p className="text-sm text-text-main">{t("unableToLoad")}</p>
-                <p className="text-sm text-text-muted">{t("checkConnection")}</p>
-                <Button variant="secondary" onClick={refreshAll}>
-                  {t("retry")}
-                </Button>
-              </div>
-            ) : visibleModels.length === 0 ? (
-              <div className="flex min-h-64 flex-col items-center justify-center gap-2 p-8 text-center">
-                <span
-                  className="material-symbols-outlined text-3xl text-text-muted"
-                  aria-hidden="true"
-                >
-                  search_off
-                </span>
-                <p className="font-medium text-text-main">
-                  {models.length === 0 ? t("noModelsAvailable") : t("noModelsMatch")}
-                </p>
-                {models.length > 0 && (
-                  <Button variant="ghost" size="sm" onClick={clearModelFilters}>
-                    {t("clearFilters")}
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <ModelCatalogTable
-                rows={modelPage.rows}
-                sortField={modelSortField}
-                sortDirection={modelSortDirection}
-                onSort={(field) => {
-                  if (field === modelSortField) {
-                    setModelSortDirection((curr) => (curr === "asc" ? "desc" : "asc"));
-                  } else {
-                    setModelSortField(field);
-                    setModelSortDirection("asc");
-                  }
-                  setRequestedModelPage(0);
-                }}
-                page={modelPage.page + 1}
-                pageCount={modelPage.pageCount}
-                startIndex={modelPage.page * PAGE_SIZE}
-                totalCount={visibleModels.length}
-                loading={modelsLoading}
-                error={modelsError}
-                onPrevious={() => setRequestedModelPage((c) => Math.max(0, c - 1))}
-                onNext={() =>
-                  setRequestedModelPage((c) => Math.min(modelPage.pageCount - 1, c + 1))
-                }
-                labels={{
-                  provider: t("provider"),
-                  model: t("model"),
-                  type: t("type"),
-                  capabilities: t("capabilities"),
-                  context: t("context"),
-                  output: t("output"),
-                  flags: t("flags"),
-                  custom: t("custom"),
-                  free: t("free"),
-                }}
-                selectedIds={selectedModelIds}
-                onToggleSelect={toggleSelectModel}
-                onToggleSelectAll={toggleSelectAllModelsOnPage}
-                testResults={testResults}
-                activeTestingKeys={activeItemKeys}
-                onTestModel={testSingleModel}
-                providerHealthMap={providerHealthMap}
-                bulkRunning={running}
-                renderKeyAccess={(model) =>
-                  isKeyAssignableModel(model) ? (
-                    <CatalogKeyAccessButton
-                      kind="models"
-                      id={model.id}
-                      providerId={model.providerId}
-                      index={keyIndex}
-                    />
-                  ) : null
-                }
-              />
-            )}
+            <CatalogModelsContent context={context} />
           </Card>
         </section>
       )}
+    </>
+  );
+}
 
+function CatalogModelsFilters({ context }: { context: CatalogPageContext }) {
+  const {
+    providerOptions,
+    typeOptions,
+    subtypeOptions,
+    capabilityOptions,
+    modelFilters,
+    updateModelFilters,
+    clearModelFilters,
+    visibleModels,
+    hasModelFiltersActive,
+  } = context;
+  return (
+    <>
+      <ModelCatalogFiltersComponent
+        filters={modelFilters}
+        onChange={updateModelFilters}
+        onClear={clearModelFilters}
+        providerOptions={providerOptions}
+        typeOptions={typeOptions}
+        subtypeOptions={subtypeOptions}
+        capabilityOptions={capabilityOptions}
+        hasActiveFilters={hasModelFiltersActive}
+        totalCount={visibleModels.length}
+      />
+    </>
+  );
+}
+
+function CatalogModelsBulkActions({ context }: { context: CatalogPageContext }) {
+  const {
+    visibleModels,
+    handleTestSelected,
+    handleTestAllFiltered,
+    hasTestResults,
+    selectedModelIds,
+    running,
+    progress,
+    cancelTest,
+    clearResults,
+  } = context;
+  const { openAssign } = context;
+  return (
+    <>
+      <CatalogBulkActionBar
+        selectedCount={selectedModelIds.size}
+        filteredCount={visibleModels.length}
+        running={running}
+        progress={progress}
+        hasTestResults={hasTestResults}
+        onTestSelected={handleTestSelected}
+        onTestFiltered={handleTestAllFiltered}
+        onCancel={cancelTest}
+        onClearResults={clearResults}
+        onAssign={() => openAssign("models")}
+      />
+    </>
+  );
+}
+
+function CatalogModelsContent({ context }: { context: CatalogPageContext }) {
+  const { t, refreshAll, clearModelFilters, visibleModels, models, modelsLoading, modelsError } =
+    context;
+  return (
+    <>
+      {modelsLoading && models.length === 0 ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex min-h-64 items-center justify-center p-8 text-sm text-text-muted"
+        >
+          {t("loading")}
+        </div>
+      ) : modelsError && models.length === 0 ? (
+        <div
+          role="alert"
+          className="flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center"
+        >
+          <p className="text-sm text-text-main">{t("unableToLoad")}</p>
+          <p className="text-sm text-text-muted">{t("checkConnection")}</p>
+          <Button variant="secondary" onClick={refreshAll}>
+            {t("retry")}
+          </Button>
+        </div>
+      ) : visibleModels.length === 0 ? (
+        <div className="flex min-h-64 flex-col items-center justify-center gap-2 p-8 text-center">
+          <span className="material-symbols-outlined text-3xl text-text-muted" aria-hidden="true">
+            search_off
+          </span>
+          <p className="font-medium text-text-main">
+            {models.length === 0 ? t("noModelsAvailable") : t("noModelsMatch")}
+          </p>
+          {models.length > 0 && (
+            <Button variant="ghost" size="sm" onClick={clearModelFilters}>
+              {t("clearFilters")}
+            </Button>
+          )}
+        </div>
+      ) : (
+        <CatalogModelsResults context={context} />
+      )}
+    </>
+  );
+}
+
+function CatalogModelsResults({ context }: { context: CatalogPageContext }) {
+  const {
+    t,
+    visibleModels,
+    modelPage,
+    toggleSelectModel,
+    toggleSelectAllModelsOnPage,
+    modelsLoading,
+    modelsError,
+    modelSortField,
+    setModelSortField,
+    modelSortDirection,
+    setModelSortDirection,
+    setRequestedModelPage,
+    selectedModelIds,
+    providerHealthMap,
+    testResults,
+    running,
+    activeItemKeys,
+    testSingleModel,
+  } = context;
+  const { keyIndex } = context;
+  return (
+    <ModelCatalogTable
+      rows={modelPage.rows}
+      sortField={modelSortField}
+      sortDirection={modelSortDirection}
+      onSort={(field) => {
+        if (field === modelSortField) {
+          setModelSortDirection((curr) => (curr === "asc" ? "desc" : "asc"));
+        } else {
+          setModelSortField(field);
+          setModelSortDirection("asc");
+        }
+        setRequestedModelPage(0);
+      }}
+      page={modelPage.page + 1}
+      pageCount={modelPage.pageCount}
+      startIndex={modelPage.page * PAGE_SIZE}
+      totalCount={visibleModels.length}
+      loading={modelsLoading}
+      error={modelsError}
+      onPrevious={() => setRequestedModelPage((c) => Math.max(0, c - 1))}
+      onNext={() => setRequestedModelPage((c) => Math.min(modelPage.pageCount - 1, c + 1))}
+      labels={{
+        provider: t("provider"),
+        model: t("model"),
+        type: t("type"),
+        capabilities: t("capabilities"),
+        context: t("context"),
+        output: t("output"),
+        flags: t("flags"),
+        custom: t("custom"),
+        free: t("free"),
+      }}
+      selectedIds={selectedModelIds}
+      onToggleSelect={toggleSelectModel}
+      onToggleSelectAll={toggleSelectAllModelsOnPage}
+      testResults={testResults}
+      activeTestingKeys={activeItemKeys}
+      onTestModel={testSingleModel}
+      providerHealthMap={providerHealthMap}
+      bulkRunning={running}
+      renderKeyAccess={(model) =>
+        isKeyAssignableModel(model) ? (
+          <CatalogKeyAccessButton
+            kind="models"
+            id={model.id}
+            providerId={model.providerId}
+            index={keyIndex}
+          />
+        ) : null
+      }
+    />
+  );
+}
+
+function CatalogCombosPanel({ context }: { context: CatalogPageContext }) {
+  const { activeTab } = context;
+  return (
+    <>
       {/* Combos Tab Content */}
       {activeTab === "combos" && (
         <section
@@ -631,112 +904,171 @@ export default function ModelCatalogPage() {
           className="flex flex-col gap-4"
         >
           <Card padding="none" className="overflow-hidden">
-            <ComboCatalogFiltersComponent
-              filters={comboFilters}
-              onChange={updateComboFilters}
-              onClear={clearComboFilters}
-              strategyOptions={strategyOptions}
-              hasActiveFilters={hasComboFiltersActive}
-              totalCount={visibleCombos.length}
-            />
+            <CatalogCombosFilters context={context} />
 
-            <CatalogBulkActionBar
-              selectedCount={selectedComboIds.size}
-              filteredCount={visibleCombos.length}
-              running={running}
-              progress={progress}
-              hasTestResults={hasTestResults}
-              onTestSelected={handleTestSelected}
-              onTestFiltered={handleTestAllFiltered}
-              onCancel={cancelTest}
-              onClearResults={clearResults}
-              onAssign={() => openAssign("combos")}
-            />
+            <CatalogCombosBulkActions context={context} />
 
-            {combosLoading && combos.length === 0 ? (
-              <div
-                role="status"
-                aria-live="polite"
-                className="flex min-h-64 items-center justify-center p-8 text-sm text-text-muted"
-              >
-                {t("loading")}
-              </div>
-            ) : combosError && combos.length === 0 ? (
-              <div
-                role="alert"
-                className="flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center"
-              >
-                <p className="text-sm text-text-main">{t("unableToLoadCombos")}</p>
-                <p className="text-sm text-text-muted">{t("checkConnection")}</p>
-                <Button variant="secondary" onClick={refreshAll}>
-                  {t("retry")}
-                </Button>
-              </div>
-            ) : visibleCombos.length === 0 ? (
-              <div className="flex min-h-64 flex-col items-center justify-center gap-2 p-8 text-center">
-                <span
-                  className="material-symbols-outlined text-3xl text-text-muted"
-                  aria-hidden="true"
-                >
-                  search_off
-                </span>
-                <p className="font-medium text-text-main">
-                  {combos.length === 0 ? t("noCombosAvailable") : t("noCombosMatch")}
-                </p>
-                {combos.length > 0 && (
-                  <Button variant="ghost" size="sm" onClick={clearComboFilters}>
-                    {t("clearFilters")}
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <ComboCatalogTable
-                rows={comboPage.rows}
-                sortField={comboSortField}
-                sortDirection={comboSortDirection}
-                onSort={(field) => {
-                  if (field === comboSortField) {
-                    setComboSortDirection((curr) => (curr === "asc" ? "desc" : "asc"));
-                  } else {
-                    setComboSortField(field);
-                    setComboSortDirection("asc");
-                  }
-                  setRequestedComboPage(0);
-                }}
-                page={comboPage.page + 1}
-                pageCount={comboPage.pageCount}
-                startIndex={comboPage.page * PAGE_SIZE}
-                totalCount={visibleCombos.length}
-                selectedIds={selectedComboIds}
-                onToggleSelect={toggleSelectCombo}
-                onToggleSelectAll={toggleSelectAllCombosOnPage}
-                testResults={testResults}
-                activeTestingKeys={activeItemKeys}
-                onTestCombo={testSingleCombo}
-                onPrevious={() => setRequestedComboPage((c) => Math.max(0, c - 1))}
-                onNext={() =>
-                  setRequestedComboPage((c) => Math.min(comboPage.pageCount - 1, c + 1))
-                }
-                bulkRunning={running}
-                renderKeyAccess={(id) => (
-                  <CatalogKeyAccessButton kind="combos" id={id} index={keyIndex} />
-                )}
-              />
-            )}
+            <CatalogCombosContent context={context} />
           </Card>
         </section>
       )}
+    </>
+  );
+}
 
-      {assignKind && (
-        <CatalogKeyAssignDialog
-          kind={assignKind}
-          items={assignItems}
-          excludedCount={excludedAssignCount}
-          index={keyIndex}
-          onClose={() => setAssignKind(null)}
-        />
+function CatalogCombosFilters({ context }: { context: CatalogPageContext }) {
+  const {
+    strategyOptions,
+    comboFilters,
+    updateComboFilters,
+    clearComboFilters,
+    visibleCombos,
+    hasComboFiltersActive,
+  } = context;
+  return (
+    <>
+      <ComboCatalogFiltersComponent
+        filters={comboFilters}
+        onChange={updateComboFilters}
+        onClear={clearComboFilters}
+        strategyOptions={strategyOptions}
+        hasActiveFilters={hasComboFiltersActive}
+        totalCount={visibleCombos.length}
+      />
+    </>
+  );
+}
+
+function CatalogCombosBulkActions({ context }: { context: CatalogPageContext }) {
+  const {
+    visibleCombos,
+    handleTestSelected,
+    handleTestAllFiltered,
+    hasTestResults,
+    selectedComboIds,
+    running,
+    progress,
+    cancelTest,
+    clearResults,
+  } = context;
+  const { openAssign } = context;
+  return (
+    <>
+      <CatalogBulkActionBar
+        selectedCount={selectedComboIds.size}
+        filteredCount={visibleCombos.length}
+        running={running}
+        progress={progress}
+        hasTestResults={hasTestResults}
+        onTestSelected={handleTestSelected}
+        onTestFiltered={handleTestAllFiltered}
+        onCancel={cancelTest}
+        onClearResults={clearResults}
+        onAssign={() => openAssign("combos")}
+      />
+    </>
+  );
+}
+
+function CatalogCombosContent({ context }: { context: CatalogPageContext }) {
+  const { t, refreshAll, clearComboFilters, visibleCombos, combos, combosLoading, combosError } =
+    context;
+  return (
+    <>
+      {combosLoading && combos.length === 0 ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex min-h-64 items-center justify-center p-8 text-sm text-text-muted"
+        >
+          {t("loading")}
+        </div>
+      ) : combosError && combos.length === 0 ? (
+        <div
+          role="alert"
+          className="flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center"
+        >
+          <p className="text-sm text-text-main">{t("unableToLoadCombos")}</p>
+          <p className="text-sm text-text-muted">{t("checkConnection")}</p>
+          <Button variant="secondary" onClick={refreshAll}>
+            {t("retry")}
+          </Button>
+        </div>
+      ) : visibleCombos.length === 0 ? (
+        <div className="flex min-h-64 flex-col items-center justify-center gap-2 p-8 text-center">
+          <span className="material-symbols-outlined text-3xl text-text-muted" aria-hidden="true">
+            search_off
+          </span>
+          <p className="font-medium text-text-main">
+            {combos.length === 0 ? t("noCombosAvailable") : t("noCombosMatch")}
+          </p>
+          {combos.length > 0 && (
+            <Button variant="ghost" size="sm" onClick={clearComboFilters}>
+              {t("clearFilters")}
+            </Button>
+          )}
+        </div>
+      ) : (
+        <CatalogCombosResults context={context} />
       )}
+    </>
+  );
+}
 
+function CatalogCombosResults({ context }: { context: CatalogPageContext }) {
+  const {
+    visibleCombos,
+    comboPage,
+    toggleSelectCombo,
+    toggleSelectAllCombosOnPage,
+    comboSortField,
+    setComboSortField,
+    comboSortDirection,
+    setComboSortDirection,
+    setRequestedComboPage,
+    selectedComboIds,
+    testResults,
+    running,
+    activeItemKeys,
+    testSingleCombo,
+  } = context;
+  const { keyIndex } = context;
+  return (
+    <ComboCatalogTable
+      rows={comboPage.rows}
+      sortField={comboSortField}
+      sortDirection={comboSortDirection}
+      onSort={(field) => {
+        if (field === comboSortField) {
+          setComboSortDirection((curr) => (curr === "asc" ? "desc" : "asc"));
+        } else {
+          setComboSortField(field);
+          setComboSortDirection("asc");
+        }
+        setRequestedComboPage(0);
+      }}
+      page={comboPage.page + 1}
+      pageCount={comboPage.pageCount}
+      startIndex={comboPage.page * PAGE_SIZE}
+      totalCount={visibleCombos.length}
+      selectedIds={selectedComboIds}
+      onToggleSelect={toggleSelectCombo}
+      onToggleSelectAll={toggleSelectAllCombosOnPage}
+      testResults={testResults}
+      activeTestingKeys={activeItemKeys}
+      onTestCombo={testSingleCombo}
+      onPrevious={() => setRequestedComboPage((c) => Math.max(0, c - 1))}
+      onNext={() => setRequestedComboPage((c) => Math.min(comboPage.pageCount - 1, c + 1))}
+      bulkRunning={running}
+      renderKeyAccess={(id) => <CatalogKeyAccessButton kind="combos" id={id} index={keyIndex} />}
+    />
+  );
+}
+
+function CatalogBulkConfirmation({ context }: { context: CatalogPageContext }) {
+  const { t, confirmPendingBulkRun, pendingBulkRun, setPendingBulkRun } = context;
+  return (
+    <>
       <ConfirmModal
         isOpen={pendingBulkRun !== null}
         onClose={() => setPendingBulkRun(null)}
@@ -750,6 +1082,18 @@ export default function ModelCatalogPage() {
         confirmText={t("bulkConfirmStart")}
         variant="primary"
       />
+    </>
+  );
+}
+export default function ModelCatalogPage() {
+  const context = useCatalogPageContext();
+  return (
+    <div className="flex flex-col gap-6">
+      <CatalogHeader context={context} />
+      <CatalogModelsPanel context={context} />
+      <CatalogCombosPanel context={context} />
+      <CatalogAssignmentDialog context={context} />
+      <CatalogBulkConfirmation context={context} />
     </div>
   );
 }

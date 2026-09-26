@@ -95,21 +95,26 @@ export function flattenCatalog(catalog: unknown): CatalogModelRow[] {
   return rows;
 }
 
+/** Boolean flags contribute their key; list values contribute every non-blank string entry. */
+function addCapabilityNames(caps: Set<string>, capabilities: Record<string, unknown>): void {
+  for (const [key, value] of Object.entries(capabilities)) {
+    if (value === true) {
+      caps.add(key.toLowerCase());
+    } else if (Array.isArray(value)) {
+      for (const item of value) {
+        if (typeof item === "string" && item.trim()) {
+          caps.add(item.toLowerCase());
+        }
+      }
+    }
+  }
+}
+
 export function extractCatalogCapabilities(models: CatalogModelRow[]): string[] {
   const caps = new Set<string>();
   for (const model of models) {
     if (model.capabilities) {
-      for (const [key, value] of Object.entries(model.capabilities)) {
-        if (value === true) {
-          caps.add(key.toLowerCase());
-        } else if (Array.isArray(value)) {
-          for (const item of value) {
-            if (typeof item === "string" && item.trim()) {
-              caps.add(item.toLowerCase());
-            }
-          }
-        }
-      }
+      addCapabilityNames(caps, model.capabilities);
     }
   }
   return [...caps].sort((left, right) => left.localeCompare(right));
@@ -159,6 +164,55 @@ function searchableText(model: CatalogModelRow): string {
     .toLocaleLowerCase();
 }
 
+/** Optional select filters are inactive while unset or set to "all". */
+function isActiveChoice(value: string | undefined): value is string {
+  return Boolean(value) && value !== "all";
+}
+
+function matchesSubtype(model: CatalogModelRow, subtype: string | undefined): boolean {
+  return !isActiveChoice(subtype) || model.subtype === subtype;
+}
+
+function matchesCapability(model: CatalogModelRow, capability: string | undefined): boolean {
+  return !isActiveChoice(capability) || modelHasCapability(model, capability);
+}
+
+/** A set minimum hides rows whose value is unknown or below it; an unset minimum hides none. */
+function meetsMinimum(value: number | undefined, minimum: number | undefined): boolean {
+  if (typeof minimum !== "number" || Number.isNaN(minimum)) return true;
+  if (typeof value !== "number" || value < minimum) return false;
+  return true;
+}
+
+function matchesPricing(model: CatalogModelRow, pricing: string | undefined): boolean {
+  if (!isActiveChoice(pricing)) return true;
+  const free = isModelFree(model);
+  if (pricing === "free" && !free) return false;
+  if (pricing === "paid" && free) return false;
+  return true;
+}
+
+function matchesProviderHealth(
+  model: CatalogModelRow,
+  providerHealth: string | undefined,
+  providerHealthMap: Record<string, "healthy" | "degraded" | "down">
+): boolean {
+  if (!isActiveChoice(providerHealth)) return true;
+  const health = providerHealthMap[model.providerId] ?? "healthy";
+  return health === providerHealth;
+}
+
+function matchesModelTestResult(
+  model: CatalogModelRow,
+  testResult: string | undefined,
+  testResults: Record<string, CatalogTestResult>
+): boolean {
+  if (!isActiveChoice(testResult)) return true;
+  const test = testResults[getModelTestKey(model.providerId, model.id)];
+  const resultStatus = test ? test.status : "untested";
+  return resultStatus === testResult;
+}
+
 export function filterCatalogModels(
   models: CatalogModelRow[],
   filters: CatalogFilters,
@@ -170,46 +224,13 @@ export function filterCatalogModels(
   return models.filter((model) => {
     if (filters.providerId !== "all" && model.providerId !== filters.providerId) return false;
     if (filters.type !== "all" && model.type !== filters.type) return false;
-    if (filters.subtype && filters.subtype !== "all" && model.subtype !== filters.subtype) {
-      return false;
-    }
-    if (filters.capability && filters.capability !== "all") {
-      if (!modelHasCapability(model, filters.capability)) return false;
-    }
-    if (typeof filters.minContextLength === "number" && !Number.isNaN(filters.minContextLength)) {
-      if (
-        typeof model.context_length !== "number" ||
-        model.context_length < filters.minContextLength
-      ) {
-        return false;
-      }
-    }
-    if (
-      typeof filters.minMaxOutputTokens === "number" &&
-      !Number.isNaN(filters.minMaxOutputTokens)
-    ) {
-      if (
-        typeof model.max_output_tokens !== "number" ||
-        model.max_output_tokens < filters.minMaxOutputTokens
-      ) {
-        return false;
-      }
-    }
-    if (filters.pricing && filters.pricing !== "all") {
-      const free = isModelFree(model);
-      if (filters.pricing === "free" && !free) return false;
-      if (filters.pricing === "paid" && free) return false;
-    }
-    if (filters.providerHealth && filters.providerHealth !== "all") {
-      const health = providerHealthMap[model.providerId] ?? "healthy";
-      if (health !== filters.providerHealth) return false;
-    }
-    if (filters.testResult && filters.testResult !== "all") {
-      const testKey = getModelTestKey(model.providerId, model.id);
-      const test = testResults[testKey];
-      const resultStatus = test ? test.status : "untested";
-      if (resultStatus !== filters.testResult) return false;
-    }
+    if (!matchesSubtype(model, filters.subtype)) return false;
+    if (!matchesCapability(model, filters.capability)) return false;
+    if (!meetsMinimum(model.context_length, filters.minContextLength)) return false;
+    if (!meetsMinimum(model.max_output_tokens, filters.minMaxOutputTokens)) return false;
+    if (!matchesPricing(model, filters.pricing)) return false;
+    if (!matchesProviderHealth(model, filters.providerHealth, providerHealthMap)) return false;
+    if (!matchesModelTestResult(model, filters.testResult, testResults)) return false;
     return query === "" || searchableText(model).includes(query);
   });
 }

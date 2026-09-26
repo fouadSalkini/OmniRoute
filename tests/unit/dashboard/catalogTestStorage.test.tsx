@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
-  CATALOG_TEST_RESULTS_KEY,
+  CATALOG_TEST_RESULTS_STORAGE_NAME,
   classifyError,
   clearCatalogTestResults,
   getComboTestKey,
@@ -29,13 +29,13 @@ describe("catalogTestStorage", () => {
   });
 
   it("handles corrupt JSON in localStorage gracefully without throwing", () => {
-    localStorage.setItem(CATALOG_TEST_RESULTS_KEY, "this is not valid json {{{");
+    localStorage.setItem(CATALOG_TEST_RESULTS_STORAGE_NAME, "this is not valid json {{{");
     const results = loadCatalogTestResults();
     expect(results).toEqual({});
   });
 
   it("handles non-object JSON gracefully", () => {
-    localStorage.setItem(CATALOG_TEST_RESULTS_KEY, JSON.stringify(["item1", "item2"]));
+    localStorage.setItem(CATALOG_TEST_RESULTS_STORAGE_NAME, JSON.stringify(["item1", "item2"]));
     const results = loadCatalogTestResults();
     expect(results).toEqual({});
   });
@@ -72,7 +72,7 @@ describe("catalogTestStorage", () => {
 
   it("drops stored timestamps outside the JavaScript date range", () => {
     localStorage.setItem(
-      CATALOG_TEST_RESULTS_KEY,
+      CATALOG_TEST_RESULTS_STORAGE_NAME,
       JSON.stringify({
         invalid: { status: "ok", testedAt: 8.64e15 + 1 },
         valid: { status: "ok", testedAt: 1000 },
@@ -97,7 +97,7 @@ describe("catalogTestStorage", () => {
 
     clearCatalogTestResults();
     expect(loadCatalogTestResults()).toEqual({});
-    expect(localStorage.getItem(CATALOG_TEST_RESULTS_KEY)).toBeNull();
+    expect(localStorage.getItem(CATALOG_TEST_RESULTS_STORAGE_NAME)).toBeNull();
   });
 
   it("caps results to MAX_TEST_RESULTS_CAP by dropping the oldest entries", () => {

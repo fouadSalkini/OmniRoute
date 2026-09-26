@@ -12,15 +12,10 @@ import {
   type ModelTestTarget,
 } from "./catalogBulkUtils";
 import {
-  mapBatchResponse,
-  mapComboResponse,
-  mapRequestFailure,
-  mapSingleModelResponse,
-  readJsonBody,
-  type BatchModelTestResponse,
-  type ComboTestResponse,
-  type SingleModelTestResponse,
-} from "./catalogTestResponses";
+  requestComboTest,
+  requestSingleModelTest,
+  requestModelBatchTest,
+} from "./catalogTestRequests";
 import {
   clearCatalogTestResults,
   getComboTestKey,
@@ -40,9 +35,8 @@ export interface ProgressState {
 }
 
 const IDLE_PROGRESS: ProgressState = { kind: "models", completed: 0, total: 0, cancelled: false };
-const JSON_HEADERS = { "Content-Type": "application/json" };
 
-export function useCatalogTestRunner() {
+function useCatalogRunnerState() {
   const [testResults, setTestResults] = useState<Record<string, CatalogTestResult>>({});
   const [running, setRunning] = useState(false);
   const [activeItemKeys, setActiveItemKeys] = useState<Set<string>>(new Set());
@@ -103,24 +97,92 @@ export function useCatalogTestRunner() {
     }
   }, []);
 
+  return {
+    testResults,
+    setTestResults,
+    running,
+    setRunning,
+    activeItemKeys,
+    setActiveItemKeys,
+    activeSignalsRef,
+    progress,
+    setProgress,
+    mountedRef,
+    runControllerRef,
+    singleControllersRef,
+    persist,
+    claimActiveKey,
+    releaseActiveKey,
+    withSingleController,
+  };
+}
+
+function useCatalogRunProgress(state: ReturnType<typeof useCatalogRunnerState>) {
+  const {
+    runControllerRef,
+    setRunning,
+    setProgress,
+    mountedRef,
+    activeSignalsRef,
+    setActiveItemKeys,
+  } = state;
+  const startRun = useCallback(
+    (kind: BulkRunKind, total: number) => {
+      runControllerRef.current?.abort();
+      const controller = new AbortController();
+      runControllerRef.current = controller;
+      setRunning(true);
+      setProgress({ kind, completed: 0, total, cancelled: false });
+      return controller;
+    },
+    [runControllerRef, setProgress, setRunning]
+  );
+
+  /** Only the run that still owns the runner may move the progress bar or end the run. */
+  const advanceRun = useCallback(
+    (controller: AbortController, count: number) => {
+      if (!mountedRef.current || runControllerRef.current !== controller) return;
+      setProgress((current) => ({
+        ...current,
+        completed: Math.min(current.completed + count, current.total),
+      }));
+    },
+    [mountedRef, runControllerRef, setProgress]
+  );
+
+  const finishRun = useCallback(
+    (controller: AbortController) => {
+      if (runControllerRef.current !== controller) return;
+      runControllerRef.current = null;
+      if (mountedRef.current) setRunning(false);
+    },
+    [mountedRef, runControllerRef, setRunning]
+  );
+
+  const cancelTest = useCallback(() => {
+    const controller = runControllerRef.current;
+    if (!controller) return;
+    runControllerRef.current = null;
+    controller.abort();
+    setRunning(false);
+    for (const [key, signal] of activeSignalsRef.current) {
+      if (signal === controller.signal) activeSignalsRef.current.delete(key);
+    }
+    setActiveItemKeys(new Set(activeSignalsRef.current.keys()));
+    setProgress((current) => ({ ...current, cancelled: true }));
+  }, [activeSignalsRef, runControllerRef, setActiveItemKeys, setProgress, setRunning]);
+
+  return { startRun, advanceRun, finishRun, cancelTest };
+}
+
+function useCatalogRowTests(state: ReturnType<typeof useCatalogRunnerState>) {
+  const { claimActiveKey, releaseActiveKey, persist, withSingleController } = state;
   const runComboTest = useCallback(
     async (comboName: string, signal: AbortSignal) => {
       const key = getComboTestKey(comboName);
       if (!claimActiveKey(key, signal)) return;
       try {
-        const res = await fetch("/api/combos/test", {
-          method: "POST",
-          headers: JSON_HEADERS,
-          body: JSON.stringify({ comboName }),
-          signal,
-        });
-        const body = await readJsonBody<ComboTestResponse>(res);
-        persist([mapComboResponse(comboName, res, body, Date.now())], signal);
-      } catch (failure) {
-        persist(
-          [mapRequestFailure({ targetType: "combo", comboName }, failure, Date.now())],
-          signal
-        );
+        persist([await requestComboTest(comboName, signal)], signal);
       } finally {
         releaseActiveKey(key, signal);
       }
@@ -134,19 +196,7 @@ export function useCatalogTestRunner() {
         const key = getModelTestKey(providerId, modelId);
         if (!claimActiveKey(key, signal)) return;
         try {
-          const res = await fetch("/api/models/test", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ providerId, modelId }),
-            signal,
-          });
-          const body = await readJsonBody<SingleModelTestResponse>(res);
-          persist([mapSingleModelResponse(providerId, modelId, res, body, Date.now())], signal);
-        } catch (failure) {
-          persist(
-            [mapRequestFailure({ targetType: "model", providerId, modelId }, failure, Date.now())],
-            signal
-          );
+          persist([await requestSingleModelTest(providerId, modelId, signal)], signal);
         } finally {
           releaseActiveKey(key, signal);
         }
@@ -159,30 +209,14 @@ export function useCatalogTestRunner() {
     [runComboTest, withSingleController]
   );
 
-  const startRun = useCallback((kind: BulkRunKind, total: number) => {
-    runControllerRef.current?.abort();
-    const controller = new AbortController();
-    runControllerRef.current = controller;
-    setRunning(true);
-    setProgress({ kind, completed: 0, total, cancelled: false });
-    return controller;
-  }, []);
+  return { runComboTest, testSingleModel, testSingleCombo };
+}
 
-  /** Only the run that still owns the runner may move the progress bar or end the run. */
-  const advanceRun = useCallback((controller: AbortController, count: number) => {
-    if (!mountedRef.current || runControllerRef.current !== controller) return;
-    setProgress((current) => ({
-      ...current,
-      completed: Math.min(current.completed + count, current.total),
-    }));
-  }, []);
-
-  const finishRun = useCallback((controller: AbortController) => {
-    if (runControllerRef.current !== controller) return;
-    runControllerRef.current = null;
-    if (mountedRef.current) setRunning(false);
-  }, []);
-
+export function useCatalogTestRunner() {
+  const state = useCatalogRunnerState();
+  const { testResults, setTestResults, running, activeItemKeys, progress, persist } = state;
+  const { runComboTest, testSingleModel, testSingleCombo } = useCatalogRowTests(state);
+  const { startRun, advanceRun, finishRun, cancelTest } = useCatalogRunProgress(state);
   const testBulkModels = useCallback(
     async (targets: ModelTestTarget[]) => {
       const unique = dedupeModelTargets(targets);
@@ -192,30 +226,7 @@ export function useCatalogTestRunner() {
       try {
         await runModelBatches(buildModelBatches(unique), signal, async (batch) => {
           try {
-            const res = await fetch("/api/models/test-all", {
-              method: "POST",
-              headers: JSON_HEADERS,
-              body: JSON.stringify({
-                providerId: batch.providerId,
-                modelIds: batch.modelIds,
-                respectRateLimit: true,
-              }),
-              signal,
-            });
-            const body = await readJsonBody<BatchModelTestResponse>(res);
-            persist(mapBatchResponse(batch, res, body, Date.now()), signal);
-          } catch (failure) {
-            const testedAt = Date.now();
-            persist(
-              batch.modelIds.map((modelId) =>
-                mapRequestFailure(
-                  { targetType: "model", providerId: batch.providerId, modelId },
-                  failure,
-                  testedAt
-                )
-              ),
-              signal
-            );
+            persist(await requestModelBatchTest(batch, signal), signal);
           } finally {
             advanceRun(controller, batch.modelIds.length);
           }
@@ -248,23 +259,10 @@ export function useCatalogTestRunner() {
     [advanceRun, finishRun, runComboTest, startRun]
   );
 
-  const cancelTest = useCallback(() => {
-    const controller = runControllerRef.current;
-    if (!controller) return;
-    runControllerRef.current = null;
-    controller.abort();
-    setRunning(false);
-    for (const [key, signal] of activeSignalsRef.current) {
-      if (signal === controller.signal) activeSignalsRef.current.delete(key);
-    }
-    setActiveItemKeys(new Set(activeSignalsRef.current.keys()));
-    setProgress((current) => ({ ...current, cancelled: true }));
-  }, []);
-
   const clearResults = useCallback(() => {
     clearCatalogTestResults();
     setTestResults({});
-  }, []);
+  }, [setTestResults]);
 
   return {
     testResults,

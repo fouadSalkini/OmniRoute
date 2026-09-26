@@ -4,6 +4,48 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/shared/components";
 import type { ProgressState } from "./useCatalogTestRunner";
 
+/** The run's progress bar while it runs, then the cancelled notice when it was stopped. */
+function CatalogBulkProgress({ running, progress }: { running: boolean; progress: ProgressState }) {
+  const t = useTranslations("modelCatalog");
+  const percent = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0;
+  const counts = { completed: progress.completed, total: progress.total };
+  const progressText =
+    progress.kind === "combos"
+      ? t("testingProgressCombos", counts)
+      : t("testingProgressModels", counts);
+  const cancelledText =
+    progress.kind === "combos"
+      ? t("testsCancelledCombos", counts)
+      : t("testsCancelledModels", counts);
+
+  if (running) {
+    return (
+      <div className="flex items-center gap-3">
+        <div className="h-2 w-32 overflow-hidden rounded-full bg-black/10 dark:bg-white/10 sm:w-48">
+          <div
+            className="h-full bg-primary transition-all duration-300"
+            style={{ width: `${percent}%` }}
+            role="progressbar"
+            aria-label={t("bulkTestProgress")}
+            aria-valuenow={percent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuetext={progressText}
+          />
+        </div>
+        <span className="text-xs font-medium text-text-muted" aria-hidden="true">
+          {progressText}
+        </span>
+      </div>
+    );
+  }
+  return progress.cancelled ? (
+    <p role="status" className="text-xs font-medium text-text-muted">
+      {cancelledText}
+    </p>
+  ) : null;
+}
+
 export default function CatalogBulkActionBar({
   selectedCount,
   filteredCount,
@@ -28,16 +70,6 @@ export default function CatalogBulkActionBar({
   onAssign?: () => void;
 }) {
   const t = useTranslations("modelCatalog");
-  const percent = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0;
-  const counts = { completed: progress.completed, total: progress.total };
-  const progressText =
-    progress.kind === "combos"
-      ? t("testingProgressCombos", counts)
-      : t("testingProgressModels", counts);
-  const cancelledText =
-    progress.kind === "combos"
-      ? t("testsCancelledCombos", counts)
-      : t("testsCancelledModels", counts);
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-black/[0.01] px-4 py-2.5 dark:bg-white/[0.01]">
@@ -90,31 +122,7 @@ export default function CatalogBulkActionBar({
         )}
       </div>
 
-      {running ? (
-        <div className="flex items-center gap-3">
-          <div className="h-2 w-32 overflow-hidden rounded-full bg-black/10 dark:bg-white/10 sm:w-48">
-            <div
-              className="h-full bg-primary transition-all duration-300"
-              style={{ width: `${percent}%` }}
-              role="progressbar"
-              aria-label={t("bulkTestProgress")}
-              aria-valuenow={percent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuetext={progressText}
-            />
-          </div>
-          <span className="text-xs font-medium text-text-muted" aria-hidden="true">
-            {progressText}
-          </span>
-        </div>
-      ) : (
-        progress.cancelled && (
-          <p role="status" className="text-xs font-medium text-text-muted">
-            {cancelledText}
-          </p>
-        )
-      )}
+      <CatalogBulkProgress running={running} progress={progress} />
     </div>
   );
 }
