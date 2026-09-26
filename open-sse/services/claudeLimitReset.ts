@@ -26,6 +26,11 @@
  */
 
 import { fetchClaudeBootstrap, getClaudeCodeVersion } from "../executors/claudeIdentity.ts";
+import {
+  claudeResetCreditHeaders,
+  fetchJsonWithTimeout,
+  forgetClaudeResetCreditCount,
+} from "./claudeResetCreditCount.ts";
 import { setBoundedEntry } from "./claudeLowPriority.ts";
 
 type JsonRecord = Record<string, unknown>;
@@ -34,7 +39,7 @@ type FetchLike = typeof fetch;
 export const CLAUDE_LIMIT_RESET_PROGRAM = "juniper_tide";
 export const CLAUDE_GRANT_RESET_PROGRAM = "cedar_ember";
 export const CLAUDE_LIMIT_RESET_STATUS_URL =
-  "https://api.anthropic.com/api/oauth/usage?at_wall=1&cedar_ember=1&skip_spend=1";
+  "https://api.anthropic.com/api/oauth/usage?at_wall=1&skip_spend=1";
 export const CLAUDE_LIMIT_RESET_STATUS_TIMEOUT_MS = 5_000;
 export const CLAUDE_LIMIT_RESET_CLAIM_TIMEOUT_MS = 25_000;
 /** Back-off after a failed/unavailable claim before the next wall may re-query. */
@@ -104,12 +109,13 @@ function stringOrNull(value: unknown): string | null {
 }
 
 function oauthHeaders(accessToken: string): Record<string, string> {
+  // Same shape as the existing /api/oauth/usage poller (usage/claude.ts): axios-style
+  // `claude-code/<version>` UA, not the Stainless `claude-cli/…` one.
   return {
     Accept: "application/json, text/plain, */*",
     Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
-    "User-Agent": `claude-cli/${getClaudeCodeVersion()} (external, cli)`,
-    "x-app": "cli",
+    "User-Agent": `claude-code/${getClaudeCodeVersion()}`,
     "anthropic-beta": "oauth-2025-04-20",
   };
 }
@@ -223,36 +229,19 @@ export function parseAllClaudeResetCredits(usageBody: unknown): ClaudeResetCredi
   return { credits, availableCount };
 }
 
-async function fetchWithTimeout(
-  fetchImpl: FetchLike,
-  url: string,
-  init: RequestInit,
-  timeoutMs: number
-): Promise<Response> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    return await fetchImpl(url, { ...init, signal: ctrl.signal });
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
 /** GET the at-wall usage snapshot and extract the reset offer. Null on any failure. */
 export async function fetchClaudeLimitResetStatus(
   accessToken: string,
   fetchImpl: FetchLike = fetch
 ): Promise<ClaudeLimitResetStatus | null> {
   try {
-    const res = await fetchWithTimeout(
+    const res = await fetchJsonWithTimeout(
       fetchImpl,
       CLAUDE_LIMIT_RESET_STATUS_URL,
       { method: "GET", headers: oauthHeaders(accessToken) },
       CLAUDE_LIMIT_RESET_STATUS_TIMEOUT_MS
     );
-    if (!res.ok) return null;
-    const body: unknown = await res.json().catch(() => null);
-    return parseClaudeLimitResetStatus(body);
+    return res.ok ? parseClaudeLimitResetStatus(res.body) : null;
   } catch {
     return null;
   }
@@ -269,6 +258,8 @@ export async function claimClaudeLimitReset(
 
 /**
  * Claim either a specific cedar_ember grant or the weekly juniper_tide session reset.
+ * `profile` picks the request shape: the opt-in auto-reset (default) keeps base's
+ * axios-style headers; only the user-initiated dashboard redeem sends the CLI headers.
  */
 export async function claimClaudeResetCredit(
   accessToken: string,
@@ -276,6 +267,7 @@ export async function claimClaudeResetCredit(
   options: {
     creditId?: string | null;
     requestId?: string | null;
+    profile?: "auto-reset" | "dashboard";
     fetchImpl?: FetchLike;
   } = {}
 ): Promise<ClaudeLimitResetClaim> {
@@ -299,12 +291,15 @@ export async function claimClaudeResetCredit(
       };
 
   try {
-    const res = await fetchWithTimeout(
+    const res = await fetchJsonWithTimeout(
       fetchImpl,
       claudeLimitResetClaimUrl(organizationUuid),
       {
         method: "POST",
-        headers: oauthHeaders(accessToken),
+        headers:
+          options.profile === "dashboard"
+            ? claudeResetCreditHeaders(accessToken)
+            : oauthHeaders(accessToken),
         body: JSON.stringify(payload),
       },
       CLAUDE_LIMIT_RESET_CLAIM_TIMEOUT_MS
@@ -315,8 +310,7 @@ export async function claimClaudeResetCredit(
       return { result: "auth_error", nextAvailableAt: null, weeklyResetsAt: null };
     }
     if (!res.ok) return { result: "error", nextAvailableAt: null, weeklyResetsAt: null };
-    const body: unknown = await res.json().catch(() => null);
-    return parseClaudeLimitResetClaim(body);
+    return parseClaudeLimitResetClaim(res.body);
   } catch {
     return { result: "error", nextAvailableAt: null, weeklyResetsAt: null };
   }
@@ -379,6 +373,8 @@ export type ClaudeLimitResetAttempt = {
  */
 export async function attemptClaudeLimitReset(opts: {
   key: string;
+  /** When known, a claim forgets the dashboard's reset-credit count for this connection. */
+  connectionId?: string | null;
   accessToken: string;
   providerSpecificData?: unknown;
   now?: number;
@@ -447,6 +443,8 @@ async function runLimitResetClaim(
   organizationUuid: string
 ): Promise<ClaudeLimitResetAttempt> {
   const claim = await claimClaudeLimitReset(opts.accessToken, organizationUuid, fetchImpl);
+  // The claim may have spent a reset: the dashboard count is unknown until the next list.
+  if (opts.connectionId) forgetClaudeResetCreditCount(opts.connectionId);
   const granted = claim.result === "reset" || claim.result === "not_limited";
   const spent = granted || claim.result === "already_used";
   memoiseNotBefore(

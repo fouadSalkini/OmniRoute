@@ -1,4 +1,5 @@
 import { getProviderConnectionById } from "@/lib/db/providers";
+import { resolveProxyForConnection } from "@/lib/db/settings";
 import { isConnectionUnavailableToAuxiliaryActivity } from "@/lib/exclusiveLeaseIsolation";
 import {
   fetchAndPersistProviderLimits,
@@ -11,8 +12,12 @@ import {
   type PublicClaudeResetCredit,
   type ClaudeResetCreditList,
 } from "@omniroute/open-sse/services/claudeLimitReset.ts";
-import { getClaudeCodeVersion } from "@omniroute/open-sse/executors/claudeIdentity.ts";
+import {
+  fetchAndSeedClaudeResetCreditUsage,
+  forgetClaudeResetCreditCount,
+} from "@omniroute/open-sse/services/claudeResetCreditCount.ts";
 import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/error.ts";
+import { runWithProxyContext } from "@omniroute/open-sse/utils/proxyFetch.ts";
 
 export { PublicClaudeResetCredit, ClaudeResetCreditList };
 
@@ -98,39 +103,27 @@ function requireAccessToken(connection: ClaudeConnectionLike): string {
   return token;
 }
 
-async function fetchClaudeUsageBody(accessToken: string): Promise<unknown> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 10_000);
-  try {
-    const res = await fetch(
-      "https://api.anthropic.com/api/oauth/usage?at_wall=1&cedar_ember=1&skip_spend=1",
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-          "User-Agent": `claude-cli/${getClaudeCodeVersion()} (external, cli)`,
-          "x-app": "cli",
-          "anthropic-beta": "oauth-2025-04-20",
-        },
-        signal: ctrl.signal,
-      }
-    );
-    if (!res.ok) {
-      const errBody = (await res.json().catch(() => null)) as JsonRecord | null;
-      const msg =
-        (typeof errBody?.message === "string" ? errBody.message : null) || `HTTP ${res.status}`;
-      throw new ClaudeResetCreditError(
-        res.status === 429 ? 429 : 502,
-        res.status === 429 ? "rate_limited" : "claude_usage_failed",
-        `Failed to fetch Claude usage: ${msg}`
-      );
-    }
-    return await res.json().catch(() => ({}));
-  } finally {
-    clearTimeout(timer);
-  }
+/** Run upstream reset-credit calls through the connection's proxy, like the usage refresh. */
+async function withConnectionProxy<T>(connectionId: string, run: () => Promise<T>): Promise<T> {
+  const proxyInfo = await resolveProxyForConnection(connectionId);
+  return runWithProxyContext(proxyInfo?.proxy ?? null, run);
+}
+
+/** The user-initiated list read; it also seeds the dashboard's banked-credit count. */
+async function fetchClaudeUsageBody(connectionId: string, accessToken: string): Promise<unknown> {
+  const result = await withConnectionProxy(connectionId, () =>
+    fetchAndSeedClaudeResetCreditUsage(connectionId, accessToken)
+  );
+  if (result.ok) return result.body;
+  const errBody = result.body as JsonRecord | null;
+  const msg =
+    (typeof errBody?.message === "string" ? errBody.message : null) ||
+    (result.status ? `HTTP ${result.status}` : "request failed");
+  throw new ClaudeResetCreditError(
+    result.status === 429 ? 429 : 502,
+    result.status === 429 ? "rate_limited" : "claude_usage_failed",
+    `Failed to fetch Claude usage: ${msg}`
+  );
 }
 
 export async function listClaudeResetCredits(connectionId: string): Promise<ClaudeResetCreditList> {
@@ -142,7 +135,7 @@ export async function listClaudeResetCredits(connectionId: string): Promise<Clau
     let connection = await loadClaudeConnection(connectionId);
     connection = await refreshClaudeConnectionIfNeeded(connection);
     const token = requireAccessToken(connection);
-    const usageBody = await fetchClaudeUsageBody(token);
+    const usageBody = await fetchClaudeUsageBody(connection.id, token);
     return parseAllClaudeResetCredits(usageBody);
   } catch (error) {
     if (error instanceof ClaudeResetCreditError) throw error;
@@ -170,7 +163,9 @@ export async function consumeClaudeResetCredit(
     let connection = await loadClaudeConnection(connectionId);
     connection = await refreshClaudeConnectionIfNeeded(connection);
     const token = requireAccessToken(connection);
-    const orgUuid = await resolveClaudeOrganizationUuid(connection.providerSpecificData, token);
+    const orgUuid = await withConnectionProxy(connection.id, () =>
+      resolveClaudeOrganizationUuid(connection.providerSpecificData, token)
+    );
     if (!orgUuid) {
       throw new ClaudeResetCreditError(
         400,
@@ -179,10 +174,15 @@ export async function consumeClaudeResetCredit(
       );
     }
 
-    const claim = await claimClaudeResetCredit(token, orgUuid, {
-      creditId,
-      requestId: idempotencyKey,
-    });
+    const claim = await withConnectionProxy(connection.id, () =>
+      claimClaudeResetCredit(token, orgUuid, {
+        creditId,
+        requestId: idempotencyKey,
+        profile: "dashboard",
+      })
+    );
+    // Whatever the outcome, the memoised count may now be stale: unknown until the next list.
+    forgetClaudeResetCreditCount(connection.id);
 
     if (claim.result === "reset" || claim.result === "not_limited") {
       const refreshed = await fetchAndPersistProviderLimits(connectionId, "manual", {
