@@ -93,6 +93,21 @@ const AUTHORITATIVE_CONTEXT_WINDOW_MODEL_IDS = new Set([
   "glm-5.2",
   "glm-5.2-high",
   "glm-5.2-max",
+  "claude-opus-5-5",
+  "claude-opus-5",
+  "claude-opus-4-8",
+  "claude-opus-4-7",
+  "claude-opus-4-6",
+  "claude-sonnet-5",
+  "claude-sonnet-4-6",
+  "claude-fable-5",
+  "claude-fable-5-1",
+  "claude-opus-4-5",
+  "claude-opus-4-5-20251101",
+  "claude-sonnet-4-5",
+  "claude-sonnet-4-5-20250929",
+  "claude-haiku-4-5",
+  "claude-haiku-4-5-20251001",
 ]);
 const AUTHORITATIVE_PROVIDER_CONTEXT_WINDOWS = new Map<string, number>([
   ["cloudflare-ai/@cf/zai-org/glm-5.2", 262144],
@@ -466,6 +481,21 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     // …and, like Opus 4.7+, rejects manual budgets/`type:"enabled"` (adaptive-only).
     adaptiveThinkingOnly: true,
     aliases: BEDROCK_CLAUDE_ALIASES("claude-fable-5"),
+  },
+
+  // ── Claude Opus 5.5 ─────────────────────────────────────────────
+  "claude-opus-5-5": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    rejectsThinkingDisabled: true,
+    adaptiveThinkingOnly: true,
+    rejectsForcedToolChoice: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-opus-5-5", "claude-opus-5.5"),
   },
 
   // ── Claude Opus 5 ───────────────────────────────────────────────

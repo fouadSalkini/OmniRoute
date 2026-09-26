@@ -25,6 +25,17 @@ test.after(() => {
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 });
 
+test("runContextWindowReconcile removes a stale Opus 5.5 auto override", async () => {
+  await models.replaceSyncedAvailableModelsForConnection("claude", "reconcile-test", [
+    { id: "claude-opus-5-5", inputTokenLimit: 128000 },
+  ]);
+  overrides.setModelContextOverride("claude", "claude-opus-5-5", 128000, "auto:discovery");
+
+  const result = await runContextWindowReconcile();
+  assert.deepEqual(result, { scanned: 1, written: 0, removed: 1, skippedManual: 0 });
+  assert.equal(overrides.getModelContextOverrideRecord("claude", "claude-opus-5-5"), null);
+});
+
 test("runContextWindowReconcile retains an auto override across repeated synced discovery", async () => {
   // gpt-4o's static catalog window is 128K; discovery reports a real 372K.
   // This uses the live DB discovery and resolver seams, not injected pure deps.
