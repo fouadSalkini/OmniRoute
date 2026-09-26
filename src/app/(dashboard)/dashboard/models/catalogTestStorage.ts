@@ -26,23 +26,40 @@ export function getComboTestKey(comboName: string): string {
   return `combo:${comboName}`;
 }
 
+type CatalogTestErrorFlags = { rateLimited?: boolean; isQuota?: boolean; isTimeout?: boolean };
+
+function isRateLimitError(text: string, statusCode?: number, flags?: CatalogTestErrorFlags) {
+  return Boolean(flags?.rateLimited) || statusCode === 429 || /rate.?limit|429/i.test(text);
+}
+
+function isQuotaError(text: string, flags?: CatalogTestErrorFlags) {
+  return (
+    Boolean(flags?.isQuota) || /quota|insufficient balance|credit|billing|exhausted/i.test(text)
+  );
+}
+
+function isTimeoutError(text: string, statusCode?: number, flags?: CatalogTestErrorFlags) {
+  return (
+    Boolean(flags?.isTimeout) ||
+    statusCode === 408 ||
+    statusCode === 504 ||
+    /timeout|timed out|abort/i.test(text)
+  );
+}
+
 export function classifyError(
   error?: string,
   statusCode?: number,
-  flags?: { rateLimited?: boolean; isQuota?: boolean; isTimeout?: boolean }
+  flags?: CatalogTestErrorFlags
 ): CatalogTestErrorClass | undefined {
-  if (flags?.rateLimited || statusCode === 429 || /rate.?limit|429/i.test(error ?? "")) {
+  const text = error ?? "";
+  if (isRateLimitError(text, statusCode, flags)) {
     return "rate-limited";
   }
-  if (flags?.isQuota || /quota|insufficient balance|credit|billing|exhausted/i.test(error ?? "")) {
+  if (isQuotaError(text, flags)) {
     return "quota";
   }
-  if (
-    flags?.isTimeout ||
-    statusCode === 408 ||
-    statusCode === 504 ||
-    /timeout|timed out|abort/i.test(error ?? "")
-  ) {
+  if (isTimeoutError(text, statusCode, flags)) {
     return "timeout";
   }
   if (error || statusCode) {
@@ -78,6 +95,33 @@ export function capTestResults(
   return capped;
 }
 
+function isPlainObject(value: unknown): value is object {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+/** A stored entry survives only with a string status and a timestamp `Date` can represent. */
+function isStoredTestResult(value: unknown): value is CatalogTestResult {
+  return (
+    isPlainObject(value) &&
+    "status" in value &&
+    typeof (value as { status: unknown }).status === "string" &&
+    "testedAt" in value &&
+    typeof value.testedAt === "number" &&
+    Number.isFinite(value.testedAt) &&
+    Math.abs(value.testedAt) <= 8.64e15
+  );
+}
+
+function keepStoredTestResults(parsed: object): Record<string, CatalogTestResult> {
+  const sanitized: Record<string, CatalogTestResult> = {};
+  for (const [key, value] of Object.entries(parsed as Record<string, unknown>)) {
+    if (isStoredTestResult(value)) {
+      sanitized[key] = value;
+    }
+  }
+  return sanitized;
+}
+
 export function loadCatalogTestResults(): Record<string, CatalogTestResult> {
   if (typeof window === "undefined" || !window.localStorage) {
     return {};
@@ -86,26 +130,10 @@ export function loadCatalogTestResults(): Record<string, CatalogTestResult> {
     const raw = window.localStorage.getItem(CATALOG_TEST_RESULTS_STORAGE_NAME);
     if (!raw) return {};
     const parsed: unknown = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    if (!isPlainObject(parsed)) {
       return {};
     }
-    const sanitized: Record<string, CatalogTestResult> = {};
-    for (const [key, value] of Object.entries(parsed as Record<string, unknown>)) {
-      if (
-        value &&
-        typeof value === "object" &&
-        !Array.isArray(value) &&
-        "status" in value &&
-        typeof (value as { status: unknown }).status === "string" &&
-        "testedAt" in value &&
-        typeof value.testedAt === "number" &&
-        Number.isFinite(value.testedAt) &&
-        Math.abs(value.testedAt) <= 8.64e15
-      ) {
-        sanitized[key] = value as CatalogTestResult;
-      }
-    }
-    return sanitized;
+    return keepStoredTestResults(parsed);
   } catch {
     return {};
   }
