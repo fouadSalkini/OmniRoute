@@ -4,7 +4,12 @@ import {
 } from "@/domain/omnirouteResponseMeta";
 import { OMNIROUTE_RESPONSE_HEADERS } from "@/shared/constants/headers";
 import { defaultLogger } from "@omniroute/open-sse/utils/logger";
-import { isAnthropicAccountHeader } from "./upstreamAccountHeaders.ts";
+import {
+  isAnthropicAccountHeader,
+  shouldStripAnthropicAccountHeaders,
+  stripAnthropicAccountHeadersFromHeaders,
+  type AnthropicAccountHeaderPolicyKeyInfo,
+} from "./upstreamAccountHeaders.ts";
 
 const STREAMING_RESPONSE_HEADER_DENYLIST = new Set([
   "content-type",
@@ -368,4 +373,19 @@ export function stripStaleForwardingHeaders(headers: Headers): void {
   headers.delete("content-encoding");
   headers.delete("content-length");
   headers.delete("transfer-encoding");
+}
+
+/**
+ * Strip hop-by-hop headers, Next.js internal middleware control headers, and
+ * (when configured) upstream Anthropic account quota/ratelimit headers from non-streaming responses.
+ */
+export function stripNonStreamingForwardedHeaders(
+  headers: Headers,
+  apiKeyInfo?: AnthropicAccountHeaderPolicyKeyInfo | null,
+  provider?: string | null
+): void {
+  stripNextMiddlewareControlHeaders(headers);
+  if (shouldStripAnthropicAccountHeaders(apiKeyInfo, provider)) {
+    stripAnthropicAccountHeadersFromHeaders(headers);
+  }
 }

@@ -8,6 +8,7 @@ import {
 } from "@omniroute/open-sse/handlers/chatCore/upstreamAccountHeaders.ts";
 import {
   buildStreamingResponseHeaders,
+  stripNonStreamingForwardedHeaders,
   type StreamingResponseHeadersMeta,
 } from "@omniroute/open-sse/handlers/chatCore/responseHeaders.ts";
 
@@ -222,4 +223,19 @@ test("buildStreamingResponseHeaders strips only the anthropic account headers wh
   // Non-anthropic-account headers survive untouched.
   assert.equal(getHeaderValue(out, "retry-after"), "5");
   assert.equal(getHeaderValue(out, "x-request-id"), "req-anthropic-header-policy");
+});
+
+test("stripNonStreamingForwardedHeaders strips anthropic account headers on non-streaming path when mode is strip", () => {
+  const headers = anthropicUpstreamHeaders();
+  stripNonStreamingForwardedHeaders(headers, { anthropicRateLimitHeaders: "strip" }, "claude");
+  assert.equal(headers.get("anthropic-ratelimit-unified-status"), null);
+  assert.equal(headers.get("anthropic-organization-id"), null);
+  assert.equal(headers.get("retry-after"), "5");
+});
+
+test("stripNonStreamingForwardedHeaders forwards anthropic account headers on non-streaming path by default", () => {
+  const headers = anthropicUpstreamHeaders();
+  stripNonStreamingForwardedHeaders(headers, null, "claude");
+  assert.equal(headers.get("anthropic-ratelimit-unified-status"), "allowed");
+  assert.equal(headers.get("anthropic-organization-id"), "org-abc123");
 });
