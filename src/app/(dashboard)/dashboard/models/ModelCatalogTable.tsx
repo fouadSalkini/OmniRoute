@@ -348,29 +348,7 @@ function ModelCatalogTableRow({
   );
 }
 
-export default function ModelCatalogTable({
-  rows,
-  sortField,
-  sortDirection,
-  onSort,
-  page,
-  pageCount,
-  startIndex,
-  totalCount,
-  loading,
-  error,
-  onPrevious,
-  onNext,
-  labels,
-  selectedIds = new Set(),
-  onToggleSelect,
-  onToggleSelectAll,
-  testResults = {},
-  activeTestingKeys = new Set<string>(),
-  onTestModel,
-  providerHealthMap = {},
-  bulkRunning = false,
-}: {
+interface ModelCatalogTableProps {
   rows: CatalogModelRow[];
   sortField: CatalogSortField;
   sortDirection: CatalogSortDirection;
@@ -393,7 +371,31 @@ export default function ModelCatalogTable({
   providerHealthMap?: Record<string, "healthy" | "degraded" | "down">;
   /** A bulk run owns the runner; per-row tests wait until it ends. */
   bulkRunning?: boolean;
-}) {
+}
+
+export default function ModelCatalogTable({
+  rows,
+  sortField,
+  sortDirection,
+  onSort,
+  page,
+  pageCount,
+  startIndex,
+  totalCount,
+  loading,
+  error,
+  onPrevious,
+  onNext,
+  labels,
+  selectedIds = new Set(),
+  onToggleSelect,
+  onToggleSelectAll,
+  testResults = {},
+  activeTestingKeys = new Set<string>(),
+  onTestModel,
+  providerHealthMap = {},
+  bulkRunning = false,
+}: ModelCatalogTableProps) {
   const t = useTranslations("modelCatalog");
   const firstResult = startIndex + 1;
   const lastResult = startIndex + rows.length;
