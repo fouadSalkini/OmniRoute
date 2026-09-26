@@ -96,7 +96,7 @@ export interface ApiKeySelfServiceDeps {
     limit: TokenLimitLike,
     now: number
   ) => { periodStartAt: number; nextResetAt: number };
-  getKeyQuotaStatus?: (apiKeyId: string, deps: { now: () => number }) => KeyQuotaStatusLike;
+  getKeyQuotaStatus?: (apiKeyId: string, deps: { now: () => number }) => KeyQuotaStatusLike | null;
 }
 
 interface TokenTotals {
@@ -185,55 +185,94 @@ function aggregateTokens(db: DbLike, apiKeyId: string, periodStartAt: string): T
 
 type RequiredDeps = Required<ApiKeySelfServiceDeps>;
 
-async function normalizeDeps(deps: ApiKeySelfServiceDeps): Promise<RequiredDeps> {
-  const costRules =
-    deps.getCostSummary && deps.checkBudget && deps.getBudgetWindowTotal
-      ? null
-      : await import("@/domain/costRules");
-  const dbCore = deps.getDbInstance ? null : await import("@/lib/db/core");
-  const providers =
-    deps.getProviderConnectionById && deps.getProviderConnections
-      ? null
-      : await import("@/lib/db/providers");
-  const providerLimits = deps.fetchAndPersistProviderLimits
-    ? null
-    : await import("@/lib/usage/providerLimits");
-  const providerLimitsDb = deps.getProviderLimitsCache
-    ? null
-    : await import("@/lib/db/providerLimits");
-  const usageLimits = deps.getApiKeyUsageLimitStatus
-    ? null
-    : await import("@/lib/usage/apiKeyUsageLimits");
-  const tokenLimits =
-    deps.listTokenLimits && deps.getWindowUsage && deps.resetWindowIfElapsed
-      ? null
-      : await import("@/lib/db/tokenLimits");
+interface DefaultDepsLoader {
+  /** The injectable deps this loader provides; it runs only if one of them is missing. */
+  keys: ReadonlyArray<keyof ApiKeySelfServiceDeps>;
+  load: () => Promise<Partial<RequiredDeps>>;
+}
 
-  return {
-    now: deps.now ?? Date.now,
-    getCostSummary: deps.getCostSummary ?? costRules!.getCostSummary,
-    checkBudget: deps.checkBudget ?? costRules!.checkBudget,
-    getBudgetWindowTotal: deps.getBudgetWindowTotal ?? costRules!.getBudgetWindowTotal,
-    getDbInstance: deps.getDbInstance ?? dbCore!.getDbInstance,
-    getProviderConnectionById:
-      deps.getProviderConnectionById ?? providers!.getProviderConnectionById,
-    getProviderConnections: deps.getProviderConnections ?? providers!.getProviderConnections,
-    fetchAndPersistProviderLimits:
-      deps.fetchAndPersistProviderLimits ?? providerLimits!.fetchAndPersistProviderLimits,
-    getProviderLimitsCache: deps.getProviderLimitsCache ?? providerLimitsDb!.getProviderLimitsCache,
-    quotaRefreshTracker: deps.quotaRefreshTracker ?? defaultQuotaRefreshTracker,
-    getApiKeyUsageLimitStatus:
-      deps.getApiKeyUsageLimitStatus ?? usageLimits!.getApiKeyUsageLimitStatus,
-    listTokenLimits: deps.listTokenLimits ?? tokenLimits!.listTokenLimits,
-    getWindowUsage:
-      deps.getWindowUsage ??
-      (tokenLimits!.getWindowUsage as unknown as RequiredDeps["getWindowUsage"]),
-    resetWindowIfElapsed:
-      deps.resetWindowIfElapsed ??
-      (tokenLimits!.resetWindowIfElapsed as unknown as RequiredDeps["resetWindowIfElapsed"]),
-    // Deploy variant (v3.8.50): db/keyQuota does not exist yet, so no key_quota limits.
-    getKeyQuotaStatus: deps.getKeyQuotaStatus ?? (() => null),
+// Modules are imported lazily, and only for deps the caller did not inject, so tests that
+// stub a whole group never touch the real DB or network modules behind it.
+const DEFAULT_DEPS_LOADERS: DefaultDepsLoader[] = [
+  {
+    keys: ["getCostSummary", "checkBudget", "getBudgetWindowTotal"],
+    load: async () => {
+      const m = await import("@/domain/costRules");
+      return {
+        getCostSummary: m.getCostSummary,
+        checkBudget: m.checkBudget,
+        getBudgetWindowTotal: m.getBudgetWindowTotal,
+      };
+    },
+  },
+  {
+    keys: ["getDbInstance"],
+    load: async () => ({ getDbInstance: (await import("@/lib/db/core")).getDbInstance }),
+  },
+  {
+    keys: ["getProviderConnectionById", "getProviderConnections"],
+    load: async () => {
+      const m = await import("@/lib/db/providers");
+      return {
+        getProviderConnectionById: m.getProviderConnectionById,
+        getProviderConnections: m.getProviderConnections,
+      };
+    },
+  },
+  {
+    keys: ["fetchAndPersistProviderLimits"],
+    load: async () => ({
+      fetchAndPersistProviderLimits: (await import("@/lib/usage/providerLimits"))
+        .fetchAndPersistProviderLimits,
+    }),
+  },
+  {
+    keys: ["getProviderLimitsCache"],
+    load: async () => ({
+      getProviderLimitsCache: (await import("@/lib/db/providerLimits")).getProviderLimitsCache,
+    }),
+  },
+  {
+    keys: ["getApiKeyUsageLimitStatus"],
+    load: async () => ({
+      getApiKeyUsageLimitStatus: (await import("@/lib/usage/apiKeyUsageLimits"))
+        .getApiKeyUsageLimitStatus,
+    }),
+  },
+  {
+    keys: ["listTokenLimits", "getWindowUsage", "resetWindowIfElapsed"],
+    load: async () => {
+      const m = await import("@/lib/db/tokenLimits");
+      return {
+        listTokenLimits: m.listTokenLimits,
+        getWindowUsage: m.getWindowUsage as unknown as RequiredDeps["getWindowUsage"],
+        resetWindowIfElapsed:
+          m.resetWindowIfElapsed as unknown as RequiredDeps["resetWindowIfElapsed"],
+      };
+    },
+  },
+  // Deploy variant: db/keyQuota (upstream migration 182) is not on this base, so a key has no
+  // key_quota limits; the stub reports none instead of importing a missing module.
+  {
+    keys: ["getKeyQuotaStatus"],
+    load: async () => ({ getKeyQuotaStatus: () => null }),
+  },
+];
+
+async function normalizeDeps(deps: ApiKeySelfServiceDeps): Promise<RequiredDeps> {
+  const resolved: Partial<RequiredDeps> = {
+    now: Date.now,
+    quotaRefreshTracker: defaultQuotaRefreshTracker,
   };
+  for (const loader of DEFAULT_DEPS_LOADERS) {
+    if (loader.keys.some((key) => deps[key] === undefined)) {
+      Object.assign(resolved, await loader.load());
+    }
+  }
+  for (const [key, value] of Object.entries(deps)) {
+    if (value !== undefined) (resolved as Record<string, unknown>)[key] = value;
+  }
+  return resolved as RequiredDeps;
 }
 
 function accountQuotaDeps(deps: RequiredDeps): AccountQuotaDeps {
