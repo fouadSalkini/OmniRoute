@@ -36,7 +36,7 @@ export interface ProgressState {
 
 const IDLE_PROGRESS: ProgressState = { kind: "models", completed: 0, total: 0, cancelled: false };
 
-export function useCatalogTestRunner() {
+function useCatalogRunnerState() {
   const [testResults, setTestResults] = useState<Record<string, CatalogTestResult>>({});
   const [running, setRunning] = useState(false);
   const [activeItemKeys, setActiveItemKeys] = useState<Set<string>>(new Set());
@@ -97,6 +97,86 @@ export function useCatalogTestRunner() {
     }
   }, []);
 
+  return {
+    testResults,
+    setTestResults,
+    running,
+    setRunning,
+    activeItemKeys,
+    setActiveItemKeys,
+    activeSignalsRef,
+    progress,
+    setProgress,
+    mountedRef,
+    runControllerRef,
+    singleControllersRef,
+    persist,
+    claimActiveKey,
+    releaseActiveKey,
+    withSingleController,
+  };
+}
+
+function useCatalogRunProgress(state: ReturnType<typeof useCatalogRunnerState>) {
+  const {
+    runControllerRef,
+    setRunning,
+    setProgress,
+    mountedRef,
+    activeSignalsRef,
+    setActiveItemKeys,
+  } = state;
+  const startRun = useCallback(
+    (kind: BulkRunKind, total: number) => {
+      runControllerRef.current?.abort();
+      const controller = new AbortController();
+      runControllerRef.current = controller;
+      setRunning(true);
+      setProgress({ kind, completed: 0, total, cancelled: false });
+      return controller;
+    },
+    [runControllerRef, setProgress, setRunning]
+  );
+
+  /** Only the run that still owns the runner may move the progress bar or end the run. */
+  const advanceRun = useCallback(
+    (controller: AbortController, count: number) => {
+      if (!mountedRef.current || runControllerRef.current !== controller) return;
+      setProgress((current) => ({
+        ...current,
+        completed: Math.min(current.completed + count, current.total),
+      }));
+    },
+    [mountedRef, runControllerRef, setProgress]
+  );
+
+  const finishRun = useCallback(
+    (controller: AbortController) => {
+      if (runControllerRef.current !== controller) return;
+      runControllerRef.current = null;
+      if (mountedRef.current) setRunning(false);
+    },
+    [mountedRef, runControllerRef, setRunning]
+  );
+
+  const cancelTest = useCallback(() => {
+    const controller = runControllerRef.current;
+    if (!controller) return;
+    runControllerRef.current = null;
+    controller.abort();
+    setRunning(false);
+    for (const [key, signal] of activeSignalsRef.current) {
+      if (signal === controller.signal) activeSignalsRef.current.delete(key);
+    }
+    setActiveItemKeys(new Set(activeSignalsRef.current.keys()));
+    setProgress((current) => ({ ...current, cancelled: true }));
+  }, [activeSignalsRef, runControllerRef, setActiveItemKeys, setProgress, setRunning]);
+
+  return { startRun, advanceRun, finishRun, cancelTest };
+}
+
+function useCatalogRowTests(state: ReturnType<typeof useCatalogRunnerState>) {
+  const { claimActiveKey, releaseActiveKey, persist, withSingleController } = state;
   const runComboTest = useCallback(
     async (comboName: string, signal: AbortSignal) => {
       const key = getComboTestKey(comboName);
@@ -129,30 +209,14 @@ export function useCatalogTestRunner() {
     [runComboTest, withSingleController]
   );
 
-  const startRun = useCallback((kind: BulkRunKind, total: number) => {
-    runControllerRef.current?.abort();
-    const controller = new AbortController();
-    runControllerRef.current = controller;
-    setRunning(true);
-    setProgress({ kind, completed: 0, total, cancelled: false });
-    return controller;
-  }, []);
+  return { runComboTest, testSingleModel, testSingleCombo };
+}
 
-  /** Only the run that still owns the runner may move the progress bar or end the run. */
-  const advanceRun = useCallback((controller: AbortController, count: number) => {
-    if (!mountedRef.current || runControllerRef.current !== controller) return;
-    setProgress((current) => ({
-      ...current,
-      completed: Math.min(current.completed + count, current.total),
-    }));
-  }, []);
-
-  const finishRun = useCallback((controller: AbortController) => {
-    if (runControllerRef.current !== controller) return;
-    runControllerRef.current = null;
-    if (mountedRef.current) setRunning(false);
-  }, []);
-
+export function useCatalogTestRunner() {
+  const state = useCatalogRunnerState();
+  const { testResults, setTestResults, running, activeItemKeys, progress, persist } = state;
+  const { runComboTest, testSingleModel, testSingleCombo } = useCatalogRowTests(state);
+  const { startRun, advanceRun, finishRun, cancelTest } = useCatalogRunProgress(state);
   const testBulkModels = useCallback(
     async (targets: ModelTestTarget[]) => {
       const unique = dedupeModelTargets(targets);
@@ -195,23 +259,10 @@ export function useCatalogTestRunner() {
     [advanceRun, finishRun, runComboTest, startRun]
   );
 
-  const cancelTest = useCallback(() => {
-    const controller = runControllerRef.current;
-    if (!controller) return;
-    runControllerRef.current = null;
-    controller.abort();
-    setRunning(false);
-    for (const [key, signal] of activeSignalsRef.current) {
-      if (signal === controller.signal) activeSignalsRef.current.delete(key);
-    }
-    setActiveItemKeys(new Set(activeSignalsRef.current.keys()));
-    setProgress((current) => ({ ...current, cancelled: true }));
-  }, []);
-
   const clearResults = useCallback(() => {
     clearCatalogTestResults();
     setTestResults({});
-  }, []);
+  }, [setTestResults]);
 
   return {
     testResults,
