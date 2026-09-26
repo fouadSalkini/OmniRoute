@@ -21,6 +21,7 @@ import ModelsTab, { type Model, type ProviderGroup } from "./tabs/ModelsTab";
 import CombosTab, { type ComboOption } from "./tabs/CombosTab";
 import ConnectionsTab from "./tabs/ConnectionsTab";
 import LimitsTab from "./tabs/LimitsTab";
+import AccessTokenLimitsEditor from "./AccessTokenLimitsEditor";
 import BehaviourTab from "./tabs/BehaviourTab";
 
 const TABS: Array<{ id: AccessEditorTab; icon: string; labelKey: string }> = [
@@ -374,23 +375,31 @@ function ApiKeyAccessEditorForm({
             )}
 
             {activeTab === "limits" && (
-              <LimitsTab
-                formState={form.formState}
-                setMaxSessions={form.setMaxSessions}
-                setThrottleDelayMs={form.setThrottleDelayMs}
-                addRateLimit={form.addRateLimit}
-                removeRateLimit={form.removeRateLimit}
-                updateRateLimit={form.updateRateLimit}
-                setScheduleEnabled={form.setScheduleEnabled}
-                setScheduleFrom={form.setScheduleFrom}
-                setScheduleUntil={form.setScheduleUntil}
-                setScheduleDays={form.setScheduleDays}
-                setScheduleTz={form.setScheduleTz}
-                setUsageLimitEnabled={form.setUsageLimitEnabled}
-                setDailyUsageLimitUsd={form.setDailyUsageLimitUsd}
-                setWeeklyUsageLimitUsd={form.setWeeklyUsageLimitUsd}
-                errors={form.tabErrors.limits}
-              />
+              <>
+                <AccessTokenLimitsEditor
+                  keyId={apiKey.id}
+                  providers={Array.from(
+                    new Set(allModels.map((model) => model.owned_by).filter(Boolean))
+                  )}
+                />
+                <LimitsTab
+                  formState={form.formState}
+                  setMaxSessions={form.setMaxSessions}
+                  setThrottleDelayMs={form.setThrottleDelayMs}
+                  addRateLimit={form.addRateLimit}
+                  removeRateLimit={form.removeRateLimit}
+                  updateRateLimit={form.updateRateLimit}
+                  setScheduleEnabled={form.setScheduleEnabled}
+                  setScheduleFrom={form.setScheduleFrom}
+                  setScheduleUntil={form.setScheduleUntil}
+                  setScheduleDays={form.setScheduleDays}
+                  setScheduleTz={form.setScheduleTz}
+                  setUsageLimitEnabled={form.setUsageLimitEnabled}
+                  setDailyUsageLimitUsd={form.setDailyUsageLimitUsd}
+                  setWeeklyUsageLimitUsd={form.setWeeklyUsageLimitUsd}
+                  errors={form.tabErrors.limits}
+                />
+              </>
             )}
 
             {activeTab === "behaviour" && (
