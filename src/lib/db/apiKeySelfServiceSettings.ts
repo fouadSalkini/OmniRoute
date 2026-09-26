@@ -5,7 +5,7 @@
  *   - shared_quota_providers: JSON array of provider ids whose account quotas the
  *     key holder may see via GET /v1/me/status. NULL = all providers the key
  *     reaches (default, back-compat); [] = none.
- *   - anthropic_ratelimit_headers: "auto" | "forward" | "strip" (default "forward").
+ *   - anthropic_ratelimit_headers: "auto" | "forward" | "strip" (default "auto").
  *
  * A missing row (or a missing table on a DB that has not run migration 189 yet)
  * reads as the defaults. The getter is on the chat hot path (the API key policy
@@ -59,7 +59,7 @@ function asRecord(value: unknown): JsonRecord {
 }
 
 export function getDefaultApiKeySelfServiceSettings(): ApiKeySelfServiceSettings {
-  return { sharedQuotaProviders: null, anthropicRateLimitHeaders: "forward" };
+  return { sharedQuotaProviders: null, anthropicRateLimitHeaders: "auto" };
 }
 
 function cloneSettings(settings: ApiKeySelfServiceSettings): ApiKeySelfServiceSettings {
@@ -114,7 +114,7 @@ function rowToSettings(row: unknown): ApiKeySelfServiceSettings {
     sharedQuotaProviders: parseSharedQuotaProviders(r.shared_quota_providers),
     anthropicRateLimitHeaders: isAnthropicRateLimitHeaderMode(r.anthropic_ratelimit_headers)
       ? r.anthropic_ratelimit_headers
-      : "forward",
+      : "auto",
   };
 }
 

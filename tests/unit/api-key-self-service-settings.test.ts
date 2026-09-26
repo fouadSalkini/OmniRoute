@@ -70,10 +70,10 @@ function assertNoStackLeak(body: unknown) {
 
 // ──────────────── DB module ────────────────
 
-test("settings default to all providers + forward when no row exists", () => {
+test("settings default to all providers + auto when no row exists", () => {
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("no-such-key"), {
     sharedQuotaProviders: null,
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -117,7 +117,7 @@ test("writes and deletes are visible immediately after a cached read", () => {
   settingsDb.deleteApiKeySelfServiceSettings("key-c");
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("key-c"), {
     sharedQuotaProviders: null,
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -141,7 +141,7 @@ test("a corrupt stored provider list fails closed to none; an unknown mode reads
 
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("key-bad"), {
     sharedQuotaProviders: [],
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -151,7 +151,7 @@ test("a missing table reads as defaults and delete is a no-op", () => {
 
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("key-x"), {
     sharedQuotaProviders: null,
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
   assert.doesNotThrow(() => settingsDb.deleteApiKeySelfServiceSettings("key-x"));
 });
@@ -181,7 +181,7 @@ test("PUT schema validates the same fields and rejects an empty body", () => {
   const put = schemas.updateApiKeySelfServiceSchema;
   const parsed = put.safeParse({
     sharedQuotaProviders: [" codex "],
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
   assert.equal(parsed.success, true);
   if (parsed.success) assert.deepEqual(parsed.data.sharedQuotaProviders, ["codex"]);
@@ -263,7 +263,7 @@ test("self-service routes reject bad bodies with 400 and unknown keys with 404, 
   assert.equal(missingGet.status, 404);
   assert.deepEqual(
     settingsDb.getApiKeySelfServiceSettings(key.id).anthropicRateLimitHeaders,
-    "forward"
+    "auto"
   );
 });
 
