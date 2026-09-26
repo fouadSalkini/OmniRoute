@@ -89,9 +89,9 @@ test("shouldStripAnthropicAccountHeaders: table-driven policy cases", () => {
       expectedStrip: false,
     },
     {
-      name: "mode unset (default forward) preserves legacy behavior -> forward even without scope",
+      name: "mode unset (default auto) behaves like explicit auto -> forward when qualified",
       apiKeyInfo: {
-        scopes: [],
+        scopes: ["self:account-quota"],
         allowedConnections: ["conn-1"],
       },
       provider: "claude",
