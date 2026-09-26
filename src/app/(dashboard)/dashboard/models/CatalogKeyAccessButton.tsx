@@ -40,6 +40,22 @@ function isInside(refs: RefObject<HTMLElement | null>[], node: EventTarget | nul
   return node instanceof Node && refs.some((ref) => ref.current?.contains(node));
 }
 
+function keyAccessHint(
+  access: ReturnType<typeof getModelAccess>,
+  lastItem: boolean,
+  kind: AccessKind,
+  t: ReturnType<typeof useTranslations>
+) {
+  const hint =
+    access.via === "pattern"
+      ? t("accessViaPattern", { pattern: access.pattern ?? "" })
+      : access.via === "blocked"
+        ? t("accessBlocked", { pattern: access.pattern ?? "" })
+        : lastItem
+          ? t(kind === "models" ? "resultWouldEmptyModels" : "resultWouldEmptyCombos")
+          : null;
+  return hint;
+}
 function KeyAccessRow({
   accessKey,
   kind,
@@ -60,14 +76,7 @@ function KeyAccessRow({
     access.via === "exact" &&
     planKeyAssignment({ key: accessKey, kind, action: "remove", items: [id], switchOptIn: false })
       .type === "skip";
-  const hint =
-    access.via === "pattern"
-      ? t("accessViaPattern", { pattern: access.pattern ?? "" })
-      : access.via === "blocked"
-        ? t("accessBlocked", { pattern: access.pattern ?? "" })
-        : lastItem
-          ? t(kind === "models" ? "resultWouldEmptyModels" : "resultWouldEmptyCombos")
-          : null;
+  const hint = keyAccessHint(access, lastItem, kind, t);
   const disabled = access.via === "all" || access.via === "pattern" || access.via === "blocked";
   const pending = index.pendingKeys.has(accessKey.id);
   const toggle = async () => {
@@ -111,25 +120,19 @@ function KeyAccessRow({
   );
 }
 
-export default function CatalogKeyAccessButton({
-  kind,
-  id,
-  providerId,
-  index,
+function useKeyAccessPopoverEvents({
+  open,
+  setPosition,
+  container,
+  popover,
+  trigger,
 }: {
-  kind: AccessKind;
-  id: string;
-  providerId?: string;
-  index: ApiKeyAccessIndex;
+  open: boolean;
+  setPosition: React.Dispatch<React.SetStateAction<PopoverPosition | null>>;
+  container: RefObject<HTMLDivElement | null>;
+  popover: RefObject<HTMLDivElement | null>;
+  trigger: RefObject<HTMLButtonElement | null>;
 }) {
-  const t = useTranslations("modelCatalog");
-  const cliTools = useTranslations("cliTools");
-  const popoverId = useId();
-  const [position, setPosition] = useState<PopoverPosition | null>(null);
-  const open = position !== null;
-  const container = useRef<HTMLDivElement>(null);
-  const popover = useRef<HTMLDivElement>(null);
-  const trigger = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!open) return;
     const close = (event: MouseEvent) => {
@@ -154,7 +157,34 @@ export default function CatalogKeyAccessButton({
       window.removeEventListener("resize", follow);
       window.removeEventListener("scroll", follow, true);
     };
-  }, [open]);
+  }, [open, setPosition, container, popover, trigger]);
+}
+interface CatalogKeyAccessButtonProps {
+  kind: AccessKind;
+  id: string;
+  providerId?: string;
+  index: ApiKeyAccessIndex;
+}
+function useKeyAccessPopover() {
+  const popoverId = useId();
+  const [position, setPosition] = useState<PopoverPosition | null>(null);
+  const open = position !== null;
+  const container = useRef<HTMLDivElement>(null);
+  const popover = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  useKeyAccessPopoverEvents({ open, setPosition, container, popover, trigger });
+  return { popoverId, position, setPosition, open, container, popover, trigger };
+}
+export default function CatalogKeyAccessButton({
+  kind,
+  id,
+  providerId,
+  index,
+}: CatalogKeyAccessButtonProps) {
+  const t = useTranslations("modelCatalog");
+  const cliTools = useTranslations("cliTools");
+  const { popoverId, position, setPosition, open, container, popover, trigger } =
+    useKeyAccessPopover();
   const now = index.checkedAt;
   const usableKeys = index.keys.filter((key) => isKeyUsable(key, now));
   return (

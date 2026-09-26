@@ -17,6 +17,66 @@ import {
 
 const PAGE_LIMIT = 100;
 
+function useAccessKeyToggle({
+  assign,
+  setKeys,
+  setPendingKeys,
+  pendingKeysRef,
+}: {
+  assign: (id: string, body: AssignBody) => Promise<AssignOutcome>;
+  setKeys: React.Dispatch<React.SetStateAction<AccessKey[]>>;
+  setPendingKeys: React.Dispatch<React.SetStateAction<ReadonlySet<string>>>;
+  pendingKeysRef: React.RefObject<Set<string>>;
+}) {
+  const setPending = useCallback(
+    (id: string, pending: boolean) => {
+      if (pending) pendingKeysRef.current.add(id);
+      else pendingKeysRef.current.delete(id);
+      setPendingKeys(new Set(pendingKeysRef.current));
+    },
+    [pendingKeysRef, setPendingKeys]
+  );
+
+  const toggle = useCallback(
+    async (key: AccessKey, kind: AccessKind, id: string, allowed: boolean) => {
+      if (pendingKeysRef.current.has(key.id)) {
+        return { status: "skipped", reason: "pending" } as AssignOutcome;
+      }
+      const plan = planKeyAssignment({
+        key,
+        kind,
+        action: allowed ? "add" : "remove",
+        items: [id],
+        switchOptIn: false,
+      });
+      if (plan.type === "skip") {
+        return {
+          status: plan.reason === "would_empty" ? "would_empty" : "skipped",
+        } as AssignOutcome;
+      }
+      setPending(key.id, true);
+      setKeys((current) =>
+        current.map((entry) =>
+          entry.id === key.id ? applyOptimisticAccess(entry, kind, id, allowed) : entry
+        )
+      );
+      const outcome = await assign(key.id, plan.body);
+      if (!outcome.result) {
+        // Undo only this toggle; anything written since (a dialog run, a refresh) stays.
+        setKeys((current) =>
+          current.map((entry) =>
+            entry.id === key.id ? revertOptimisticAccess(entry, key, kind, id, allowed) : entry
+          )
+        );
+      }
+      setPending(key.id, false);
+      return outcome;
+    },
+    [assign, setPending, pendingKeysRef, setKeys]
+  );
+
+  return toggle;
+}
 export function useApiKeyAccessIndex() {
   const [keys, setKeys] = useState<AccessKey[]>([]);
   const [loading, setLoading] = useState(false);
@@ -90,50 +150,7 @@ export function useApiKeyAccessIndex() {
     }
   }, []);
 
-  const setPending = useCallback((id: string, pending: boolean) => {
-    if (pending) pendingKeysRef.current.add(id);
-    else pendingKeysRef.current.delete(id);
-    setPendingKeys(new Set(pendingKeysRef.current));
-  }, []);
-
-  const toggle = useCallback(
-    async (key: AccessKey, kind: AccessKind, id: string, allowed: boolean) => {
-      if (pendingKeysRef.current.has(key.id)) {
-        return { status: "skipped", reason: "pending" } as AssignOutcome;
-      }
-      const plan = planKeyAssignment({
-        key,
-        kind,
-        action: allowed ? "add" : "remove",
-        items: [id],
-        switchOptIn: false,
-      });
-      if (plan.type === "skip") {
-        return {
-          status: plan.reason === "would_empty" ? "would_empty" : "skipped",
-        } as AssignOutcome;
-      }
-      setPending(key.id, true);
-      setKeys((current) =>
-        current.map((entry) =>
-          entry.id === key.id ? applyOptimisticAccess(entry, kind, id, allowed) : entry
-        )
-      );
-      const outcome = await assign(key.id, plan.body);
-      if (!outcome.result) {
-        // Undo only this toggle; anything written since (a dialog run, a refresh) stays.
-        setKeys((current) =>
-          current.map((entry) =>
-            entry.id === key.id ? revertOptimisticAccess(entry, key, kind, id, allowed) : entry
-          )
-        );
-      }
-      setPending(key.id, false);
-      return outcome;
-    },
-    [assign, setPending]
-  );
-
+  const toggle = useAccessKeyToggle({ assign, setKeys, setPendingKeys, pendingKeysRef });
   return { keys, checkedAt, loading, error, pendingKeys, refresh, ensureLoaded, assign, toggle };
 }
 export type ApiKeyAccessIndex = ReturnType<typeof useApiKeyAccessIndex>;

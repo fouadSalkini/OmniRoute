@@ -3,7 +3,6 @@ import { stripExtendedContextSuffix } from "@/shared/utils/modelPermissionCandid
 export {
   modelPatternMatches,
   matchesWildcardPattern,
-  segmentMatchesWildcard,
 } from "@/shared/utils/modelPermissionPatterns";
 export {
   CLAUDE_CODE_PROVIDER_PREFIXES,

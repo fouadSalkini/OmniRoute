@@ -266,10 +266,8 @@ export function findStillAllowedPatterns(key: AccessKey, items: AssignItem[]): s
   }
   return [...patterns];
 }
-export function classifyAssignResponse(status: number, payload: unknown): AssignOutcome {
-  const body = record(payload) ? payload : {};
-  if (
-    status === 200 &&
+function isAssignResult(body: Record<string, unknown>): boolean {
+  return (
     typeof body.id === "string" &&
     (body.modelAccessMode === "all" || body.modelAccessMode === "restricted") &&
     Array.isArray(body.allowedModels) &&
@@ -277,7 +275,11 @@ export function classifyAssignResponse(status: number, payload: unknown): Assign
     Array.isArray(body.allowedCombos) &&
     body.allowedCombos.every((id) => typeof id === "string") &&
     typeof body.changed === "boolean"
-  ) {
+  );
+}
+export function classifyAssignResponse(status: number, payload: unknown): AssignOutcome {
+  const body = record(payload) ? payload : {};
+  if (status === 200 && isAssignResult(body)) {
     return {
       status: body.changed ? "changed" : "unchanged",
       result: body as unknown as AssignResult,

@@ -24,7 +24,15 @@ import type { ApiKeyAccessIndex } from "./useApiKeyAccessIndex";
 
 const UNUSABLE_STATES: ReadonlySet<KeyState> = new Set(["revoked", "expired"]);
 
-export default function CatalogKeyAssignDialog({
+interface AssignDialogProps {
+  kind: AccessKind;
+  items: AssignItem[];
+  /** Selected rows that cannot be assigned from this tab (combo rows in the models tab). */
+  excludedCount?: number;
+  index: ApiKeyAccessIndex;
+  onClose: () => void;
+}
+function useCatalogKeyAssignContext({
   kind,
   items,
   excludedCount = 0,
@@ -76,6 +84,50 @@ export default function CatalogKeyAssignDialog({
   };
   const planFor = (key: AccessKey) =>
     planKeyAssignment({ key, kind, action, items: itemIds, switchOptIn: switches.has(key.id) });
+  const submit = useAssignSubmission({ targets, planFor, index, t, setOutcomes, setRunning });
+  return {
+    t,
+    common,
+    search,
+    setSearch,
+    action,
+    setAction,
+    selected,
+    setSelected,
+    switches,
+    setSwitches,
+    outcomes,
+    running,
+    outcomeKeys,
+    stateLabels,
+    now,
+    visibleKeys,
+    targets,
+    toggle,
+    planFor,
+    submit,
+    kind,
+    items,
+    excludedCount,
+    index,
+    onClose,
+  };
+}
+function useAssignSubmission({
+  targets,
+  planFor,
+  index,
+  t,
+  setOutcomes,
+  setRunning,
+}: {
+  targets: AccessKey[];
+  planFor: (key: AccessKey) => ReturnType<typeof planKeyAssignment>;
+  index: ApiKeyAccessIndex;
+  t: ReturnType<typeof useTranslations>;
+  setOutcomes: React.Dispatch<React.SetStateAction<Record<string, AssignOutcome>>>;
+  setRunning: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const submit = async () => {
     setRunning(true);
     const completed: Record<string, AssignOutcome> = {};
@@ -105,6 +157,169 @@ export default function CatalogKeyAssignDialog({
       setRunning(false);
     }
   };
+  return submit;
+}
+type AssignDialogContext = ReturnType<typeof useCatalogKeyAssignContext>;
+function AssignKeyRow({
+  accessKey: key,
+  context,
+}: {
+  accessKey: AccessKey;
+  context: AssignDialogContext;
+}) {
+  const { t, selected, setSelected, running, stateLabels, toggle } = context;
+  const summary = summarizeKeyAccess(key);
+  const state = getKeyState(key, context.now);
+  const usable = !UNUSABLE_STATES.has(state);
+  const isTarget = usable && selected.has(key.id);
+  return (
+    <div key={key.id} className="rounded border border-border p-3">
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          aria-label={t("selectApiKey", { name: key.name })}
+          checked={isTarget}
+          disabled={running || !usable}
+          onChange={() => setSelected(toggle(selected, key.id))}
+        />
+        <span>{key.name}</span>
+      </label>
+      <p className="text-xs text-text-muted">
+        {summary.allModels
+          ? t("allModelsAccess")
+          : t("modelAccessCount", { count: summary.modelCount })}{" "}
+        ·{" "}
+        {summary.allCombos
+          ? t("allCombosAccess")
+          : t("comboAccessCount", { count: summary.comboCount })}{" "}
+        · {stateLabels[state]}
+      </p>
+      <AssignKeyHints accessKey={key} context={context} />
+    </div>
+  );
+}
+function AssignKeyHints({
+  accessKey: key,
+  context,
+}: {
+  accessKey: AccessKey;
+  context: AssignDialogContext;
+}) {
+  const {
+    t,
+    kind,
+    action,
+    selected,
+    switches,
+    setSwitches,
+    running,
+    outcomeKeys,
+    now,
+    toggle,
+    planFor,
+    items,
+  } = context;
+  const all = keyAllowsAll(key, kind);
+  const state = getKeyState(key, now);
+  const usable = !UNUSABLE_STATES.has(state);
+  const isTarget = usable && selected.has(key.id);
+  const wouldEmpty = isTarget && planFor(key).type === "skip" && action === "remove";
+  const stillAllowed =
+    isTarget && action === "remove" && kind === "models"
+      ? findStillAllowedPatterns(key, items)
+      : [];
+  return (
+    <>
+      {isTarget && all && action === "add" && (
+        <label className="mt-2 flex items-start gap-2 text-sm">
+          <input
+            type="checkbox"
+            data-testid={`switch-restricted-${key.id}`}
+            checked={switches.has(key.id)}
+            disabled={running}
+            onChange={() => setSwitches(toggle(switches, key.id))}
+          />
+          {t("switchRestrictedConfirm")}
+        </label>
+      )}
+      {isTarget && all && action === "remove" && (
+        <p className="text-xs">{t("removeNoChangeHint")}</p>
+      )}
+      {wouldEmpty && <p className="text-xs">{t(outcomeKeys.would_empty)}</p>}
+      {stillAllowed.length > 0 && (
+        <p className="text-xs">
+          {t("removeStaysAllowedHint", { patterns: stillAllowed.join(", ") })}
+        </p>
+      )}
+      <AssignKeyOutcome keyId={key.id} context={context} />
+    </>
+  );
+}
+function AssignKeyOutcome({ keyId, context }: { keyId: string; context: AssignDialogContext }) {
+  const { outcomes, outcomeKeys, t } = context;
+  const outcome = outcomes[keyId];
+  return outcome ? (
+    <p data-testid={`assign-result-${keyId}`} role="status" className="mt-2 text-sm">
+      {t(outcomeKeys[outcome.status])}
+      {outcome.message ? `: ${outcome.message}` : ""}
+    </p>
+  ) : null;
+}
+function AssignDialogControls({ context }: { context: AssignDialogContext }) {
+  const {
+    t,
+    search,
+    setSearch,
+    action,
+    setAction,
+    running,
+    visibleKeys,
+    items,
+    excludedCount,
+    index,
+  } = context;
+  return (
+    <div className="space-y-4">
+      <p>{t("selectedAccessItems", { count: items.length })}</p>
+      {excludedCount > 0 && (
+        <p className="text-sm text-text-muted">
+          {t("assignExcludedCombos", { count: excludedCount })}
+        </p>
+      )}
+      <div className="flex gap-3">
+        {(["add", "remove"] as const).map((mode) => (
+          <label key={mode}>
+            <input
+              type="radio"
+              name="assign-action"
+              aria-label={t(mode === "add" ? "assignActionAdd" : "assignActionRemove")}
+              checked={action === mode}
+              disabled={running}
+              onChange={() => setAction(mode)}
+            />{" "}
+            {t(mode === "add" ? "assignActionAdd" : "assignActionRemove")}
+          </label>
+        ))}
+      </div>
+      <Input
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder={t("searchKeys")}
+        aria-label={t("searchKeys")}
+      />
+      {index.loading && <p>{t("keysLoading")}</p>}
+      {index.error && <Button onClick={() => void index.refresh()}>{t("keysRetry")}</Button>}
+      <div className="max-h-96 space-y-2 overflow-auto">
+        {visibleKeys.map((key) => (
+          <AssignKeyRow key={key.id} accessKey={key} context={context} />
+        ))}
+      </div>
+    </div>
+  );
+}
+export default function CatalogKeyAssignDialog(props: AssignDialogProps) {
+  const context = useCatalogKeyAssignContext(props);
+  const { t, running, targets, submit, items, onClose } = context;
   return (
     <Modal
       isOpen
@@ -123,102 +338,7 @@ export default function CatalogKeyAssignDialog({
         </Button>
       }
     >
-      <div className="space-y-4">
-        <p>{t("selectedAccessItems", { count: items.length })}</p>
-        {excludedCount > 0 && (
-          <p className="text-sm text-text-muted">
-            {t("assignExcludedCombos", { count: excludedCount })}
-          </p>
-        )}
-        <div className="flex gap-3">
-          {(["add", "remove"] as const).map((mode) => (
-            <label key={mode}>
-              <input
-                type="radio"
-                name="assign-action"
-                aria-label={t(mode === "add" ? "assignActionAdd" : "assignActionRemove")}
-                checked={action === mode}
-                disabled={running}
-                onChange={() => setAction(mode)}
-              />{" "}
-              {t(mode === "add" ? "assignActionAdd" : "assignActionRemove")}
-            </label>
-          ))}
-        </div>
-        <Input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder={t("searchKeys")}
-          aria-label={t("searchKeys")}
-        />
-        {index.loading && <p>{t("keysLoading")}</p>}
-        {index.error && <Button onClick={() => void index.refresh()}>{t("keysRetry")}</Button>}
-        <div className="max-h-96 space-y-2 overflow-auto">
-          {visibleKeys.map((key) => {
-            const summary = summarizeKeyAccess(key);
-            const all = keyAllowsAll(key, kind);
-            const state = getKeyState(key, now);
-            const usable = !UNUSABLE_STATES.has(state);
-            const isTarget = usable && selected.has(key.id);
-            const wouldEmpty = isTarget && planFor(key).type === "skip" && action === "remove";
-            const stillAllowed =
-              isTarget && action === "remove" && kind === "models"
-                ? findStillAllowedPatterns(key, items)
-                : [];
-            return (
-              <div key={key.id} className="rounded border border-border p-3">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    aria-label={t("selectApiKey", { name: key.name })}
-                    checked={isTarget}
-                    disabled={running || !usable}
-                    onChange={() => setSelected(toggle(selected, key.id))}
-                  />
-                  <span>{key.name}</span>
-                </label>
-                <p className="text-xs text-text-muted">
-                  {summary.allModels
-                    ? t("allModelsAccess")
-                    : t("modelAccessCount", { count: summary.modelCount })}{" "}
-                  ·{" "}
-                  {summary.allCombos
-                    ? t("allCombosAccess")
-                    : t("comboAccessCount", { count: summary.comboCount })}{" "}
-                  · {stateLabels[state]}
-                </p>
-                {isTarget && all && action === "add" && (
-                  <label className="mt-2 flex items-start gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      data-testid={`switch-restricted-${key.id}`}
-                      checked={switches.has(key.id)}
-                      disabled={running}
-                      onChange={() => setSwitches(toggle(switches, key.id))}
-                    />
-                    {t("switchRestrictedConfirm")}
-                  </label>
-                )}
-                {isTarget && all && action === "remove" && (
-                  <p className="text-xs">{t("removeNoChangeHint")}</p>
-                )}
-                {wouldEmpty && <p className="text-xs">{t(outcomeKeys.would_empty)}</p>}
-                {stillAllowed.length > 0 && (
-                  <p className="text-xs">
-                    {t("removeStaysAllowedHint", { patterns: stillAllowed.join(", ") })}
-                  </p>
-                )}
-                {outcomes[key.id] && (
-                  <p data-testid={`assign-result-${key.id}`} role="status" className="mt-2 text-sm">
-                    {t(outcomeKeys[outcomes[key.id].status])}
-                    {outcomes[key.id].message ? `: ${outcomes[key.id].message}` : ""}
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      <AssignDialogControls context={context} />
     </Modal>
   );
 }
