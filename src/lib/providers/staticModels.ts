@@ -35,6 +35,7 @@ const STATIC_MODEL_PROVIDERS: Record<string, () => Array<{ id: string; name: str
   ],
   antigravity: () => ANTIGRAVITY_PUBLIC_MODELS.map((model) => ({ ...model })),
   claude: () => [
+    { id: "claude-fable-5-1", name: "Claude Fable 5.1" },
     { id: "claude-fable-5", name: "Claude Fable 5" },
     { id: "claude-opus-5", name: "Claude Opus 5" },
     { id: "claude-opus-4-8", name: "Claude Opus 4.8" },
@@ -57,6 +58,11 @@ const STATIC_MODEL_PROVIDERS: Record<string, () => Array<{ id: string; name: str
   gitlab: () => [{ id: "gitlab-duo-code-suggestions", name: "GitLab Duo Code Suggestions" }],
   nlpcloud: () =>
     getModelsByProviderId("nlpcloud").map((model) => ({
+      id: model.id,
+      name: model.name || model.id,
+    })),
+  oneminai: () =>
+    getModelsByProviderId("oneminai").map((model) => ({
       id: model.id,
       name: model.name || model.id,
     })),

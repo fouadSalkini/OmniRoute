@@ -8,6 +8,7 @@
 import { mergeAbortSignals, type ExecutorLog } from "../base.ts";
 import { applyFingerprint, isCliCompatEnabled } from "../../config/cliFingerprints.ts";
 import { buildAntigravityUpstreamError } from "../antigravityUpstreamError.ts";
+import { maybeTriggerReactiveModelSync } from "@/lib/providerModels/reactiveModelSync.ts";
 import {
   HTTP_STATUS,
   STREAM_READINESS_TIMEOUT_MS,
@@ -332,7 +333,9 @@ export async function sendAntigravityRequest(
   stream: boolean,
   signal: AbortSignal | null | undefined,
   log: SafeAntigravityLog,
-  retryAttempt: number
+  retryAttempt: number,
+  physicalSendCounter: { value: number },
+  correlationId: string | null
 ): Promise<{ response: Response; finalHeaders: Record<string, string> }> {
   const serializedRequest = serializeAntigravityRequest(provider, headers, transformedBody);
   let finalHeaders = serializedRequest.headers;
@@ -355,6 +358,11 @@ export async function sendAntigravityRequest(
   }
 
   await prl.captureCurrentProviderBody(url, finalHeaders, serializedRequest.bodyString, log);
+  const physicalSendOrdinal = ++physicalSendCounter.value;
+  log.debug(
+    "TELEMETRY",
+    `[Antigravity] PhysicalSend - RequestId: ${correlationId ?? "none"}, URL: ${url}, Model: ${model}, PhysicalSend: ${physicalSendOrdinal}, RetryAttempt: ${retryAttempt}`
+  );
   let response = await fetchAntigravityWithReadinessTimeout(url, {
     method: "POST",
     headers: finalHeaders,
@@ -368,6 +376,11 @@ export async function sendAntigravityRequest(
     removeHeaderCaseInsensitive(retryHeaders, "x-goog-user-project");
     log.debug("RETRY", "403 with x-goog-user-project, retrying once without it");
     await prl.captureCurrentProviderBody(url, retryHeaders, serializedRequest.bodyString, log);
+    const retryPhysicalSendOrdinal = ++physicalSendCounter.value;
+    log.debug(
+      "TELEMETRY",
+      `[Antigravity] PhysicalSend - RequestId: ${correlationId ?? "none"}, URL: ${url}, Model: ${model}, PhysicalSend: ${retryPhysicalSendOrdinal}, RetryAttempt: ${retryAttempt}, Cause: x-goog-user-project-403`
+    );
     response = await fetchAntigravityWithReadinessTimeout(url, {
       method: "POST",
       headers: retryHeaders,
@@ -383,6 +396,17 @@ export async function sendAntigravityRequest(
       "TELEMETRY",
       `[Antigravity] Error Response - URL: ${url}, Status: ${response.status}, Model: ${model}`
     );
+    if (response.status === HTTP_STATUS.NOT_FOUND) {
+      // The backend may have shipped/renamed models the synced catalog does not
+      // know yet (pinned-catalog staleness). Kick a discovery sync for this
+      // connection so the fresh list lands in the synced catalog and the next
+      // request can resolve. Cooldown + in-flight dedup live in the trigger.
+      // credentials.connectionId is optional (base.ts): no connection row means
+      // there is no synced catalog to refresh, so skip rather than pass undefined.
+      if (credentials.connectionId) {
+        maybeTriggerReactiveModelSync(provider, credentials.connectionId);
+      }
+    }
   }
 
   return { response, finalHeaders };
@@ -404,7 +428,9 @@ export async function tryCreditsRetry(
   signal: AbortSignal | null | undefined,
   log: SafeAntigravityLog,
   accountId: string,
-  onCreditsUpdate: OnAntigravityCreditsUpdate
+  onCreditsUpdate: OnAntigravityCreditsUpdate,
+  physicalSendCounter: { value: number },
+  correlationId: string | null
 ): Promise<SsePassthroughResult | null> {
   log.info("AG_CREDITS", "Retrying with Google One AI credits");
   const creditsBody = attachToolNameMap(
@@ -420,6 +446,11 @@ export async function tryCreditsRetry(
       finalCreditsHeaders,
       serializedCreditsRequest.bodyString,
       log
+    );
+    const creditsPhysicalSendOrdinal = ++physicalSendCounter.value;
+    log.debug(
+      "TELEMETRY",
+      `[Antigravity] PhysicalSend - RequestId: ${correlationId ?? "none"}, URL: ${url}, PhysicalSend: ${creditsPhysicalSendOrdinal}, Cause: google-one-ai-credits-retry`
     );
     const creditsResp = await fetchAntigravityWithReadinessTimeout(url, {
       method: "POST",

@@ -16,6 +16,8 @@ const {
   handleComboChat,
 } = await import("../../open-sse/services/combo.ts");
 const { resolveComboTargets } = await import("../../open-sse/services/combo/comboStructure.ts");
+const { getComboFailureCount, __resetComboFailureTrackerForTests } =
+  await import("../../open-sse/services/combo/failureTracker.ts");
 const { applyPromptCacheAffinity } =
   await import("../../open-sse/services/combo/promptCacheAffinity.ts");
 const { resolveReasoningBufferedMaxTokens } =
@@ -126,7 +128,7 @@ async function cleanupTestDataDir() {
   for (let attempt = 0; attempt < 5; attempt += 1) {
     try {
       core.resetDbInstance();
-      fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
+      fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
       return;
     } catch (error: any) {
       lastError = error;
@@ -1327,6 +1329,42 @@ test("handleComboChat returns 404 model_not_found when a combo has no executable
   assert.match(payload.error.message, /Combo has no executable targets/);
 });
 
+test("#11408 guard: no-executable-targets early exit still records the combo failure (silent-stop counter, #5923)", async () => {
+  __resetComboFailureTrackerForTests();
+  const result = await handleComboChat({
+    body: {},
+    combo: {
+      name: "guard-empty-11408",
+      strategy: "priority",
+      models: [],
+      context_cache_protection: true,
+    },
+    handleSingleModel: async () => {
+      throw new Error("handleSingleModel should not run for empty combos");
+    },
+    isModelAvailable: async () => true,
+    log: createLog(),
+    settings: {
+      comboDefaults: {
+        maxRetries: 0,
+        retryDelayMs: 1,
+      },
+    },
+    relayOptions: { sessionId: "sess-guard-11408" },
+    allCombos: null,
+  });
+
+  assert.equal(result.status, 404);
+  // The quota-share slot release must not replace the #5923 silent-stop
+  // bookkeeping: the consecutive-failure counter must still advance so the
+  // session pin auto-clears after COMBO_FAILURE_THRESHOLD no-target failures.
+  assert.equal(
+    getComboFailureCount("sess-guard-11408", "guard-empty-11408"),
+    1,
+    "recordComboFailure must run on the no-executable-targets early exit"
+  );
+});
+
 test("handleComboChat round-robin returns 404 when no models are configured", async () => {
   const result = await handleComboChat({
     body: {},
@@ -2314,6 +2352,55 @@ test("handleComboChat normalizes legacy strategy names at runtime", async () => 
   });
 
   assert.deepEqual(usageCalls, ["model-b"]);
+});
+
+test("handleComboChat surfaces the earliest provider-account reset when every target is unavailable", async () => {
+  const later = new Date(Date.now() + 5 * 60_000).toISOString();
+  const sooner = new Date(Date.now() + 2 * 60_000).toISOString();
+  await providersDb.createProviderConnection({
+    provider: "openai",
+    authType: "apikey",
+    name: "Cooling later",
+    apiKey: "sk-cooling-later",
+    testStatus: "unavailable",
+    rateLimitedUntil: later,
+  });
+  await providersDb.createProviderConnection({
+    provider: "openai",
+    authType: "apikey",
+    name: "Cooling sooner",
+    apiKey: "sk-cooling-sooner",
+    testStatus: "unavailable",
+    rateLimitedUntil: sooner,
+  });
+
+  const result = await handleComboChat({
+    body: {},
+    combo: {
+      name: "provider-pool-cooling-down",
+      strategy: "priority",
+      models: ["openai/model-a", "openai/model-b"],
+    },
+    handleSingleModel: async () => {
+      throw new Error("handleSingleModel should not run when all models are inactive");
+    },
+    isModelAvailable: async () => false,
+    log: createLog(),
+    settings: null,
+    relayOptions: null,
+    allCombos: null,
+  });
+
+  const payload = (await result.json()) as {
+    error: { type?: string; code?: string; retry_after?: number; reset_at?: string };
+  };
+  assert.equal(result.status, 429);
+  assert.equal(payload.error.type, "rate_limit_error");
+  assert.equal(payload.error.code, "ALL_TARGETS_SKIPPED");
+  assert.equal(payload.error.reset_at, sooner);
+  assert.ok(payload.error.retry_after >= 119 && payload.error.retry_after <= 120);
+  assert.equal(result.headers.get("Retry-After"), String(payload.error.retry_after));
+  assert.match(payload.error.message, /reset after (?:1m \d+s|2m)/);
 });
 
 test("handleComboChat returns a 503 when every model is unavailable before execution", async () => {

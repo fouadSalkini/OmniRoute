@@ -1,4 +1,5 @@
 import { generateModels, generateAliasMap, type RegistryModel } from "./providerRegistry.ts";
+import { getVertexModelTargetFormat } from "./vertexModels.ts";
 
 // Lazy PROVIDER_MODELS: deferred until first property access to speed up startup.
 // The Proxy defers `generateModels()` from module-evaluation time to the first read.
@@ -145,6 +146,48 @@ function getGlobalModel(modelId: string): RegistryModel | undefined {
   return bestMatch;
 }
 
+/**
+ * Exact-id catalog lookup: the registry entry for `modelId` across every
+ * provider, or for its basename once a `vendor/` prefix is stripped.
+ *
+ * This is `getGlobalModel`'s steps 1–2 only. Step 3 (a `startsWith` substring
+ * scan) deliberately guesses at a base model, which is exactly what a
+ * catalog-anchor check must not do — `resolveScoresAs` (#11489) uses this to
+ * verify that a suffix-stripped base is a REAL routable id before inheriting
+ * its quality scores.
+ */
+export function findRegistryModelById(modelId: string): RegistryModel | undefined {
+  if (typeof modelId !== "string" || modelId.length === 0) return undefined;
+  for (const models of Object.values(PROVIDER_MODELS)) {
+    const found = models.find((m) => m.id === modelId);
+    if (found) return found;
+  }
+  const basename = modelId.split("/").pop() || modelId;
+  if (basename === modelId) return undefined;
+  for (const models of Object.values(PROVIDER_MODELS)) {
+    const found = models.find((m) => m.id === basename);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+/**
+ * The `scoresAs` target declared for `modelId`, if any (#11489). Scans every
+ * provider that ships the id rather than stopping at the first hit, so an
+ * unannotated duplicate of the same id in another provider's catalog cannot
+ * shadow the entry that actually declares the relation.
+ */
+export function findRegistryScoresAs(modelId: string): string | undefined {
+  if (typeof modelId !== "string" || modelId.length === 0) return undefined;
+  const basename = modelId.split("/").pop() || modelId;
+  for (const models of Object.values(PROVIDER_MODELS)) {
+    for (const m of models) {
+      if ((m.id === modelId || m.id === basename) && m.scoresAs) return m.scoresAs;
+    }
+  }
+  return undefined;
+}
+
 export function getProviderModel(aliasOrId: string, modelId: string): RegistryModel | undefined {
   const models = PROVIDER_MODELS[aliasOrId];
   if (!models) return getGlobalModel(modelId);
@@ -186,9 +229,10 @@ export function getModelTargetFormat(aliasOrId: string, modelId: string): string
   // executor's /codex/i routing, 9router#102). Scoped to the openai alias so other
   // providers shipping *-pro ids keep their own endpoint semantics.
   if (alias === "openai" && /-pro$/i.test(bareModelId)) return "openai-responses";
-  // ponytail: Claude models on Vertex use rawPredict with Anthropic Messages format,
-  // not the Gemini generateContent format. Mirrors executor isClaudeModel() check.
-  if ((alias === "vertex" || alias === "vp") && /^claude-/i.test(bareModelId)) return "claude";
+  // Vertex uses three protocol families: Gemini generateContent, Anthropic Messages rawPredict,
+  // and OpenAI-shaped Mistral/Open-MaaS requests. Resource names retain enough publisher data to
+  // route future dynamically-synced models without adding another pinned prefix here.
+  if (alias === "vertex" || alias === "vp") return getVertexModelTargetFormat(bareModelId);
   // Model-level targetFormat is provider-scoped: a catalog entry declares how THIS
   // provider's endpoint serves the model — do NOT import another provider's tag.
   // #9994 scoped this for providers WITH a catalog; #10072 extends it to catalogless

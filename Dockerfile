@@ -103,25 +103,13 @@ RUN test -f package-lock.json \
 # node-gyp comes from npm's own bundled copy (deterministic, already in the image)
 # instead of `npx --yes`, which would install an arbitrary registry version
 # on-demand and run its lifecycle scripts (Sonar docker:S6505).
-#
-# tls-client-node (chatgpt-web/claude-web/grok-web/lmarena/perplexity-web TLS
-# impersonation) hits the same --ignore-scripts wall: its own postinstall.js
-# fetches a platform .so/.dylib/.dll from the bogdanfinn/tls-client GitHub
-# Releases API and is never invoked when npm ci skips lifecycle scripts. Unlike
-# better-sqlite3 above, that script never throws on failure — it only
-# `console.warn`s and exits 0 — so a rate-limited or offline build would
-# otherwise succeed silently with an empty bin/ and only fail at first request
-# in production (TlsClientUnavailableError, #7802). Run it explicitly here so
-# a broken/rate-limited fetch fails the BUILD loudly instead of shipping a
-# broken image.
 RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-npm-cache,target=/root/.npm \
   npm ci --include=optional --no-audit --no-fund --legacy-peer-deps --ignore-scripts \
   && (cd node_modules/better-sqlite3 \
-      && node /usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js rebuild) \
+      && node /usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js rebuild --force_build=1) \
+  && test -f node_modules/better-sqlite3/build/Release/better_sqlite3.node \
   && node -e "require('better-sqlite3')(':memory:').close()" \
-  && node node_modules/tls-client-node/scripts/postinstall.js \
-  && (test -n "$(find node_modules/tls-client-node/bin -mindepth 1 -print -quit 2>/dev/null)" \
-      || (echo "tls-client-node native binary missing after postinstall — GitHub API fetch likely rate-limited or failed (#7802)" >&2 && exit 1))
+  && node -e "const wreq=require('wreq-js'); if(typeof wreq.createTransport!=='function') process.exit(1)"
 
 # Build with Turbopack (stable in Next 16, the repo default). The v3.8.27-era
 # TurbopackInternalError panic ("entered unreachable code: there must be a path to a
@@ -184,19 +172,29 @@ ENV NODE_OPTIONS="--max-old-space-size=${OMNIROUTE_BUILD_MEMORY_MB}"
 # silently leaving no standalone bundle. Next derives the worker count from
 # CIRCLE_NODE_TOTAL (workers = N-1). (#10060)
 #
-# Lowered 8 → 3 (7 workers → 2). Every page-data worker inherits NODE_OPTIONS
-# above, so the ceiling is per PROCESS, not per build: 7 workers on a 16 GB
-# GitHub runner (ubuntu-24.04 / ubuntu-24.04-arm, 4 vCPU) exhausted the host and
-# buildkit failed the whole step with `ResourceExhausted: ... cannot allocate
-# memory`. The compile phase always finished ("✓ Compiled successfully in
-# 4.2min"); the kernel killed the build right after "Collecting page data using
-# 7 workers". It was intermittent for a while and went 100% on 2026-08-22, which
-# is what a threshold being crossed by ordinary codebase growth looks like.
-# tests/unit/docker-build-memory-budget.test.ts does the arithmetic and fails if
-# either knob is raised past what a 16 GB runner holds. 2 workers also stops
-# oversubscribing the runner's 4 vCPU, which 7 did. Override for a big builder:
-# `--build-arg OMNIROUTE_BUILD_WORKERS=8`.
-ARG OMNIROUTE_BUILD_WORKERS=3
+# Lowered 8 → 3 (7 workers → 2) in #11419, then 3 → 2 (2 workers → 1) in #7518.
+# Every page-data worker inherits NODE_OPTIONS above, so the ceiling is per
+# PROCESS, not per build: 7 workers on a 16 GB GitHub runner (ubuntu-24.04 /
+# ubuntu-24.04-arm, 4 vCPU) exhausted the host and buildkit failed the whole
+# step with `ResourceExhausted: ... cannot allocate memory`. The compile phase
+# always finished ("✓ Compiled successfully in 4.2min"); the kernel killed the
+# build right after "Collecting page data using N workers".
+#
+# #11419's first fix (8 → 3) modeled the per-worker peak as an INFERENCE
+# (2560 MB, guessed from "7 workers didn't fit") and assumed the parent
+# process's RSS tracked the V8 heap ceiling. Both assumptions were wrong: a
+# live VPS reproduction (issue #7518, dmesg OOM-killer report) measured the
+# real per-process RSS directly at ~4.5 GB, independent of the NODE_OPTIONS
+# heap flag (Turbopack itself is native/Rust, outside the V8 heap) — and it
+# applies to the parent process too, not just workers. 2 workers (3 processes
+# × 4.5 GB = 13.5 GB) still didn't fit the 12.288 GB (75%) budget on a 16 GB
+# runner, matching the still-live publish failures after #11419 merged. 1
+# worker (2 processes × 4.5 GB = 9 GB) fits with headroom to spare.
+# tests/unit/docker-build-memory-budget.test.ts does the arithmetic against
+# the measured figure and fails if either knob is raised past what a 16 GB
+# runner holds. Override for a big builder: `--build-arg
+# OMNIROUTE_BUILD_WORKERS=8`.
+ARG OMNIROUTE_BUILD_WORKERS=2
 ENV CIRCLE_NODE_TOTAL=${OMNIROUTE_BUILD_WORKERS}
 
 COPY . ./
@@ -228,7 +226,19 @@ ENV NODE_OPTIONS="--max-old-space-size=${OMNIROUTE_MEMORY_MB}"
 
 # Data directory inside Docker — must match the volume mount in docker-compose.yml
 ENV DATA_DIR=/app/data
-RUN mkdir -p /app/data
+RUN mkdir -p /app/data && chown node:node /app /app/data
+
+# #13679: default the PUBLISHED image to requiring an API key. A bare
+# `docker run -p 20128:20128 … diegosouzapw/omniroute` (README/QUICK-START
+# one-liners) does not pass `--env-file .env`, so without this default the
+# anonymous /v1 LLM proxy would be both keyless AND world-reachable on the
+# published container. This does NOT change the npm/CLI local-dev default
+# (`REQUIRE_API_KEY` stays `"false"` in featureFlagDefinitions.ts) — only the
+# shipped deployment artifact's posture. docker-compose.yml is unaffected: it
+# loads the operator's own `.env` (env_file:) which overrides this ENV, and
+# already binds loopback-only by default (#12568). Override with
+# `-e REQUIRE_API_KEY=false` for an intentionally keyless deployment.
+ENV REQUIRE_API_KEY=true
 
 # `npm run build` (build-next-isolated → assembleStandalone) bundles ALL runtime
 # files into .build/next/standalone/ — .next, node_modules, migrations, scripts,
@@ -238,23 +248,24 @@ RUN mkdir -p /app/data
 # The old per-module overrides were therefore pure duplication and were removed
 # (build-output-isolation cleanup). See scripts/build/assembleStandalone.mjs
 # (EXTRA_MODULE_ENTRIES) for the single source of truth.
-COPY --from=builder /app/.build/next/standalone ./
+COPY --chown=node:node --from=builder /app/.build/next/standalone ./
 # better-sqlite3 is the one exception still copied explicitly: assembleStandalone
 # only syncs its native build/ dir; the JS wrapper (lib/, package.json) is left to
 # Next.js tracing. bootstrap-env requires SQLite BEFORE the standalone server
 # starts, so guarantee the complete package independent of trace behaviour.
-COPY --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
+COPY --chown=node:node --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
+RUN test -f /app/node_modules/better-sqlite3/build/Release/better_sqlite3.node
 # migrations land at <standalone>/migrations via assembleStandalone; point the runtime at them.
 ENV OMNIROUTE_MIGRATIONS_DIR=/app/migrations
 
 # Docker healthcheck script — not traced by Next.js standalone output, so copy
 # it explicitly. The HEALTHCHECK CMD references it as `node healthcheck.mjs`.
-COPY --from=builder /app/scripts/dev/healthcheck.mjs ./healthcheck.mjs
+COPY --chown=node:node --from=builder /app/scripts/dev/healthcheck.mjs ./healthcheck.mjs
 
-# Hand /app over to the baked-in `node` non-root user (UID/GID 1000) so the
-# runtime process never holds root privileges. The chown happens after all
-# COPYs so it covers files originally owned by root in the builder stage.
-RUN chown -R node:node /app
+# Every COPY above hands its files to the baked-in `node` non-root user
+# (UID/GID 1000) at copy time. Do NOT add a `RUN chown -R node:node /app`
+# afterwards: in the overlay filesystem changing ownership rewrites every file
+# into a new layer, which stored the ~2 GB standalone build twice (#13990).
 
 EXPOSE 20128
 
@@ -334,7 +345,18 @@ RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-cache,targe
   && git config --system url."https://github.com/".insteadOf "ssh://git@github.com/"
 
 # Install CLI tools globally. Separate layer from apt for better cache reuse.
+# Pinned to exact versions per Diego's diagnosis in #12576 — floating
+# `@latest` causes two CI failures:
+#   1. `openclaw` ships a breaking major ~weekly; overnight builds silently
+#      advance to a version that no longer matches the tested combo stack.
+#   2. `codex` / `claude-code` dev pre-releases (`@next`, dist-tags) mutate
+#      API surface without notice; reproducible builds need a SHA-pinned dev
+#      build, not the floating `@latest`.
 RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-npm-cache,target=/root/.npm \
-  npm install -g --no-audit --no-fund @openai/codex @anthropic-ai/claude-code droid openclaw@latest
+  npm install -g --no-audit --no-fund \
+    @openai/codex@0.153.4 \
+    @anthropic-ai/claude-code@2.1.260 \
+    droid@0.212.0 \
+    openclaw@2026.9.1
 
 USER node

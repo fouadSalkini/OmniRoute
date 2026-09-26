@@ -28,7 +28,7 @@ async function resetStorage() {
   readCacheDb.invalidateDbCache();
   await new Promise((resolve) => setTimeout(resolve, 20));
   core.resetDbInstance();
-  fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
+  fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   fs.mkdirSync(TEST_DATA_DIR, { recursive: true });
 }
 
@@ -40,7 +40,7 @@ test.after(async () => {
   globalThis.fetch = originalFetch;
   core.closeDbInstance();
   try {
-    fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
+    fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   } catch {}
 });
 
@@ -611,10 +611,12 @@ test("chatCore integration: assigned compression combo applies language packs an
       autoClarity: true,
     },
     languageConfig: {
-      enabled: false,
-      defaultLanguage: "en",
-      autoDetect: true,
-      enabledPacks: ["en"],
+      enabled: true,
+      // autoDetect would read the (English) user turn and resolve back to "en",
+      // so the pack under test has to be pinned explicitly.
+      autoDetect: false,
+      defaultLanguage: "pt-BR",
+      enabledPacks: ["pt-BR"],
     },
   });
 
@@ -719,10 +721,12 @@ test("chatCore integration: default stacked compression combo applies for unassi
       autoClarity: true,
     },
     languageConfig: {
-      enabled: false,
-      defaultLanguage: "en",
-      autoDetect: true,
-      enabledPacks: ["en"],
+      enabled: true,
+      // autoDetect would read the (English) user turn and resolve back to "en",
+      // so the pack under test has to be pinned explicitly.
+      autoDetect: false,
+      defaultLanguage: "pt-BR",
+      enabledPacks: ["pt-BR"],
     },
   });
 

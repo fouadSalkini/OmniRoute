@@ -1,4 +1,10 @@
-import { SHARED_BOUNDARIES, shouldBypassCavemanOutputMode } from "../outputMode.ts";
+import {
+  placeSystemInstruction,
+  SHARED_BOUNDARIES,
+  shouldBypassCavemanOutputMode,
+  systemFieldIncludesMarker,
+} from "../outputMode.ts";
+import { detectCompressionLanguage } from "../languageDetector.ts";
 import { OUTPUT_STYLE_IDS, outputStyleMeta } from "./catalog.ts";
 
 export type OutputStyleLevel = "lite" | "full" | "ultra";
@@ -29,6 +35,50 @@ export interface OutputStylesResult {
   appliedStyles?: OutputStyleSelectionEntry[];
 }
 
+interface OutputStyleLanguageConfig {
+  enabled?: boolean;
+  autoDetect?: boolean;
+  defaultLanguage?: string;
+}
+
+function lastUserText(body: ChatRequestBody): string {
+  const messages = Array.isArray(body.messages) ? body.messages : [];
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const message = messages[i];
+    if (message?.role !== "user") continue;
+    if (typeof message.content === "string" && message.content.trim()) return message.content;
+    if (Array.isArray(message.content)) {
+      const text = message.content
+        .map((part) =>
+          part && typeof part === "object" && typeof (part as { text?: unknown }).text === "string"
+            ? (part as { text: string }).text
+            : ""
+        )
+        .join(" ")
+        .trim();
+      if (text) return text;
+    }
+  }
+  return "";
+}
+
+/**
+ * Resolve which language the output-style instructions inject in.
+ * Disabled → en. autoDetect → language of the latest user message (the input
+ * engines already use the same detector); otherwise the configured default.
+ */
+export function resolveOutputStyleLanguage(
+  languageConfig: OutputStyleLanguageConfig | undefined,
+  body: ChatRequestBody
+): string {
+  if (languageConfig?.enabled !== true) return "en";
+  if (languageConfig.autoDetect === true) {
+    const text = lastUserText(body);
+    if (text) return detectCompressionLanguage(text);
+  }
+  return languageConfig.defaultLanguage || "en";
+}
+
 /** Single idempotency marker guarding the unified injection (D-A: one marker for all styles). */
 export const OUTPUT_STYLE_MARKER = "[OmniRoute Output Styles]";
 
@@ -54,10 +104,7 @@ function resolveStyles(
 }
 
 /** Build the combined instruction body (no marker, no trailing boundary). Pure / deterministic. */
-function buildStyleInstructions(
-  resolved: OutputStyleSelectionEntry[],
-  language: string
-): string {
+function buildStyleInstructions(resolved: OutputStyleSelectionEntry[], language: string): string {
   const parts: string[] = [];
   for (const { id, level } of resolved) {
     const meta = outputStyleMeta(id);
@@ -104,32 +151,34 @@ export function applyOutputStyles(
       };
     }
     if (typeof body.input === "string" || Array.isArray(body.input)) {
-      return { body: { ...body, instructions: instruction }, applied: true, appliedStyles: resolved };
+      return {
+        body: { ...body, instructions: instruction },
+        applied: true,
+        appliedStyles: resolved,
+      };
     }
     return { body, applied: false, skippedReason: "no_messages" };
   }
 
   // Idempotency before bypass so an already-injected marker (which contains
   // SHARED_BOUNDARIES keywords) cannot trigger a false-positive bypass.
-  const alreadyApplied = messages.some(
-    (message) =>
-      message.role === "system" &&
-      typeof message.content === "string" &&
-      message.content.includes(OUTPUT_STYLE_MARKER)
-  );
+  const alreadyApplied =
+    systemFieldIncludesMarker(body.system, OUTPUT_STYLE_MARKER) ||
+    messages.some(
+      (message) =>
+        message.role === "system" &&
+        typeof message.content === "string" &&
+        message.content.includes(OUTPUT_STYLE_MARKER)
+    );
   if (alreadyApplied) return { body, applied: false, skippedReason: "already_applied" };
 
   // Content bypass (all-or-nothing for the turn): reuse the existing rules verbatim.
   const bypass = shouldBypassCavemanOutputMode(messages);
   if (bypass) return { body, applied: false, skippedReason: bypass };
 
-  const nextMessages = [...messages];
-  const first = nextMessages[0];
-  if (first?.role === "system" && typeof first.content === "string") {
-    nextMessages[0] = { ...first, content: `${first.content.trim()}\n\n${instruction}` };
-  } else {
-    nextMessages.unshift({ role: "system", content: instruction });
-  }
-
-  return { body: { ...body, messages: nextMessages }, applied: true, appliedStyles: resolved };
+  return {
+    body: { ...body, ...placeSystemInstruction(messages, body.system, instruction) },
+    applied: true,
+    appliedStyles: resolved,
+  };
 }

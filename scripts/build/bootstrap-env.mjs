@@ -67,6 +67,11 @@ function isNativeSqliteLoadError(error) {
   const message = error instanceof Error ? error.message : String(error);
   const code = error && typeof error === "object" && "code" in error ? error.code : undefined;
 
+  // Deliberately narrower than src/lib/db/sqliteLoadError.ts. There, a
+  // non-callable export means "fall back to another driver". Here, the only
+  // consumer treats a match as "no encrypted credentials exist", which lets
+  // STORAGE_ENCRYPTION_KEY be regenerated over a database that still holds
+  // enc:v1: rows. A generic TypeError must stay loud on this path.
   return (
     message.includes("Module did not self-register") ||
     message.includes("NODE_MODULE_VERSION") ||
@@ -78,9 +83,40 @@ function isNativeSqliteLoadError(error) {
   );
 }
 
+function isLikelyBrokenNativeBinding(error) {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.includes("is not a function") || message.includes("is not a constructor");
+}
+
 function hasEncryptedCredentials(dataDir) {
   const dbPath = join(dataDir, "storage.sqlite");
   if (!existsSync(dbPath)) return false;
+
+  if (process.versions.bun) {
+    try {
+      const { Database } = require("bun:sqlite");
+      const db = new Database(dbPath, { readonly: true, create: false });
+      try {
+        const row = db
+          .query(
+            `SELECT 1
+               FROM provider_connections
+              WHERE access_token LIKE 'enc:v1:%'
+                 OR refresh_token LIKE 'enc:v1:%'
+                 OR api_key LIKE 'enc:v1:%'
+                 OR id_token LIKE 'enc:v1:%'
+              LIMIT 1`
+          )
+          .get();
+        return !!row;
+      } finally {
+        db.close();
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Unable to inspect existing database at ${dbPath}: ${message}`);
+    }
+  }
 
   try {
     const Database = require("better-sqlite3");
@@ -107,7 +143,10 @@ function hasEncryptedCredentials(dataDir) {
     }
 
     const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Unable to inspect existing database at ${dbPath}: ${message}`);
+    const hint = isLikelyBrokenNativeBinding(error)
+      ? " The better-sqlite3 native binding loaded but did not expose a usable constructor; try `npm rebuild better-sqlite3`."
+      : "";
+    throw new Error(`Unable to inspect existing database at ${dbPath}: ${message}${hint}`);
   }
 }
 

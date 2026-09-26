@@ -18,9 +18,9 @@
  */
 
 import { WebSocketServer, WebSocket } from "ws";
-import { jwtVerify } from "jose";
 import { createServer, type IncomingMessage, type ServerResponse } from "http";
 import { randomUUID } from "crypto";
+import { verifyDashboardSessionToken } from "@/shared/utils/dashboardSessionToken";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -32,6 +32,12 @@ import type { DashboardEventName, DashboardEventMap, DashboardChannel } from "@/
 
 import { CHANNEL_EVENTS, getChannelForEvent } from "@/lib/events/types";
 import { isAutomatedTestProcess, isBuildProcess } from "@/shared/utils/testProcess";
+import { warnIfNonLoopbackWithoutApiKey } from "@/lib/startup/nonLoopbackApiKeyGuard";
+
+import {
+  attachRequestStreamGuards,
+  installProcessCrashGuard,
+} from "@/shared/utils/httpClientAbortGuard.mjs";
 
 import {
   buildAllowedOrigins,
@@ -185,13 +191,7 @@ async function isDashboardCookieAuthenticated(
 ): Promise<boolean> {
   const token = getCookieValueFromHeader(request.headers, "auth_token");
   if (!token || !process.env.JWT_SECRET) return false;
-  try {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-    await jwtVerify(token, secret);
-    return true;
-  } catch {
-    return false;
-  }
+  return (await verifyDashboardSessionToken(token)) !== null;
 }
 
 function extractBearerToken(request: import("http").IncomingMessage): string | null {
@@ -460,6 +460,11 @@ export async function startLiveDashboardServer(
   port = DEFAULT_PORT,
   host = DEFAULT_HOST
 ): Promise<import("http").Server> {
+  // Safety net: a client aborting a connection can emit `Error: aborted`/
+  // ECONNRESET on the request stream; without this the single missed listener
+  // becomes an uncaughtException that kills the server. Benign aborts are
+  // swallowed; genuine errors still crash loudly (#fix-dev-server-aborted).
+  installProcessCrashGuard();
   if (!process.env.JWT_SECRET) {
     console.warn(
       "  \x1b[33m⚠ Warning: JWT_SECRET is not set in the environment.\x1b[0m\n" +
@@ -469,6 +474,10 @@ export async function startLiveDashboardServer(
   }
 
   const server = createServer((req, res) => {
+    // Absorb client-abort errors (browser closes the socket during navigation/
+    // HMR/bfcache) on the request/response streams so they never surface as an
+    // uncaughtException that kills the server (#fix-dev-server-aborted).
+    attachRequestStreamGuards(req, res);
     handleInternalEventRequest(req, res);
   });
   const wss = new WebSocketServer({ server });
@@ -636,6 +645,7 @@ export function isLiveWsEnabled(): boolean {
 if (!isBuildOrTest() && isLiveWsEnabled()) {
   const port = parseInt(process.env.LIVE_WS_PORT || String(DEFAULT_PORT), 10);
   const host = process.env.LIVE_WS_HOST || DEFAULT_HOST;
+  warnIfNonLoopbackWithoutApiKey("Live dashboard WebSocket", host);
   startLiveDashboardServer(port, host).catch((err) => {
     console.error("[LiveWS] Failed to start: %s", err instanceof Error ? err.message : String(err));
   });

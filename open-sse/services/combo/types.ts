@@ -21,8 +21,12 @@ export type ComboErrorBody = {
         message?: string | null;
         // buildModelCooldownBody (open-sse/utils/error.ts) nests its retry hint
         // here instead of at the top level — see the retryAfter fallback in
-        // combo.ts's dispatchWithCooldownRetry error extraction.
-        retry_after?: string | null;
+        // executeTargetAttempt.ts's error extraction. Two producers, two shapes:
+        // buildModelCooldownBody writes an ISO string; buildErrorBody writes
+        // integer SECONDS (quota-reset-timing) — callers must coerce a number.
+        retry_after?: string | number | null;
+        // buildErrorBody's ISO instant (quota-reset-timing) — unambiguous, prefer this.
+        reset_at?: string | null;
         reset_seconds?: number | null;
       }
     | string;
@@ -60,8 +64,10 @@ export type SingleModelTarget =
       modelAbortSignal?: AbortSignal | null;
       /** True when this target was selected via context-cache session pinning. */
       modelPinned?: boolean;
+      /** Prior combo legs already attempted before this dispatch (#12339). */
+      fallbackAttempts?: number;
     })
-  | { modelAbortSignal: AbortSignal };
+  | { modelAbortSignal: AbortSignal; fallbackAttempts?: number };
 
 export type HandleSingleModel = (
   body: Record<string, unknown>,
@@ -143,7 +149,7 @@ export type HandleComboChatOptions = {
   requestHeaders?: Headers | Record<string, unknown> | null;
 };
 
-export type HandleRoundRobinOptions = Omit<HandleComboChatOptions, "apiKeyAllowedConnections">;
+export type HandleRoundRobinOptions = HandleComboChatOptions;
 
 export type HistoricalLatencyStatsEntry = {
   totalRequests?: number;
