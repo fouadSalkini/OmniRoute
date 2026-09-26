@@ -14563,7 +14563,7 @@
     "strategy": "Strategy",
     "allStrategies": "All strategies",
     "keyAccessButton": "API key access",
-    "allowedInKeys": "Allowed in: {count} keys",
+    "allowedInKeys": "Allowed in: {count, plural, one {# key} other {# keys}}",
     "keysLoading": "Loading API keys…",
     "keysRetry": "Retry loading keys",
     "accessViaPattern": "via {pattern}",
@@ -14583,7 +14583,6 @@
     "allCombosAccess": "All combos",
     "modelAccessCount": "Models: {count}",
     "comboAccessCount": "Combos: {count}",
-    "keyActive": "Active",
     "keyInactive": "Inactive",
     "keyBanned": "Banned",
     "switchRestrictedConfirm": "Switch this key to restricted access: only the selected items will be allowed",
@@ -14657,6 +14656,14 @@
     "httpError": "Request failed with HTTP {status}",
     "testFailedNoDetail": "Test failed without an error message",
     "additionalCapabilities": "Additional capabilities: {list}",
-    "comboRefMember": "Combo → {name}"
+    "comboRefMember": "Combo → {name}",
+    "accessBlocked": "Blocked by {pattern}",
+    "resultWouldEmptyModels": "Would leave this key with no allowed models — edit key access instead",
+    "resultWouldEmptyCombos": "Would leave this key with no allowed combos — edit key access instead",
+    "keyUpdatePending": "{name} is still being updated. Try again in a moment.",
+    "assignNoChanges": "No API key access changed",
+    "assignExcludedCombos": "{count, plural, one {# selected combo row is not a model and will be skipped here} other {# selected combo rows are not models and will be skipped here}}. Assign combos from the Combos tab.",
+    "keyRevoked": "Revoked",
+    "removeStaysAllowedHint": "Still allowed on this key through {patterns}"
   }
 }
