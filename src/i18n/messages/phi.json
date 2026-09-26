@@ -1323,7 +1323,9 @@
     },
     "noResults": "Walang resulta",
     "analyticsTeamReports": "Mga Ulat ng Koponan",
-    "analyticsTeamReportsSubtitle": "Paggamit ayon sa miyembro at proyekto"
+    "analyticsTeamReportsSubtitle": "Paggamit ayon sa miyembro at proyekto",
+    "modelCatalog": "Mga Modelo at Combo",
+    "modelCatalogSubtitle": "Mag-browse ng mga modelo at combo sa iba't ibang provider"
   },
   "webhooks": {
     "title": "Mga Webhook",

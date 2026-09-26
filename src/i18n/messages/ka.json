@@ -1323,7 +1323,9 @@
     },
     "noResults": "შედეგები ვერ მოიძებნა",
     "analyticsTeamReports": "გუნდის ანგარიშები",
-    "analyticsTeamReportsSubtitle": "გამოყენება წევრებისა და პროექტების მიხედვით"
+    "analyticsTeamReportsSubtitle": "გამოყენება წევრებისა და პროექტების მიხედვით",
+    "modelCatalog": "მოდელები და კომბოები",
+    "modelCatalogSubtitle": "დაათვალიერეთ მოდელები და კომბოები პროვაიდერებს შორის"
   },
   "webhooks": {
     "title": "ვებჰუკები",

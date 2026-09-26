@@ -1323,7 +1323,9 @@
     },
     "noResults": "Žiadne výsledky",
     "analyticsTeamReports": "Tímové reporty",
-    "analyticsTeamReportsSubtitle": "Využitie podľa člena a projektu"
+    "analyticsTeamReportsSubtitle": "Využitie podľa člena a projektu",
+    "modelCatalog": "Modely a kombinácie",
+    "modelCatalogSubtitle": "Prehliadajte modely a kombinácie naprieč poskytovateľmi"
   },
   "webhooks": {
     "title": "Webhooky",

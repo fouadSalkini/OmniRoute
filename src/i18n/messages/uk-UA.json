@@ -1323,7 +1323,9 @@
     },
     "noResults": "Немає результатів",
     "analyticsTeamReports": "Звіти Команди",
-    "analyticsTeamReportsSubtitle": "Використання за учасником & проєктом"
+    "analyticsTeamReportsSubtitle": "Використання за учасником & проєктом",
+    "modelCatalog": "Моделі та комбо",
+    "modelCatalogSubtitle": "Переглядайте моделі та комбо від різних провайдерів"
   },
   "webhooks": {
     "title": "Веб-хуки",

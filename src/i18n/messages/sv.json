@@ -1323,7 +1323,9 @@
     },
     "noResults": "Inga resultat",
     "analyticsTeamReports": "Teamrapporter",
-    "analyticsTeamReportsSubtitle": "Användning per medlem & projekt"
+    "analyticsTeamReportsSubtitle": "Användning per medlem & projekt",
+    "modelCatalog": "Modeller & kombinationer",
+    "modelCatalogSubtitle": "Bläddra bland modeller och kombinationer från olika leverantörer"
   },
   "webhooks": {
     "title": "Webhookar",

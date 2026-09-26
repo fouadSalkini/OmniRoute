@@ -1323,7 +1323,9 @@
     },
     "noResults": "Hakuna matokeo",
     "analyticsTeamReports": "Ripoti za Timu",
-    "analyticsTeamReportsSubtitle": "Matumizi kulingana na mwanachama na mradi"
+    "analyticsTeamReportsSubtitle": "Matumizi kulingana na mwanachama na mradi",
+    "modelCatalog": "Miundo na Michanganyiko",
+    "modelCatalogSubtitle": "Vinjari miundo na michanganyiko katika watoa huduma wote"
   },
   "webhooks": {
     "title": "Viboko vya mtandao",

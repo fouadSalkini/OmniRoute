@@ -1323,7 +1323,9 @@
     },
     "noResults": "ಯಾವುದೇ ಫಲಿತಾಂಶಗಳಿಲ್ಲ",
     "analyticsTeamReports": "ತಂಡದ ವರದಿಗಳು",
-    "analyticsTeamReportsSubtitle": "ಸದಸ್ಯ ಮತ್ತು ಪ್ರಾಜೆಕ್ಟ್ ಪ್ರಕಾರ ಬಳಕೆ"
+    "analyticsTeamReportsSubtitle": "ಸದಸ್ಯ ಮತ್ತು ಪ್ರಾಜೆಕ್ಟ್ ಪ್ರಕಾರ ಬಳಕೆ",
+    "modelCatalog": "ಮಾಡೆಲ್‌ಗಳು & ಕಾಂಬೋಗಳು",
+    "modelCatalogSubtitle": "ಪೂರೈಕೆದಾರರಾದ್ಯಂತ ಮಾಡೆಲ್‌ಗಳು ಮತ್ತು ಕಾಂಬೋಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ"
   },
   "webhooks": {
     "title": "ವೆಬ್ಹುಕ್ಗಳು",

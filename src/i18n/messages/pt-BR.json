@@ -1323,7 +1323,9 @@
     },
     "noResults": "Nenhum resultado",
     "analyticsTeamReports": "Relatórios da equipe",
-    "analyticsTeamReportsSubtitle": "Uso por membro e projeto"
+    "analyticsTeamReportsSubtitle": "Uso por membro e projeto",
+    "modelCatalog": "Modelos e Combos",
+    "modelCatalogSubtitle": "Navegue por modelos e combos entre provedores"
   },
   "webhooks": {
     "title": "Webhooks",

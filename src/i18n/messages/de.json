@@ -1323,7 +1323,9 @@
     },
     "noResults": "Keine Ergebnisse",
     "analyticsTeamReports": "Team-Berichte",
-    "analyticsTeamReportsSubtitle": "Nutzung nach Mitglied & Projekt"
+    "analyticsTeamReportsSubtitle": "Nutzung nach Mitglied & Projekt",
+    "modelCatalog": "Modelle & Combos",
+    "modelCatalogSubtitle": "Modelle und Combos über Provider hinweg durchsuchen"
   },
   "webhooks": {
     "title": "Webhooks",

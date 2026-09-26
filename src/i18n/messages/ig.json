@@ -1323,7 +1323,9 @@
     },
     "noResults": "Enweghị nsonaazụ",
     "analyticsTeamReports": "Akụkọ Otu",
-    "analyticsTeamReportsSubtitle": "Ojiji site n'aka onye otu & ọrụ ngo"
+    "analyticsTeamReportsSubtitle": "Ojiji site n'aka onye otu & ọrụ ngo",
+    "modelCatalog": "Ụdị & Ngwakọta",
+    "modelCatalogSubtitle": "Chọgharịa ụdị na ngwakọta n'ofe ndị na-eweta ọrụ"
   },
   "webhooks": {
     "title": "Nko weebụ",

@@ -1323,7 +1323,9 @@
     },
     "noResults": "결과가 없습니다",
     "analyticsTeamReports": "팀 보고서",
-    "analyticsTeamReportsSubtitle": "멤버 및 프로젝트별 사용량"
+    "analyticsTeamReportsSubtitle": "멤버 및 프로젝트별 사용량",
+    "modelCatalog": "모델 및 콤보",
+    "modelCatalogSubtitle": "여러 제공자의 모델 및 콤보 둘러보기"
   },
   "webhooks": {
     "title": "웹훅",

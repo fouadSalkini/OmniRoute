@@ -1323,7 +1323,9 @@
     },
     "noResults": "Nav rezultātu",
     "analyticsTeamReports": "Komandas pārskati",
-    "analyticsTeamReportsSubtitle": "Lietojums pēc dalībnieka un projekta"
+    "analyticsTeamReportsSubtitle": "Lietojums pēc dalībnieka un projekta",
+    "modelCatalog": "Modeļi un kombinācijas",
+    "modelCatalogSubtitle": "Pārlūkot modeļus un kombinācijas visos pakalpojumu sniedzējos"
   },
   "webhooks": {
     "title": "Tīmekļa aizķeres",

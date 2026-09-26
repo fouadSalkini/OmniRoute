@@ -1323,7 +1323,9 @@
     },
     "noResults": "ఫలితాలు లేవు",
     "analyticsTeamReports": "టీమ్ నివేదికలు",
-    "analyticsTeamReportsSubtitle": "సభ్యుడు & ప్రాజెక్ట్ వారీగా వినియోగం"
+    "analyticsTeamReportsSubtitle": "సభ్యుడు & ప్రాజెక్ట్ వారీగా వినియోగం",
+    "modelCatalog": "మోడల్స్ & కాంబోలు",
+    "modelCatalogSubtitle": "వివిధ ప్రొవైడర్ల అంతటా మోడల్స్ మరియు కాంబోలను బ్రౌజ్ చేయండి"
   },
   "webhooks": {
     "title": "వెబ్‌బూక్స్",

@@ -1323,7 +1323,9 @@
     },
     "noResults": "Geen resultaten",
     "analyticsTeamReports": "Teamrapporten",
-    "analyticsTeamReportsSubtitle": "Verbruik per lid & project"
+    "analyticsTeamReportsSubtitle": "Verbruik per lid & project",
+    "modelCatalog": "Modellen & combo's",
+    "modelCatalogSubtitle": "Blader door modellen en combo's van verschillende providers"
   },
   "webhooks": {
     "title": "Webhaken",

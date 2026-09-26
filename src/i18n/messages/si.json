@@ -1323,7 +1323,9 @@
     },
     "noResults": "ප්රතිඵල නොමැත",
     "analyticsTeamReports": "කණ්ඩායම් වාර්තා",
-    "analyticsTeamReportsSubtitle": "සාමාජිකයා සහ ව්‍යාපෘතිය අනුව භාවිතය"
+    "analyticsTeamReportsSubtitle": "සාමාජිකයා සහ ව්‍යාපෘතිය අනුව භාවිතය",
+    "modelCatalog": "මොඩල සහ සංයෝජන",
+    "modelCatalogSubtitle": "සපයන්නන් හරහා මොඩල සහ සංයෝජන පිරික්සන්න"
   },
   "webhooks": {
     "title": "වෙබ්හුක්",

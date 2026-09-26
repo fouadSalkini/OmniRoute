@@ -1323,7 +1323,9 @@
     },
     "noResults": "Δεν βρέθηκαν αποτελέσματα",
     "analyticsTeamReports": "Αναφορές ομάδας",
-    "analyticsTeamReportsSubtitle": "Χρήση ανά μέλος & έργο"
+    "analyticsTeamReportsSubtitle": "Χρήση ανά μέλος & έργο",
+    "modelCatalog": "Μοντέλα & Συνδυασμοί",
+    "modelCatalogSubtitle": "Περιηγηθείτε σε μοντέλα και συνδυασμούς μεταξύ παρόχων"
   },
   "webhooks": {
     "title": "Webhooks",

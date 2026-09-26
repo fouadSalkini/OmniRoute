@@ -1323,7 +1323,9 @@
     },
     "noResults": "কোন ফলাফল নেই",
     "analyticsTeamReports": "টিম রিপোর্ট",
-    "analyticsTeamReportsSubtitle": "সদস্য ও প্রকল্প অনুযায়ী ব্যবহার"
+    "analyticsTeamReportsSubtitle": "সদস্য ও প্রকল্প অনুযায়ী ব্যবহার",
+    "modelCatalog": "মডেল এবং কম্বো",
+    "modelCatalogSubtitle": "বিভিন্ন প্রোভাইডারের মডেল এবং কম্বো ব্রাউজ করুন"
   },
   "webhooks": {
     "title": "ওয়েবহুক",

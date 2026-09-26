@@ -1323,7 +1323,9 @@
     },
     "noResults": "沒有結果",
     "analyticsTeamReports": "團隊報告",
-    "analyticsTeamReportsSubtitle": "依成員與專案統計的用量"
+    "analyticsTeamReportsSubtitle": "依成員與專案統計的用量",
+    "modelCatalog": "模型與組合",
+    "modelCatalogSubtitle": "瀏覽各提供者的模型與組合"
   },
   "webhooks": {
     "title": "Webhook",

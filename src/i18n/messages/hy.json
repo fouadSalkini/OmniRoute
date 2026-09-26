@@ -1323,7 +1323,9 @@
     },
     "noResults": "Արդյունքներ չկան",
     "analyticsTeamReports": "Թիմի հաշվետվություններ",
-    "analyticsTeamReportsSubtitle": "Օգտագործումն ըստ անդամի և նախագծի"
+    "analyticsTeamReportsSubtitle": "Օգտագործումն ըստ անդամի և նախագծի",
+    "modelCatalog": "Մոդելներ և կոմբոներ",
+    "modelCatalogSubtitle": "Զննեք մոդելներն ու կոմբոները բոլոր մատակարարների շրջանում"
   },
   "webhooks": {
     "title": "Վեբհուկներ",

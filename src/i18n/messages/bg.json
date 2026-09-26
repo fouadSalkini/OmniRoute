@@ -1323,7 +1323,9 @@
     },
     "noResults": "Няма резултати",
     "analyticsTeamReports": "Отчети за екипа",
-    "analyticsTeamReportsSubtitle": "Потребление по член и проект"
+    "analyticsTeamReportsSubtitle": "Потребление по член и проект",
+    "modelCatalog": "Модели и комбинации",
+    "modelCatalogSubtitle": "Преглед на модели и комбинации от различните доставчици"
   },
   "webhooks": {
     "title": "Уеб кукички",

@@ -1323,7 +1323,9 @@
     },
     "noResults": "Ni rezultatov",
     "analyticsTeamReports": "Poročila ekipe",
-    "analyticsTeamReportsSubtitle": "Poraba po članih in projektih"
+    "analyticsTeamReportsSubtitle": "Poraba po članih in projektih",
+    "modelCatalog": "Modeli in kombinacije",
+    "modelCatalogSubtitle": "Prebrskajte modele in kombinacije pri različnih ponudnikih"
   },
   "webhooks": {
     "title": "Spletni kavlji",

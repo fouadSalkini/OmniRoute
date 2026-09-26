@@ -1323,7 +1323,9 @@
     },
     "noResults": "کوئی نتائج نہیں",
     "analyticsTeamReports": "ٹیم کی رپورٹس",
-    "analyticsTeamReportsSubtitle": "رکن اور پروجیکٹ کے لحاظ سے استعمال"
+    "analyticsTeamReportsSubtitle": "رکن اور پروجیکٹ کے لحاظ سے استعمال",
+    "modelCatalog": "ماڈلز اور کمبوز",
+    "modelCatalogSubtitle": "مختلف فراہم کنندگان میں ماڈلز اور کمبوز براؤز کریں"
   },
   "webhooks": {
     "title": "ویب ہکس",

@@ -1323,7 +1323,9 @@
     },
     "noResults": "Không có kết quả",
     "analyticsTeamReports": "Báo cáo nhóm",
-    "analyticsTeamReportsSubtitle": "Mức sử dụng theo thành viên & dự án"
+    "analyticsTeamReportsSubtitle": "Mức sử dụng theo thành viên & dự án",
+    "modelCatalog": "Mô hình & Combo",
+    "modelCatalogSubtitle": "Duyệt các mô hình và combo trên các nhà cung cấp"
   },
   "webhooks": {
     "title": "Webhook",

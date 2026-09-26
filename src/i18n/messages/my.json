@@ -1323,7 +1323,9 @@
     },
     "noResults": "ရလဒ်မရှိပါ",
     "analyticsTeamReports": "အဖွဲ့ အစီရင်ခံစာများ",
-    "analyticsTeamReportsSubtitle": "အဖွဲ့ဝင်နှင့် ပရောဂျက်အလိုက် အသုံးပြုမှု"
+    "analyticsTeamReportsSubtitle": "အဖွဲ့ဝင်နှင့် ပရောဂျက်အလိုက် အသုံးပြုမှု",
+    "modelCatalog": "မော်ဒယ်များနှင့် Combos",
+    "modelCatalogSubtitle": "Provider များတစ်လျှောက် မော်ဒယ်များနှင့် combos များကို ရှာဖွေကြည့်ရှုပါ"
   },
   "webhooks": {
     "title": "ဝဘ်ဟုတ်များ",

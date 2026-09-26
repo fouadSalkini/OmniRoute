@@ -1323,7 +1323,9 @@
     },
     "noResults": "ไม่มีผลลัพธ์",
     "analyticsTeamReports": "รายงานทีม",
-    "analyticsTeamReportsSubtitle": "การใช้งานตามสมาชิกและโปรเจกต์"
+    "analyticsTeamReportsSubtitle": "การใช้งานตามสมาชิกและโปรเจกต์",
+    "modelCatalog": "โมเดลและคอมโบ",
+    "modelCatalogSubtitle": "เรียกดูโมเดลและคอมโบจากผู้ให้บริการต่างๆ"
   },
   "webhooks": {
     "title": "เว็บฮุค",

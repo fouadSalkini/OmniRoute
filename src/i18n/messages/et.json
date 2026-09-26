@@ -1323,7 +1323,9 @@
     },
     "noResults": "Tulemusi pole",
     "analyticsTeamReports": "Tiimi aruanded",
-    "analyticsTeamReportsSubtitle": "Kasutus liikme ja projekti järgi"
+    "analyticsTeamReportsSubtitle": "Kasutus liikme ja projekti järgi",
+    "modelCatalog": "Mudelid ja kombod",
+    "modelCatalogSubtitle": "Sirvi mudeleid ja kombosid erinevate pakkujate lõikes"
   },
   "webhooks": {
     "title": "Veebihaagid",

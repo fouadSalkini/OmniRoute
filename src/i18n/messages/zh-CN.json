@@ -1323,7 +1323,9 @@
     },
     "noResults": "没有结果",
     "analyticsTeamReports": "团队报告",
-    "analyticsTeamReportsSubtitle": "按成员和项目统计用量"
+    "analyticsTeamReportsSubtitle": "按成员和项目统计用量",
+    "modelCatalog": "模型与组合",
+    "modelCatalogSubtitle": "浏览各提供商的模型和组合"
   },
   "webhooks": {
     "title": "Webhook",

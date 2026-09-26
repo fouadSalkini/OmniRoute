@@ -1323,7 +1323,9 @@
     },
     "noResults": "Heç bir nəticə yoxdur",
     "analyticsTeamReports": "Komanda hesabatları",
-    "analyticsTeamReportsSubtitle": "Üzv və layihə üzrə istifadə"
+    "analyticsTeamReportsSubtitle": "Üzv və layihə üzrə istifadə",
+    "modelCatalog": "Modellər və Kombolar",
+    "modelCatalogSubtitle": "Provayderlər üzrə modelləri və komboları nəzərdən keçirin"
   },
   "webhooks": {
     "title": "Vebhuklar",

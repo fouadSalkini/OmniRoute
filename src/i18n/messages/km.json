@@ -1323,7 +1323,9 @@
     },
     "noResults": "គ្មានលទ្ធផល",
     "analyticsTeamReports": "របាយការណ៍ក្រុម",
-    "analyticsTeamReportsSubtitle": "ការប្រើប្រាស់តាមសមាជិក និងគម្រោង"
+    "analyticsTeamReportsSubtitle": "ការប្រើប្រាស់តាមសមាជិក និងគម្រោង",
+    "modelCatalog": "ម៉ូឌែល និងបន្សំ",
+    "modelCatalogSubtitle": "រកមើលម៉ូឌែល និងបន្សំនៅតាមអ្នកផ្តល់សេវាផ្សេងៗ"
   },
   "webhooks": {
     "title": "Webhooks",

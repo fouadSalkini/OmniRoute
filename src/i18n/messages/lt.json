@@ -1323,7 +1323,9 @@
     },
     "noResults": "Rezultatų nerasta",
     "analyticsTeamReports": "Komandos ataskaitos",
-    "analyticsTeamReportsSubtitle": "Naudojimas pagal narį ir projektą"
+    "analyticsTeamReportsSubtitle": "Naudojimas pagal narį ir projektą",
+    "modelCatalog": "Modeliai ir deriniai",
+    "modelCatalogSubtitle": "Naršykite modelius ir derinius iš įvairių teikėjų"
   },
   "webhooks": {
     "title": "Webhookai",

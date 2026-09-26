@@ -1323,7 +1323,9 @@
     },
     "noResults": "କୌଣସି ଫଳାଫଳ ନାହିଁ",
     "analyticsTeamReports": "ଟିମ୍ ରିପୋର୍ଟଗୁଡ଼ିକ",
-    "analyticsTeamReportsSubtitle": "ସଦସ୍ୟ ଏବଂ ପ୍ରୋଜେକ୍ଟ ଅନୁଯାୟୀ ବ୍ୟବହାର"
+    "analyticsTeamReportsSubtitle": "ସଦସ୍ୟ ଏବଂ ପ୍ରୋଜେକ୍ଟ ଅନୁଯାୟୀ ବ୍ୟବହାର",
+    "modelCatalog": "ମଡେଲ୍ ଏବଂ କମ୍ବୋ",
+    "modelCatalogSubtitle": "ପ୍ରୋଭାଇଡର୍‌ଗୁଡ଼ିକ ମଧ୍ୟରେ ମଡେଲ୍ ଏବଂ କମ୍ବୋ ବ୍ରାଉଜ୍ କରନ୍ତୁ"
   },
   "webhooks": {
     "title": "ୱେବହୁକ୍ଗୁଡ଼ିକ",

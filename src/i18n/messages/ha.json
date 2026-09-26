@@ -1323,7 +1323,9 @@
     },
     "noResults": "Babu sakamako",
     "analyticsTeamReports": "Rahotannin Ƙungiya",
-    "analyticsTeamReportsSubtitle": "Amfani ta mamba da aiki"
+    "analyticsTeamReportsSubtitle": "Amfani ta mamba da aiki",
+    "modelCatalog": "Samfura & Haɗe-haɗe",
+    "modelCatalogSubtitle": "Bincika samfura da haɗe-haɗe a duk faɗin masu ba da sabis"
   },
   "webhooks": {
     "title": "Ƙugiyoyin yanar gizo",

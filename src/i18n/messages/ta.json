@@ -1323,7 +1323,9 @@
     },
     "noResults": "எந்த முடிவுகளும் இல்லை",
     "analyticsTeamReports": "குழு அறிக்கைகள்",
-    "analyticsTeamReportsSubtitle": "உறுப்பினர் மற்றும் திட்டம் வாரியான பயன்பாடு"
+    "analyticsTeamReportsSubtitle": "உறுப்பினர் மற்றும் திட்டம் வாரியான பயன்பாடு",
+    "modelCatalog": "மாடல்கள் & காம்போக்கள்",
+    "modelCatalogSubtitle": "பல்வேறு வழங்குநர்களின் மாடல்கள் மற்றும் காம்போக்களை உலாவவும்"
   },
   "webhooks": {
     "title": "வெப்ஹூக்ஸ்",

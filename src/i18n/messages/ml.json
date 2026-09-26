@@ -1323,7 +1323,9 @@
     },
     "noResults": "ഫലങ്ങളൊന്നുമില്ല",
     "analyticsTeamReports": "ടീം റിപ്പോർട്ടുകൾ",
-    "analyticsTeamReportsSubtitle": "അംഗങ്ങളും പ്രോജക്റ്റുകളും തിരിച്ചുള്ള ഉപയോഗം"
+    "analyticsTeamReportsSubtitle": "അംഗങ്ങളും പ്രോജക്റ്റുകളും തിരിച്ചുള്ള ഉപയോഗം",
+    "modelCatalog": "മോഡലുകളും കോമ്പോകളും",
+    "modelCatalogSubtitle": "വിവിധ പ്രൊവൈഡർമാരിലുടനീളമുള്ള മോഡലുകളും കോമ്പോകളും ബ്രൗസ് ചെയ്യുക"
   },
   "webhooks": {
     "title": "വെബ്ഹുക്കുകൾ",

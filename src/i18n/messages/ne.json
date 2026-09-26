@@ -1323,7 +1323,9 @@
     },
     "noResults": "कुनै परिणाम छैन",
     "analyticsTeamReports": "टोली रिपोर्टहरू",
-    "analyticsTeamReportsSubtitle": "सदस्य र परियोजना अनुसारको प्रयोग"
+    "analyticsTeamReportsSubtitle": "सदस्य र परियोजना अनुसारको प्रयोग",
+    "modelCatalog": "मोडेल र कम्बोहरू",
+    "modelCatalogSubtitle": "विभिन्न प्रदायकहरूका मोडेल र कम्बोहरू ब्राउज गर्नुहोस्"
   },
   "webhooks": {
     "title": "वेबहुकहरू",

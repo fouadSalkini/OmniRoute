@@ -1323,7 +1323,9 @@
     },
     "noResults": "لا توجد نتائج",
     "analyticsTeamReports": "تقارير الفريق",
-    "analyticsTeamReportsSubtitle": "الاستخدام حسب العضو والمشروع"
+    "analyticsTeamReportsSubtitle": "الاستخدام حسب العضو والمشروع",
+    "modelCatalog": "النماذج والتركيبات",
+    "modelCatalogSubtitle": "استعرض النماذج والتركيبات عبر المزودين"
   },
   "webhooks": {
     "title": "خطافات الويب",

@@ -1323,7 +1323,9 @@
     },
     "noResults": "結果がありません",
     "analyticsTeamReports": "チームレポート",
-    "analyticsTeamReportsSubtitle": "メンバーおよびプロジェクト別の使用状況"
+    "analyticsTeamReportsSubtitle": "メンバーおよびプロジェクト別の使用状況",
+    "modelCatalog": "モデル & コンボ",
+    "modelCatalogSubtitle": "各プロバイダーのモデルとコンボを閲覧"
   },
   "webhooks": {
     "title": "Webhook",

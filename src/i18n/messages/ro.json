@@ -1323,7 +1323,9 @@
     },
     "noResults": "Niciun rezultat",
     "analyticsTeamReports": "Rapoarte echipă",
-    "analyticsTeamReportsSubtitle": "Utilizare după membru și proiect"
+    "analyticsTeamReportsSubtitle": "Utilizare după membru și proiect",
+    "modelCatalog": "Modele & Combinații",
+    "modelCatalogSubtitle": "Răsfoiește modele și combinații de la diverși furnizori"
   },
   "webhooks": {
     "title": "Webhook-uri",

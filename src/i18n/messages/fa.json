@@ -1323,7 +1323,9 @@
     },
     "noResults": "هیچ نتیجه‌ای یافت نشد",
     "analyticsTeamReports": "گزارش‌های تیم",
-    "analyticsTeamReportsSubtitle": "میزان مصرف بر اساس عضو و پروژه"
+    "analyticsTeamReportsSubtitle": "میزان مصرف بر اساس عضو و پروژه",
+    "modelCatalog": "مدل‌ها و ترکیب‌ها",
+    "modelCatalogSubtitle": "مرور مدل‌ها و ترکیب‌ها در میان ارائه‌دهندگان"
   },
   "webhooks": {
     "title": "وب هوک ها",

@@ -1323,7 +1323,9 @@
     },
     "noResults": "કોઈ પરિણામો નથી",
     "analyticsTeamReports": "ટીમ રિપોર્ટ્સ",
-    "analyticsTeamReportsSubtitle": "સભ્ય અને પ્રોજેક્ટ મુજબ વપરાશ"
+    "analyticsTeamReportsSubtitle": "સભ્ય અને પ્રોજેક્ટ મુજબ વપરાશ",
+    "modelCatalog": "મોડલ્સ અને કૉમ્બોઝ",
+    "modelCatalogSubtitle": "પ્રદાતાઓ વચ્ચે મોડલ્સ અને કૉમ્બોઝ બ્રાઉઝ કરો"
   },
   "webhooks": {
     "title": "વેબહુક્સ",

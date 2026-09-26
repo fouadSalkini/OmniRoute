@@ -1323,7 +1323,9 @@
     },
     "noResults": "Natijalar yo‘q",
     "analyticsTeamReports": "Jamoa hisobotlari",
-    "analyticsTeamReportsSubtitle": "Aʼzolar va loyihalar boʻyicha foydalanish"
+    "analyticsTeamReportsSubtitle": "Aʼzolar va loyihalar boʻyicha foydalanish",
+    "modelCatalog": "Modellar va kombinatsiyalar",
+    "modelCatalogSubtitle": "Provayderlar boʻylab modellar va kombinatsiyalarni koʻrib chiqing"
   },
   "webhooks": {
     "title": "Vebhuklar",

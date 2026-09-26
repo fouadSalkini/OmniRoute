@@ -1323,7 +1323,9 @@
     },
     "noResults": "ምንም ውጤት የለም",
     "analyticsTeamReports": "የቡድን ሪፖርቶች",
-    "analyticsTeamReportsSubtitle": "አጠቃቀም በአባል እና በፕሮጀክት"
+    "analyticsTeamReportsSubtitle": "አጠቃቀም በአባል እና በፕሮጀክት",
+    "modelCatalog": "ሞዴሎች እና ኮምቦዎች",
+    "modelCatalogSubtitle": "በአቅራቢዎች ዙሪያ ሞዴሎችን እና ኮምቦዎችን ያስሱ"
   },
   "webhooks": {
     "title": "የድር መንጠቆዎች",

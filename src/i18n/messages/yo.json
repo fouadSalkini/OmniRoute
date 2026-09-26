@@ -1323,7 +1323,9 @@
     },
     "noResults": "Kò sí àbájáde",
     "analyticsTeamReports": "Àwọn Ìjábọ̀ Ẹgbẹ́",
-    "analyticsTeamReportsSubtitle": "Ìlò nípa ọmọ ẹgbẹ́ & iṣẹ́ àkànṣe"
+    "analyticsTeamReportsSubtitle": "Ìlò nípa ọmọ ẹgbẹ́ & iṣẹ́ àkànṣe",
+    "modelCatalog": "Àwọn Mọ́dẹ́lì & Àkójọpọ̀",
+    "modelCatalogSubtitle": "Ṣàwárí àwọn mọ́dẹ́lì àti àkójọpọ̀ kọjá àwọn olùpèsè"
   },
   "webhooks": {
     "title": "Àwọn Webhook",

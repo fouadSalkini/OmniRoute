@@ -1323,7 +1323,9 @@
     },
     "noResults": "Nema rezultata",
     "analyticsTeamReports": "Izvještaji tima",
-    "analyticsTeamReportsSubtitle": "Potrošnja po članu i projektu"
+    "analyticsTeamReportsSubtitle": "Potrošnja po članu i projektu",
+    "modelCatalog": "Modeli i kombinacije",
+    "modelCatalogSubtitle": "Pregledajte modele i kombinacije među pružateljima"
   },
   "webhooks": {
     "title": "Webhookovi",

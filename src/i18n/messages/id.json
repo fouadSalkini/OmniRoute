@@ -1323,7 +1323,9 @@
     },
     "noResults": "Tidak ada hasil",
     "analyticsTeamReports": "Laporan Tim",
-    "analyticsTeamReportsSubtitle": "Penggunaan berdasarkan anggota & proyek"
+    "analyticsTeamReportsSubtitle": "Penggunaan berdasarkan anggota & proyek",
+    "modelCatalog": "Model & Kombo",
+    "modelCatalogSubtitle": "Jelajahi model dan kombo di berbagai penyedia"
   },
   "webhooks": {
     "title": "Webhook",

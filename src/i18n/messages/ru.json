@@ -1323,7 +1323,9 @@
     },
     "noResults": "Нет результатов",
     "analyticsTeamReports": "Отчёты команды",
-    "analyticsTeamReportsSubtitle": "Использование по участникам и проектам"
+    "analyticsTeamReportsSubtitle": "Использование по участникам и проектам",
+    "modelCatalog": "Модели и комбо",
+    "modelCatalogSubtitle": "Просмотр моделей и комбо среди провайдеров"
   },
   "webhooks": {
     "title": "Вебхуки",

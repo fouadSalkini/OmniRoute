@@ -1323,7 +1323,9 @@
     },
     "noResults": "Nincs találat",
     "analyticsTeamReports": "Csapatjelentések",
-    "analyticsTeamReportsSubtitle": "Használat tagok és projektek szerint"
+    "analyticsTeamReportsSubtitle": "Használat tagok és projektek szerint",
+    "modelCatalog": "Modellek és kombinációk",
+    "modelCatalogSubtitle": "Böngésszen a modellek és kombinációk között a szolgáltatóknál"
   },
   "webhooks": {
     "title": "Webhookok",

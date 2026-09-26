@@ -1323,7 +1323,9 @@
     },
     "noResults": "אין תוצאות",
     "analyticsTeamReports": "דוחות צוות",
-    "analyticsTeamReportsSubtitle": "שימוש לפי חבר צוות ופרויקט"
+    "analyticsTeamReportsSubtitle": "שימוש לפי חבר צוות ופרויקט",
+    "modelCatalog": "מודלים ושילובים",
+    "modelCatalogSubtitle": "עיון במודלים ובשילובים בין ספקים שונים"
   },
   "webhooks": {
     "title": "וובהוקים",

@@ -1323,7 +1323,9 @@
     },
     "noResults": "Ingen resultater",
     "analyticsTeamReports": "Teamrapporter",
-    "analyticsTeamReportsSubtitle": "Forbrug efter medlem & projekt"
+    "analyticsTeamReportsSubtitle": "Forbrug efter medlem & projekt",
+    "modelCatalog": "Modeller & kombinationer",
+    "modelCatalogSubtitle": "Gennemse modeller og kombinationer på tværs af udbydere"
   },
   "webhooks": {
     "title": "Webhooks",

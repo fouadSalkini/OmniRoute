@@ -1323,7 +1323,9 @@
     },
     "noResults": "Ingen resultater",
     "analyticsTeamReports": "Teamrapporter",
-    "analyticsTeamReportsSubtitle": "Bruk etter medlem og prosjekt"
+    "analyticsTeamReportsSubtitle": "Bruk etter medlem og prosjekt",
+    "modelCatalog": "Modeller og kombinasjoner",
+    "modelCatalogSubtitle": "Bla gjennom modeller og kombinasjoner på tvers av leverandører"
   },
   "webhooks": {
     "title": "Webhooker",

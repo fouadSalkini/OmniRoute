@@ -1323,7 +1323,9 @@
     },
     "noResults": "Нема резултата",
     "analyticsTeamReports": "Тимски извештаји",
-    "analyticsTeamReportsSubtitle": "Употреба по члану и пројекту"
+    "analyticsTeamReportsSubtitle": "Употреба по члану и пројекту",
+    "modelCatalog": "Модели и комбинације",
+    "modelCatalogSubtitle": "Прегледајте моделе и комбинације код различитих пружалаца услуга"
   },
   "webhooks": {
     "title": "Веб-куке",

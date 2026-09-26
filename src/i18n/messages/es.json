@@ -1323,7 +1323,9 @@
     },
     "noResults": "Sin resultados",
     "analyticsTeamReports": "Informes de equipo",
-    "analyticsTeamReportsSubtitle": "Uso por miembro y proyecto"
+    "analyticsTeamReportsSubtitle": "Uso por miembro y proyecto",
+    "modelCatalog": "Modelos y combos",
+    "modelCatalogSubtitle": "Explora modelos y combos entre proveedores"
   },
   "webhooks": {
     "title": "Ganchos web",

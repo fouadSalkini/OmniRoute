@@ -1323,7 +1323,9 @@
     },
     "noResults": "ਕੋਈ ਨਤੀਜਾ ਨਹੀਂ",
     "analyticsTeamReports": "ਟੀਮ ਰਿਪੋਰਟਾਂ",
-    "analyticsTeamReportsSubtitle": "ਮੈਂਬਰ ਅਤੇ ਪ੍ਰੋਜੈਕਟ ਅਨੁਸਾਰ ਵਰਤੋਂ"
+    "analyticsTeamReportsSubtitle": "ਮੈਂਬਰ ਅਤੇ ਪ੍ਰੋਜੈਕਟ ਅਨੁਸਾਰ ਵਰਤੋਂ",
+    "modelCatalog": "ਮਾਡਲ ਅਤੇ ਕੰਬੋਜ਼",
+    "modelCatalogSubtitle": "ਸਾਰੇ ਪ੍ਰੋਵਾਈਡਰਾਂ ਵਿੱਚ ਮਾਡਲ ਅਤੇ ਕੰਬੋਜ਼ ਬ੍ਰਾਊਜ਼ ਕਰੋ"
   },
   "webhooks": {
     "title": "ਵੈੱਬਹੁੱਕਸ",

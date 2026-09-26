@@ -1323,7 +1323,9 @@
     },
     "noResults": "Sonuç yok",
     "analyticsTeamReports": "Ekip Raporları",
-    "analyticsTeamReportsSubtitle": "Üyeye ve projeye göre kullanım"
+    "analyticsTeamReportsSubtitle": "Üyeye ve projeye göre kullanım",
+    "modelCatalog": "Modeller ve Kombolar",
+    "modelCatalogSubtitle": "Sağlayıcılar genelinde modellere ve kombolara göz atın"
   },
   "webhooks": {
     "title": "Web kancaları",

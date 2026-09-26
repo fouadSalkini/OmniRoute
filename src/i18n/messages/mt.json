@@ -1323,7 +1323,9 @@
     },
     "noResults": "Ebda riżultat",
     "analyticsTeamReports": "Rapporti tat-Tim",
-    "analyticsTeamReportsSubtitle": "Użu skont membru u proġett"
+    "analyticsTeamReportsSubtitle": "Użu skont membru u proġett",
+    "modelCatalog": "Mudelli u Combos",
+    "modelCatalogSubtitle": "Esplora mudelli u combos fost il-fornituri"
   },
   "webhooks": {
     "title": "Webhooks",

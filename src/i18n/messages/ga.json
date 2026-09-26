@@ -1323,7 +1323,9 @@
     },
     "noResults": "Gan torthaí",
     "analyticsTeamReports": "Tuairiscí Foirne",
-    "analyticsTeamReportsSubtitle": "Úsáid de réir baill & tionscadail"
+    "analyticsTeamReportsSubtitle": "Úsáid de réir baill & tionscadail",
+    "modelCatalog": "Múnlaí & Teaglamaí",
+    "modelCatalogSubtitle": "Brabhsáil múnlaí agus teaglamaí trasna soláthraithe"
   },
   "webhooks": {
     "title": "Crúcaí gréasáin",

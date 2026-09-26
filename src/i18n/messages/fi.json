@@ -1323,7 +1323,9 @@
     },
     "noResults": "Ei tuloksia",
     "analyticsTeamReports": "Tiimiraportit",
-    "analyticsTeamReportsSubtitle": "Käyttö jäsenittäin ja projekteittain"
+    "analyticsTeamReportsSubtitle": "Käyttö jäsenittäin ja projekteittain",
+    "modelCatalog": "Mallit ja yhdistelmät",
+    "modelCatalogSubtitle": "Selaa malleja ja yhdistelmiä eri palveluntarjoajilta"
   },
   "webhooks": {
     "title": "Webhookit",
