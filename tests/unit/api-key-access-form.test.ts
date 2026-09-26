@@ -11,6 +11,9 @@
  *   "All" -> ["combo/*"], restrict keeps the list verbatim (even empty, #12267); connections
  *   filtered to UUIDs; throttle clamped to 0..300000 and floored; maxSessions floored;
  *   mergeApiKeyPermissionScopes keeps unknown scopes in stored order; USD strings -> number | null.
+ * - fork deploy branch: the modal also read readSelfServiceQuota(apiKey) (absent/non-array
+ *   providers -> null = all, trimmed + de-duplicated list otherwise; unknown header mode -> "auto")
+ *   and appended it last with `...selfServiceQuota` (sharedQuotaProviders, anthropicRateLimitHeaders).
  *
  * Bodies are compared with JSON.stringify so the key order (the wire bytes) must match too.
  */
@@ -182,6 +185,8 @@ const unrestrictedState: ApiKeyAccessFormState = {
   dailyUsageLimitUsd: "",
   weeklyUsageLimitUsd: "",
   chaosModeEnabled: false,
+  sharedQuotaProviders: null,
+  anthropicRateLimitHeaders: "auto",
 };
 
 test("initial state matches the legacy modal: unrestricted key (combo/* means all combos)", () => {
@@ -340,6 +345,31 @@ test("initial state: an empty connection list always opens in All mode", () => {
   assert.deepEqual(state.selectedConnections, []);
 });
 
+test("initial state reads the self-service quota settings like the fork modal", () => {
+  const base: ApiKeyAccessData = { id: "k", name: "k" };
+  const subset = createInitialFormState({
+    ...base,
+    sharedQuotaProviders: [" anthropic ", "codex", "anthropic", ""],
+    anthropicRateLimitHeaders: "strip",
+  });
+  assert.deepEqual(subset.sharedQuotaProviders, ["anthropic", "codex"]);
+  assert.equal(subset.anthropicRateLimitHeaders, "strip");
+
+  // [] = share none; it must not widen to null (= all reachable providers).
+  assert.deepEqual(
+    createInitialFormState({ ...base, sharedQuotaProviders: [] }).sharedQuotaProviders,
+    []
+  );
+
+  const legacy = createInitialFormState({
+    ...base,
+    sharedQuotaProviders: null,
+    anthropicRateLimitHeaders: "bogus",
+  } as unknown as ApiKeyAccessData);
+  assert.equal(legacy.sharedQuotaProviders, null);
+  assert.equal(legacy.anthropicRateLimitHeaders, "auto");
+});
+
 // ── PATCH bodies (literal) ─────────────────────────────────────────────────
 
 test("PATCH body matches the legacy handler: unrestricted key", () => {
@@ -373,6 +403,8 @@ test("PATCH body matches the legacy handler: unrestricted key", () => {
     dailyUsageLimitUsd: null,
     weeklyUsageLimitUsd: null,
     chaosModeEnabled: false,
+    sharedQuotaProviders: null,
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -411,6 +443,8 @@ test("PATCH body matches the legacy handler: restricted models + combos", () => 
     dailyUsageLimitUsd: null,
     weeklyUsageLimitUsd: null,
     chaosModeEnabled: false,
+    sharedQuotaProviders: null,
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -448,6 +482,8 @@ test("PATCH body matches the legacy handler: connections restricted", () => {
     dailyUsageLimitUsd: null,
     weeklyUsageLimitUsd: null,
     chaosModeEnabled: false,
+    sharedQuotaProviders: null,
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -494,6 +530,8 @@ test("PATCH body matches the legacy handler: limits + schedule", () => {
     dailyUsageLimitUsd: 25.5,
     weeklyUsageLimitUsd: 150,
     chaosModeEnabled: false,
+    sharedQuotaProviders: null,
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -531,6 +569,8 @@ test("PATCH body matches the legacy handler: behaviour toggles", () => {
     dailyUsageLimitUsd: null,
     weeklyUsageLimitUsd: null,
     chaosModeEnabled: true,
+    sharedQuotaProviders: null,
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -589,6 +629,8 @@ test("PATCH body matches the legacy handler after edits (sanitize, clamp, filter
     dailyUsageLimitUsd: null,
     weeklyUsageLimitUsd: null,
     chaosModeEnabled: false,
+    sharedQuotaProviders: null,
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -601,6 +643,39 @@ test("PATCH body drops Claude Code family patterns once models are back to Allow
   assert.equal(actual.modelAccessMode, "all");
   assert.deepEqual(actual.allowedModels, []);
   assert.deepEqual(actual.blockedModels, ["legacy-model"]);
+});
+
+test("PATCH body carries the self-service quota settings last, like the fork modal", () => {
+  const key: ApiKeyAccessData = {
+    ...keyLimitsSchedule,
+    sharedQuotaProviders: ["anthropic"],
+    anthropicRateLimitHeaders: "forward",
+  };
+  const unchanged = buildApiKeyAccessPayload(createInitialFormState(key), key);
+  assert.deepEqual(Object.keys(unchanged).slice(-3), [
+    "chaosModeEnabled",
+    "sharedQuotaProviders",
+    "anthropicRateLimitHeaders",
+  ]);
+  assert.deepEqual(unchanged.sharedQuotaProviders, ["anthropic"]);
+  assert.equal(unchanged.anthropicRateLimitHeaders, "forward");
+
+  const edited = buildApiKeyAccessPayload(
+    {
+      ...createInitialFormState(key),
+      sharedQuotaProviders: ["anthropic", "codex"],
+      anthropicRateLimitHeaders: "strip",
+    },
+    key
+  );
+  assert.deepEqual(edited.sharedQuotaProviders, ["anthropic", "codex"]);
+  assert.equal(edited.anthropicRateLimitHeaders, "strip");
+
+  const none = buildApiKeyAccessPayload(
+    { ...createInitialFormState(key), sharedQuotaProviders: [] },
+    key
+  );
+  assert.deepEqual(none.sharedQuotaProviders, []);
 });
 
 // ── Validation → tab mapping ────────────────────────────────────────────────

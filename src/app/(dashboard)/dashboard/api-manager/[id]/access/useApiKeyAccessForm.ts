@@ -5,6 +5,10 @@ import { hasProviderQuotaBypassScope } from "@/shared/constants/apiKeyPolicyScop
 import { mergeApiKeyPermissionScopes } from "@/app/(dashboard)/dashboard/api-manager/apiManagerScopes";
 import { buildModelAccessSavePayload } from "@/app/(dashboard)/dashboard/api-manager/apiManagerPageUtils";
 import type { CatalogScope } from "@/app/(dashboard)/dashboard/api-manager/components/ApiKeyCatalogScopeSelect";
+import {
+  readSelfServiceQuota,
+  type SelfServiceQuota,
+} from "@/app/(dashboard)/dashboard/api-manager/selfServiceQuota";
 
 export const MAX_KEY_NAME_LENGTH = 200;
 export const MAX_SELECTED_MODELS = 500;
@@ -93,7 +97,8 @@ export interface RateLimitEntry {
   window: number;
 }
 
-export interface ApiKeyAccessData {
+/** GET /api/keys/[id] also returns the key's self-service quota settings. */
+export interface ApiKeyAccessData extends Partial<SelfServiceQuota> {
   id: string;
   name: string;
   key?: string | null;
@@ -133,7 +138,7 @@ export interface ApiKeyAccessData {
 export type AccessEditorTab =
   "general" | "models" | "combos" | "connections" | "limits" | "behaviour";
 
-export interface ApiKeyAccessFormState {
+export interface ApiKeyAccessFormState extends SelfServiceQuota {
   name: string;
   allowAll: boolean;
   selectedModels: string[];
@@ -279,6 +284,7 @@ export function createInitialFormState(
         ? String(apiKey.weeklyUsageLimitUsd)
         : "",
     chaosModeEnabled: apiKey?.chaosModeEnabled === true,
+    ...readSelfServiceQuota(apiKey),
   };
 }
 
@@ -393,6 +399,9 @@ export function buildApiKeyAccessPayload(
     dailyUsageLimitUsd: parseUsdLimitInput(formState.dailyUsageLimitUsd),
     weeklyUsageLimitUsd: parseUsdLimitInput(formState.weeklyUsageLimitUsd),
     chaosModeEnabled: formState.chaosModeEnabled,
+    // Sent last and on every save, like the old modal's `...selfServiceQuota` spread.
+    sharedQuotaProviders: formState.sharedQuotaProviders,
+    anthropicRateLimitHeaders: formState.anthropicRateLimitHeaders,
   };
 }
 
@@ -719,6 +728,14 @@ export function useApiKeyAccessForm(
     setFormState((prev) => ({ ...prev, selfAccountQuotaEnabled }));
   }, []);
 
+  const setSelfServiceQuota = useCallback((next: SelfServiceQuota) => {
+    setFormState((prev) => ({
+      ...prev,
+      sharedQuotaProviders: next.sharedQuotaProviders,
+      anthropicRateLimitHeaders: next.anthropicRateLimitHeaders,
+    }));
+  }, []);
+
   const setBypassProviderQuotaPolicyEnabled = useCallback(
     (bypassProviderQuotaPolicyEnabled: boolean) => {
       setFormState((prev) => ({ ...prev, bypassProviderQuotaPolicyEnabled }));
@@ -813,6 +830,7 @@ export function useApiKeyAccessForm(
     setManageEnabled,
     setSelfUsageEnabled,
     setSelfAccountQuotaEnabled,
+    setSelfServiceQuota,
     setBypassProviderQuotaPolicyEnabled,
     setStreamDefaultMode,
     setCompressionEnabled,

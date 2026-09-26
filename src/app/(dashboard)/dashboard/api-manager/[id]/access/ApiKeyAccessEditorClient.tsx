@@ -293,6 +293,7 @@ function ApiKeyAccessEditorForm({
             <GeneralTab
               apiKey={apiKey}
               formState={form.formState}
+              allConnections={allConnections}
               setName={form.setName}
               setIsActive={form.setIsActive}
               setIsBanned={form.setIsBanned}
@@ -300,6 +301,7 @@ function ApiKeyAccessEditorForm({
               setManageEnabled={form.setManageEnabled}
               setSelfUsageEnabled={form.setSelfUsageEnabled}
               setSelfAccountQuotaEnabled={form.setSelfAccountQuotaEnabled}
+              setSelfServiceQuota={form.setSelfServiceQuota}
               setAllowAllEndpoints={form.setAllowAllEndpoints}
               toggleEndpoint={form.toggleEndpoint}
               nameError={form.tabErrors.general[0]}

@@ -5,6 +5,12 @@ import { Input } from "@/shared/components";
 import { ENDPOINT_CATEGORIES } from "@/shared/constants/endpointCategories";
 import { toLocalDateTimeInputValue } from "@/app/(dashboard)/dashboard/api-manager/apiManagerPageUtils";
 import RoutingEntryLink from "@/shared/components/routing/RoutingEntryLink";
+import type { ProviderConnection } from "@/app/(dashboard)/dashboard/api-manager/components/ProviderConnectionPermissionList";
+import { SelfServiceQuotaSettings } from "@/app/(dashboard)/dashboard/api-manager/components/SelfServiceQuotaSettings";
+import {
+  quotaProviderOptions,
+  type SelfServiceQuota,
+} from "@/app/(dashboard)/dashboard/api-manager/selfServiceQuota";
 import {
   MAX_KEY_NAME_LENGTH,
   type ApiKeyAccessData,
@@ -15,6 +21,8 @@ import TabErrorList from "./TabErrorList";
 interface GeneralTabProps {
   apiKey: ApiKeyAccessData;
   formState: ApiKeyAccessFormState;
+  /** Every provider connection; the shared-quota picker lists the ones this key can reach. */
+  allConnections: ProviderConnection[];
   setName: (name: string) => void;
   setIsActive: (isActive: boolean) => void;
   setIsBanned: (isBanned: boolean) => void;
@@ -22,6 +30,7 @@ interface GeneralTabProps {
   setManageEnabled: (enabled: boolean) => void;
   setSelfUsageEnabled: (enabled: boolean) => void;
   setSelfAccountQuotaEnabled: (enabled: boolean) => void;
+  setSelfServiceQuota: (next: SelfServiceQuota) => void;
   setAllowAllEndpoints: (allowAll: boolean) => void;
   toggleEndpoint: (id: string) => void;
   /** Shown on the name input itself. */
@@ -33,6 +42,7 @@ interface GeneralTabProps {
 export default function GeneralTab({
   apiKey,
   formState,
+  allConnections,
   setName,
   setIsActive,
   setIsBanned,
@@ -40,6 +50,7 @@ export default function GeneralTab({
   setManageEnabled,
   setSelfUsageEnabled,
   setSelfAccountQuotaEnabled,
+  setSelfServiceQuota,
   setAllowAllEndpoints,
   toggleEndpoint,
   nameError,
@@ -246,6 +257,19 @@ export default function GeneralTab({
             {formState.selfAccountQuotaEnabled ? tc("enabled") : tc("disabled")}
           </button>
         </div>
+
+        <SelfServiceQuotaSettings
+          value={{
+            sharedQuotaProviders: formState.sharedQuotaProviders,
+            anthropicRateLimitHeaders: formState.anthropicRateLimitHeaders,
+          }}
+          onChange={setSelfServiceQuota}
+          showProviderPicker={formState.selfAccountQuotaEnabled}
+          providerOptions={quotaProviderOptions(
+            allConnections,
+            formState.allowAllConnections ? null : formState.selectedConnections
+          )}
+        />
       </div>
 
       {/* Allowed Endpoints Section */}
