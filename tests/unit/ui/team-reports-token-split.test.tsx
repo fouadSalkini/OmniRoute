@@ -9,7 +9,10 @@ import { NextIntlClientProvider } from "next-intl";
 import messages from "../../../src/i18n/messages/en.json";
 import ReportsPageClient from "../../../src/app/(dashboard)/dashboard/analytics/team-reports/ReportsPageClient";
 import SessionsPanel from "../../../src/app/(dashboard)/dashboard/analytics/team-reports/components/SessionsPanel";
-import type { AgentSessionRecord } from "../../../src/lib/db/agentSessions";
+import type {
+  AgentSessionRecentUsage,
+  AgentSessionRecord,
+} from "../../../src/lib/db/agentSessions";
 import type { AgentSessionReport } from "../../../src/lib/usage/agentSessionReports";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
@@ -29,7 +32,8 @@ const REPORT: AgentSessionReport = {
       cacheRead: 1_000_000,
       cacheCreation: 200_000,
       reasoning: 5_000,
-      total: 2_745_000,
+      uncachedInput: 300_000,
+      total: 1_545_000,
     },
     sessions: 3,
     members: 2,
@@ -68,13 +72,40 @@ const SESSION: AgentSessionRecord = {
     cacheRead: 9_000,
     cacheCreation: 1_000,
     reasoning: 500,
-    total: 25_000,
+    uncachedInput: 2_000,
+    total: 15_000,
   },
   costUsd: 0.5,
   unpricedCount: 0,
   lastProvider: "anthropic",
   lastModel: "claude-sonnet",
 };
+
+// The two requests of SESSION: their split adds up to the session header.
+function request(
+  id: number,
+  tokens: Omit<AgentSessionRecentUsage["tokens"], "reasoning" | "uncachedInput">
+): AgentSessionRecentUsage {
+  return {
+    id,
+    timestamp: `2026-09-25T09:0${id}:00.000Z`,
+    provider: "anthropic",
+    model: "claude-sonnet",
+    tokens: {
+      ...tokens,
+      reasoning: 0,
+      uncachedInput: tokens.input - tokens.cacheRead - tokens.cacheCreation,
+    },
+    latencyMs: 900,
+    ttftMs: 300,
+    status: "200",
+    success: true,
+  };
+}
+const REQUESTS = [
+  request(1, { input: 7_000, output: 1_000, cacheRead: 5_000, cacheCreation: 1_000 }),
+  request(2, { input: 5_000, output: 2_000, cacheRead: 4_000, cacheCreation: 0 }),
+];
 
 let container: HTMLDivElement;
 let root: Root;
@@ -89,7 +120,7 @@ beforeEach(() => {
       const body = url.startsWith("/api/reports/summary")
         ? REPORT
         : url.startsWith(`/api/reports/sessions/${SESSION.id}`)
-          ? { session: SESSION, recentRequests: [] }
+          ? { session: SESSION, recentRequests: REQUESTS }
           : { sessions: [SESSION], total: 1 };
       return { ok: true, status: 200, json: async () => body };
     })
@@ -151,7 +182,9 @@ describe("Team Reports token split", () => {
     expect(figures.get("Output")?.textContent).toBe("45.0K");
     expect(figures.get("Cache")?.textContent?.startsWith("1.2M")).toBe(true);
     expectCacheDetail(figures.get("Cache"), 1_000_000, 200_000);
-    expect(card.textContent).not.toContain("2.7M");
+    // The card renders exactly the three figures, and no total.
+    const detail = `Cache Read: ${fmt(1_000_000)} · Cache Write: ${fmt(200_000)}`;
+    expect(card.textContent).toBe(`TokensInput300.0KOutput45.0KCache1.2M (${detail})`);
   });
 
   it("sessions list shows Input, Output and Cache columns", async () => {
@@ -182,5 +215,17 @@ describe("Team Reports token split", () => {
     expect(figures.get("Output")?.textContent).toBe("3.0K");
     expect(figures.get("Cache")?.textContent?.startsWith("10.0K")).toBe(true);
     expectCacheDetail(figures.get("Cache"), 9_000, 1_000);
+
+    // Each request row shows the same split, and the rows add up to the header above.
+    const table = [...document.body.querySelectorAll("table")].at(-1) as HTMLTableElement;
+    const headers = [...table.querySelectorAll("thead th")].map((th) => th.textContent);
+    expect(headers).not.toContain("Tokens in / out");
+    const cell = (row: number, header: string) =>
+      table.querySelectorAll("tbody tr")[row].querySelectorAll("td")[headers.indexOf(header)];
+    expect([0, 1].map((row) => cell(row, "Input").textContent)).toEqual(["1.0K", "1.0K"]);
+    expect([0, 1].map((row) => cell(row, "Output").textContent)).toEqual(["1.0K", "2.0K"]);
+    expect(cell(0, "Cache").textContent?.startsWith("6.0K")).toBe(true);
+    expect(cell(1, "Cache").textContent?.startsWith("4.0K")).toBe(true);
+    expectCacheDetail(cell(0, "Cache") as HTMLElement, 5_000, 1_000);
   });
 });

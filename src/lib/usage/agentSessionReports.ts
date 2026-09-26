@@ -23,12 +23,17 @@ export interface ReportTotals {
   errors: number;
   unpricedRequests: number;
   costUsd: number;
+  /** Same fields and meaning as an agent session's tokens (see AgentSessionRecord). */
   tokens: {
+    /** Input including cache reads and writes. */
     input: number;
     output: number;
     cacheRead: number;
     cacheCreation: number;
     reasoning: number;
+    /** Input that was neither read from nor written to the prompt cache, clamped at 0. */
+    uncachedInput: number;
+    /** input + output: cache reads and writes are already part of input. */
     total: number;
   };
   sessions: number;
@@ -100,13 +105,21 @@ class TotalsAccumulator {
   }
 
   toTotals(): ReportTotals {
+    // Stored input already includes cache reads and writes, so the uncached part is a plain
+    // difference and adding the cache counters again double counts. Requests recorded before the
+    // usage extractor fix (#14878) by some non-streaming Claude-format providers stored input
+    // without its cached part; they may under-report input and are not guessed at.
     const { input, output, cacheRead, cacheCreation } = this.tokens;
     return {
       requests: this.requests,
       errors: this.errors,
       unpricedRequests: this.unpricedRequests,
       costUsd: Number(this.costUsd.toFixed(6)),
-      tokens: { ...this.tokens, total: input + output + cacheRead + cacheCreation },
+      tokens: {
+        ...this.tokens,
+        uncachedInput: Math.max(0, input - cacheRead - cacheCreation),
+        total: input + output,
+      },
       sessions: this.sessions.size,
       members: this.members.size,
       projects: this.projects.size,

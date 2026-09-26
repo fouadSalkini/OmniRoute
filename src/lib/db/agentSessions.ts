@@ -13,6 +13,10 @@ import type { SqliteAdapter } from "./adapters/types";
 export const AGENT_SESSION_IDLE_WINDOW_MS = 30 * 60 * 1000;
 
 // A type alias (not an interface) so it stays assignable to the cost calculator's token record.
+// `input` includes cache reads and writes, the way the usage extractors report prompt tokens and
+// the cost calculator prices them; `output` includes reasoning. Requests recorded before the usage
+// extractor fix (#14878) by some non-streaming Claude-format providers stored input without its
+// cached part, so their input and uncached input may be under-reported; they are not guessed at.
 export type AgentSessionTokens = {
   input: number;
   output: number;
@@ -159,11 +163,15 @@ export interface AgentSessionRecord {
   requestCount: number;
   errorCount: number;
   tokens: {
+    /** Input including cache reads and writes. */
     input: number;
     output: number;
     cacheRead: number;
     cacheCreation: number;
     reasoning: number;
+    /** Input that was neither read from nor written to the prompt cache, clamped at 0. */
+    uncachedInput: number;
+    /** input + output: cache reads and writes are already part of input. */
     total: number;
   };
   costUsd: number;
@@ -193,18 +201,25 @@ export interface AgentSessionRecentUsage {
   timestamp: string;
   provider: string | null;
   model: string | null;
+  /** Same meaning as the session tokens, so request rows add up to their session. */
   tokens: {
     input: number;
     output: number;
     cacheRead: number;
     cacheCreation: number;
     reasoning: number;
+    uncachedInput: number;
   };
   latencyMs: number;
   ttftMs: number;
   status: string | null;
   success: boolean;
   connectionId?: string | null;
+}
+
+/** Input that was neither read from nor written to the prompt cache (input includes both). */
+function uncachedInput(input: number, cacheRead: number, cacheCreation: number): number {
+  return Math.max(0, input - cacheRead - cacheCreation);
 }
 
 function rowToAgentSessionRecord(row: Record<string, unknown>): AgentSessionRecord {
@@ -234,7 +249,9 @@ function rowToAgentSessionRecord(row: Record<string, unknown>): AgentSessionReco
       cacheRead,
       cacheCreation,
       reasoning,
-      total: input + output + cacheRead + cacheCreation,
+      uncachedInput: uncachedInput(input, cacheRead, cacheCreation),
+      // Input already includes cache reads and writes; adding them again double counts.
+      total: input + output,
     },
     costUsd: Number(row.cost_usd ?? 0),
     unpricedCount: Number(row.unpriced_count ?? 0),
@@ -248,7 +265,7 @@ const SORT_COLUMNS: Record<string, string> = {
   lastSeen: "last_seen_at",
   firstSeen: "first_seen_at",
   requests: "request_count",
-  tokens: "(tokens_input + tokens_output + tokens_cache_read + tokens_cache_creation)",
+  tokens: "(tokens_input + tokens_output)",
   cost: "cost_usd",
 };
 
@@ -359,22 +376,28 @@ export function getAgentSessionRecentUsage(
     )
     .all(sessionId, boundedLimit) as Record<string, unknown>[];
 
-  return rows.map((row) => ({
-    id: Number(row.id),
-    timestamp: String(row.timestamp),
-    provider: typeof row.provider === "string" ? row.provider : null,
-    model: typeof row.model === "string" ? row.model : null,
-    tokens: {
-      input: Number(row.tokens_input ?? 0),
-      output: Number(row.tokens_output ?? 0),
-      cacheRead: Number(row.tokens_cache_read ?? 0),
-      cacheCreation: Number(row.tokens_cache_creation ?? 0),
-      reasoning: Number(row.tokens_reasoning ?? 0),
-    },
-    latencyMs: Number(row.latency_ms ?? 0),
-    ttftMs: Number(row.ttft_ms ?? 0),
-    status: typeof row.status === "string" ? row.status : null,
-    success: row.success === 1 || row.success === true,
-    connectionId: typeof row.connection_id === "string" ? row.connection_id : null,
-  }));
+  return rows.map((row) => {
+    const input = Number(row.tokens_input ?? 0);
+    const cacheRead = Number(row.tokens_cache_read ?? 0);
+    const cacheCreation = Number(row.tokens_cache_creation ?? 0);
+    return {
+      id: Number(row.id),
+      timestamp: String(row.timestamp),
+      provider: typeof row.provider === "string" ? row.provider : null,
+      model: typeof row.model === "string" ? row.model : null,
+      tokens: {
+        input,
+        output: Number(row.tokens_output ?? 0),
+        cacheRead,
+        cacheCreation,
+        reasoning: Number(row.tokens_reasoning ?? 0),
+        uncachedInput: uncachedInput(input, cacheRead, cacheCreation),
+      },
+      latencyMs: Number(row.latency_ms ?? 0),
+      ttftMs: Number(row.ttft_ms ?? 0),
+      status: typeof row.status === "string" ? row.status : null,
+      success: row.success === 1 || row.success === true,
+      connectionId: typeof row.connection_id === "string" ? row.connection_id : null,
+    };
+  });
 }
