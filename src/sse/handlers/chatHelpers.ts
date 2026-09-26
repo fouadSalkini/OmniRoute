@@ -28,6 +28,8 @@ import {
   unavailableResponse,
 } from "@omniroute/open-sse/utils/error.ts";
 import { inheritTrustedLocalRateLimitResponse } from "@omniroute/open-sse/services/rateLimitManager/errors.ts";
+import { isRequestScopedUpstreamFailure } from "./comboFailureLogging";
+import { isCodexNativeResponsesRequest } from "./requestShapeGuards";
 import { HTTP_STATUS } from "@omniroute/open-sse/config/constants.ts";
 import { getRegistryEntry } from "@omniroute/open-sse/config/providerRegistry.ts";
 import { getCachedProviderNodes } from "@/lib/db/readCache";
@@ -80,38 +82,6 @@ type ExecuteChatWithBreakerOptions = {
 type ExecuteChatWithBreakerResult =
   | { result: any; tlsFingerprintUsed: boolean }
   | { localResourcePressureResult: ResourcePressureGuardResult; tlsFingerprintUsed: false };
-
-function getHeaderValue(headers: Record<string, unknown> | null | undefined, name: string) {
-  if (!headers || typeof headers !== "object") return "";
-  const lowerName = name.toLowerCase();
-  for (const [key, value] of Object.entries(headers)) {
-    if (key.toLowerCase() !== lowerName) continue;
-    return Array.isArray(value) ? value.join(",") : String(value ?? "");
-  }
-  return "";
-}
-
-function isCodexNativeResponsesRequest(
-  body: any,
-  endpointPath: string,
-  headers: Record<string, unknown> | null | undefined
-) {
-  const normalizedEndpoint = String(endpointPath || "").replace(/\/+$/, "");
-  if (!/(^|\/)responses(?=\/|$)/i.test(normalizedEndpoint)) return false;
-  if (/\/responses\/compact$/i.test(normalizedEndpoint)) return true;
-
-  const userAgent = getHeaderValue(headers, "user-agent").toLowerCase();
-  if (userAgent.includes("codex")) return true;
-  if (getHeaderValue(headers, "x-codex-session-id")) return true;
-  if (getHeaderValue(headers, "x-codex-window-id")) return true;
-  if (getHeaderValue(headers, "x-codex-turn-metadata")) return true;
-
-  const metadataSource =
-    body && typeof body === "object" && body.metadata && typeof body.metadata === "object"
-      ? String(body.metadata.source || "")
-      : "";
-  return metadataSource.toLowerCase().includes("codex");
-}
 
 async function hasOnlyActiveCodexAccount() {
   try {
@@ -560,6 +530,7 @@ export async function executeChatWithBreaker({
                 Number(failure?.status) === 499 ||
                 failure?.code === "client_disconnected" ||
                 failure?.type === "client_disconnected" ||
+                isRequestScopedUpstreamFailure(failure) ||
                 isLocalStreamLifecycleError(failure?.message ?? failure) // client abort, #4602
               ) {
                 return;
@@ -1081,6 +1052,8 @@ export async function safeLogEvents({
   comboName,
   clientRawRequest,
   tlsFingerprintUsed = false,
+  rotationAccount = null,
+  correlationId = null,
 }) {
   // Feed the provider's real answer back to proxy selection (never result.status: some 429s
   // are generated locally; proxyInfo carries the status captured around fetch). Must stay
@@ -1134,6 +1107,8 @@ export async function safeLogEvents({
       connectionId: credentials.connectionId,
       comboId: comboName || null,
       account: credentials.connectionId?.slice(0, 8) || null,
+      rotationAccount: rotationAccount || null,
+      correlationId: correlationId || null,
       tlsFingerprint: tlsFingerprintUsed,
       upstreamStatus: proxyInfo?.upstreamStatus ?? null,
     });
