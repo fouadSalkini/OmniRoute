@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Tem alterações não guardadas. Tem a certeza de que pretende sair desta página?",
     "accessUpdatedSuccess": "Acesso da chave de API atualizado com sucesso",
     "failedUpdateAccess": "Falha ao atualizar o acesso da chave de API",
-    "fixValidationErrors": "Por favor, corrija os erros de validação antes de guardar"
+    "fixValidationErrors": "Por favor, corrija os erros de validação antes de guardar",
+    "accessBreadcrumb": "Acesso",
+    "accessEditorTabsLabel": "Separadores de Acesso por Chave de API",
+    "errorBadgeLabel": "{count, plural, one {# erro de validação} other {# erros de validação}}",
+    "throttleDelayRangeError": "O atraso de limitação deve situar-se entre 0 e 300000 ms",
+    "maxSessionsNegativeError": "O número máximo de sessões não pode ser negativo",
+    "rateLimitPositiveError": "Os limites de taxa devem ter valores positivos para pedidos e segundos"
   },
   "apiKeyDetails": {
     "pageTitle": "Detalhes da chave de API",

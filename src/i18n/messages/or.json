@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "ଆପଣଙ୍କ ପାଖରେ ସେଭ୍ ହୋଇନଥିବା ପରିବର୍ତ୍ତନ ଅଛି। ଆପଣ ନିଶ୍ଚିତ କି ଏହି ପୃଷ୍ଠା ଛାଡ଼ି ଯିବାକୁ ଚାହାଁନ୍ତି?",
     "accessUpdatedSuccess": "API key ଆକ୍ସେସ୍ ସଫଳତାର ସହିତ ଅପଡେଟ୍ ହେଲା",
     "failedUpdateAccess": "API key ଆକ୍ସେସ୍ ଅପଡେଟ୍ କରିବାରେ ବିଫଳ ହେଲା",
-    "fixValidationErrors": "ଦୟାକରି ସେଭ୍ କରିବା ପୂର୍ବରୁ ଭାଲିଡେସନ୍ ତ୍ରୁଟିଗୁଡ଼ିକ ଠିକ୍ କରନ୍ତୁ"
+    "fixValidationErrors": "ଦୟାକରି ସେଭ୍ କରିବା ପୂର୍ବରୁ ଭାଲିଡେସନ୍ ତ୍ରୁଟିଗୁଡ଼ିକ ଠିକ୍ କରନ୍ତୁ",
+    "accessBreadcrumb": "ପ୍ରବେଶାଧିକାର",
+    "accessEditorTabsLabel": "API Key ପ୍ରବେଶାଧିକାର ଟ୍ୟାବ୍‌ଗୁଡ଼ିକ",
+    "errorBadgeLabel": "{count, plural, one {# ବୈଧିକରଣ ତ୍ରୁଟି} other {# ବୈଧିକରଣ ତ୍ରୁଟି}}",
+    "throttleDelayRangeError": "ଥ୍ରୋଟଲ୍ ବିଳମ୍ବ 0 ଏବଂ 300000 ms ମଧ୍ୟରେ ହେବା ଆବଶ୍ୟକ",
+    "maxSessionsNegativeError": "ସର୍ବାଧିକ ସେସନ୍ ଅଣ-ଋଣାତ୍ମକ ହେବା ଆବଶ୍ୟକ",
+    "rateLimitPositiveError": "ରେଟ୍ ସୀମାରେ ଧନାତ୍ମକ ଅନୁରୋଧ ଏବଂ ସେକେଣ୍ଡ ରହିବା ଆବଶ୍ୟକ"
   },
   "apiKeyDetails": {
     "pageTitle": "API କୀ ବିବରଣୀ",

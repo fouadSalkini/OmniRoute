@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Máte neuložené zmeny. Naozaj chcete opustiť túto stránku?",
     "accessUpdatedSuccess": "Prístup k API kľúču bol úspešne aktualizovaný",
     "failedUpdateAccess": "Nepodarilo sa aktualizovať prístup k API kľúču",
-    "fixValidationErrors": "Pred uložením opravte validačné chyby"
+    "fixValidationErrors": "Pred uložením opravte validačné chyby",
+    "accessBreadcrumb": "Prístup",
+    "accessEditorTabsLabel": "Karty prístupu k API kľúčom",
+    "errorBadgeLabel": "{count, plural, one {# validačná chyba} few {# validačné chyby} other {# validačných chýb}}",
+    "throttleDelayRangeError": "Throttle delay musí byť medzi 0 a 300000 ms",
+    "maxSessionsNegativeError": "Maximálny počet relácií nesmie byť záporný",
+    "rateLimitPositiveError": "Rate limity musia mať kladné hodnoty požiadaviek a sekúnd"
   },
   "apiKeyDetails": {
     "pageTitle": "Podrobnosti kľúča API",

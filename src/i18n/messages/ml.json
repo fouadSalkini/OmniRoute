@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "നിങ്ങൾ മാറ്റങ്ങൾ സംരക്ഷിച്ചിട്ടില്ല. ഈ പേജ് വിട്ടുപോകണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
     "accessUpdatedSuccess": "API കീ ആക്സസ് വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു",
     "failedUpdateAccess": "API കീ ആക്സസ് അപ്‌ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
-    "fixValidationErrors": "സംരക്ഷിക്കുന്നതിന് മുമ്പ് ദയവായി വാലിഡേഷൻ പിശകുകൾ പരിഹരിക്കുക"
+    "fixValidationErrors": "സംരക്ഷിക്കുന്നതിന് മുമ്പ് ദയവായി വാലിഡേഷൻ പിശകുകൾ പരിഹരിക്കുക",
+    "accessBreadcrumb": "ആക്‌സസ്",
+    "accessEditorTabsLabel": "API കീ ആക്‌സസ് ടാബുകൾ",
+    "errorBadgeLabel": "{count, plural, one {# വാലിഡേഷൻ പിശക്} other {# വാലിഡേഷൻ പിശകുകൾ}}",
+    "throttleDelayRangeError": "ത്രോട്ടിൽ കാലതാമസം 0-നും 300000 ms-നും ഇടയിലായിരിക്കണം",
+    "maxSessionsNegativeError": "പരമാവധി സെഷനുകൾ നെഗറ്റീവ് അല്ലാത്തതായിരിക്കണം",
+    "rateLimitPositiveError": "റേറ്റ് ലിമിറ്റുകൾക്ക് പോസിറ്റീവായ റിക്വസ്റ്റുകളും സെക്കൻഡുകളും ഉണ്ടായിരിക്കണം"
   },
   "apiKeyDetails": {
     "pageTitle": "API കീ വിശദാംശങ്ങൾ",

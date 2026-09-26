@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Għandek bidliet mhux salvati. Inti ċert li trid titlaq minn din il-paġna?",
     "accessUpdatedSuccess": "L-aċċess taċ-ċavetta tal-API ġie aġġornat b'suċċess",
     "failedUpdateAccess": "Ma rnexxiex jiġi aġġornat l-aċċess taċ-ċavetta tal-API",
-    "fixValidationErrors": "Jekk jogħġbok irranġa l-iżbalji tal-validazzjoni qabel ma ssalva"
+    "fixValidationErrors": "Jekk jogħġbok irranġa l-iżbalji tal-validazzjoni qabel ma ssalva",
+    "accessBreadcrumb": "Aċċess",
+    "accessEditorTabsLabel": "Tabs tal-Aċċess għall-API Key",
+    "errorBadgeLabel": "{count, plural, one {# żball ta' validazzjoni} other {# żbalji ta' validazzjoni}}",
+    "throttleDelayRangeError": "Id-dewmien tat-throttle għandu jkun bejn 0 u 300000 ms",
+    "maxSessionsNegativeError": "Is-sessjonijiet massimi għandhom ikunu mhux negattivi",
+    "rateLimitPositiveError": "Il-limiti tar-rata għandu jkollhom talbiet u sekondi pożittivi"
   },
   "apiKeyDetails": {
     "pageTitle": "Dettalji taċ-ċavetta API",

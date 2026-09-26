@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Mayroon kang mga hindi na-save na pagbabago. Sigurado ka bang gusto mong lisanin ang pahinang ito?",
     "accessUpdatedSuccess": "Matagumpay na na-update ang access sa API key",
     "failedUpdateAccess": "Nabigong i-update ang access sa API key",
-    "fixValidationErrors": "Pakiayos ang mga error sa pagpapatunay bago mag-save"
+    "fixValidationErrors": "Pakiayos ang mga error sa pagpapatunay bago mag-save",
+    "accessBreadcrumb": "Pag-access",
+    "accessEditorTabsLabel": "Mga Tab ng Pag-access sa API Key",
+    "errorBadgeLabel": "{count, plural, one {# error sa validation} other {# na error sa validation}}",
+    "throttleDelayRangeError": "Ang throttle delay ay dapat nasa pagitan ng 0 at 300000 ms",
+    "maxSessionsNegativeError": "Ang max sessions ay dapat hindi negatibo",
+    "rateLimitPositiveError": "Dapat may positibong mga request at segundo ang mga rate limit"
   },
   "apiKeyDetails": {
     "pageTitle": "Mga detalye ng API key",

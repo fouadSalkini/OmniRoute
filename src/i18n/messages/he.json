@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "ישנם שינויים שלא נשמרו. האם אתה בטוח שברצונך לעזוב דף זה?",
     "accessUpdatedSuccess": "גישת מפתח ה-API עודכנה בהצלחה",
     "failedUpdateAccess": "עדכון גישת מפתח ה-API נכשל",
-    "fixValidationErrors": "אנא תקן שגיאות אימות לפני השמירה"
+    "fixValidationErrors": "אנא תקן שגיאות אימות לפני השמירה",
+    "accessBreadcrumb": "גישה",
+    "accessEditorTabsLabel": "לשוניות גישה למפתחות API",
+    "errorBadgeLabel": "{count, plural, one {# שגיאת אימות} other {# שגיאות אימות}}",
+    "throttleDelayRangeError": "השהיית ה-throttle חייבת להיות בין 0 ל-300000 מילי-שניות",
+    "maxSessionsNegativeError": "מספר ה-sessions המרבי חייב להיות אי-שלילי",
+    "rateLimitPositiveError": "מגבלות קצב חייבות לכלול ערכים חיוביים עבור בקשות ושניות"
   },
   "apiKeyDetails": {
     "pageTitle": "פרטי מפתח API",

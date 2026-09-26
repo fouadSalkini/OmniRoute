@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "لديك تغييرات غير محفوظة. هل أنت متأكد من رغبتك في مغادرة هذه الصفحة؟",
     "accessUpdatedSuccess": "تم تحديث صلاحيات مفتاح API بنجاح",
     "failedUpdateAccess": "فشل تحديث صلاحيات مفتاح API",
-    "fixValidationErrors": "يرجى تصحيح أخطاء التحقق من الصحة قبل الحفظ"
+    "fixValidationErrors": "يرجى تصحيح أخطاء التحقق من الصحة قبل الحفظ",
+    "accessBreadcrumb": "الوصول",
+    "accessEditorTabsLabel": "علامات تبويب الوصول بمفتاح API",
+    "errorBadgeLabel": "{count, plural, one {# خطأ في التحقق} other {# أخطاء في التحقق}}",
+    "throttleDelayRangeError": "يجب أن يكون تأخير التقييد بين 0 و300000 ms",
+    "maxSessionsNegativeError": "يجب أن يكون الحد الأقصى للجلسات غير سالب",
+    "rateLimitPositiveError": "يجب أن تحتوي حدود المعدل على قيم موجبة للطلبات والثواني"
   },
   "apiKeyDetails": {
     "pageTitle": "تفاصيل مفتاح API",

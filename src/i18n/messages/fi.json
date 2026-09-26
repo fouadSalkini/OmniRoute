@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Sinulla on tallentamattomia muutoksia. Haluatko varmasti poistua tältä sivulta?",
     "accessUpdatedSuccess": "API-avaimen käyttöoikeudet päivitetty onnistuneesti",
     "failedUpdateAccess": "API-avaimen käyttöoikeuksien päivittäminen epäonnistui",
-    "fixValidationErrors": "Korjaa validointivirheet ennen tallentamista"
+    "fixValidationErrors": "Korjaa validointivirheet ennen tallentamista",
+    "accessBreadcrumb": "Pääsy",
+    "accessEditorTabsLabel": "API-avaimen käyttöoikeusvälilehdet",
+    "errorBadgeLabel": "{count, plural, one {# validointivirhe} other {# validointivirhettä}}",
+    "throttleDelayRangeError": "Kuristusviiveen on oltava välillä 0 ja 300000 ms",
+    "maxSessionsNegativeError": "Istuntojen enimmäismäärä ei voi olla negatiivinen",
+    "rateLimitPositiveError": "Nopeusrajoitusten pyyntöjen ja sekuntien on oltava positiivisia"
   },
   "apiKeyDetails": {
     "pageTitle": "API-avaimen tiedot",

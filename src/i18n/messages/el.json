@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Έχετε μη αποθηκευμένες αλλαγές. Είστε βέβαιοι ότι θέλετε να αποχωρήσετε από αυτή τη σελίδα;",
     "accessUpdatedSuccess": "Η πρόσβαση του κλειδιού API ενημερώθηκε επιτυχώς",
     "failedUpdateAccess": "Αποτυχία ενημέρωσης πρόσβασης κλειδιού API",
-    "fixValidationErrors": "Παρακαλούμε διορθώστε τα σφάλματα επικύρωσης πριν από την αποθήκευση"
+    "fixValidationErrors": "Παρακαλούμε διορθώστε τα σφάλματα επικύρωσης πριν από την αποθήκευση",
+    "accessBreadcrumb": "Πρόσβαση",
+    "accessEditorTabsLabel": "Καρτέλες πρόσβασης κλειδιού API",
+    "errorBadgeLabel": "{count, plural, one {# σφάλμα επικύρωσης} other {# σφάλματα επικύρωσης}}",
+    "throttleDelayRangeError": "Η καθυστέρηση throttle πρέπει να είναι μεταξύ 0 και 300000 ms",
+    "maxSessionsNegativeError": "Ο μέγιστος αριθμός συνεδριών πρέπει να είναι μη αρνητικός",
+    "rateLimitPositiveError": "Τα όρια ρυθμού πρέπει να έχουν θετικά αιτήματα και δευτερόλεπτα"
   },
   "apiKeyDetails": {
     "pageTitle": "Λεπτομέρειες κλειδιού API",

@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn rời khỏi trang này không?",
     "accessUpdatedSuccess": "Cập nhật quyền truy cập API key thành công",
     "failedUpdateAccess": "Không thể cập nhật quyền truy cập API key",
-    "fixValidationErrors": "Vui lòng sửa các lỗi xác thực trước khi lưu"
+    "fixValidationErrors": "Vui lòng sửa các lỗi xác thực trước khi lưu",
+    "accessBreadcrumb": "Quyền truy cập",
+    "accessEditorTabsLabel": "Các tab quyền truy cập khóa API",
+    "errorBadgeLabel": "{count, plural, one {# lỗi xác thực} other {# lỗi xác thực}}",
+    "throttleDelayRangeError": "Độ trễ điều tiết phải nằm trong khoảng từ 0 đến 300000 ms",
+    "maxSessionsNegativeError": "Số phiên tối đa phải là số không âm",
+    "rateLimitPositiveError": "Giới hạn tốc độ phải có số lượng yêu cầu và số giây là số dương"
   },
   "apiKeyDetails": {
     "pageTitle": "Chi tiết khóa API",

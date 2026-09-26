@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Du har ulagrede endringer. Er du sikker på at du vil forlate denne siden?",
     "accessUpdatedSuccess": "API-nøkkeltilgang ble oppdatert",
     "failedUpdateAccess": "Kunne ikke oppdatere API-nøkkeltilgang",
-    "fixValidationErrors": "Vennligst rett opp valideringsfeil før du lagrer"
+    "fixValidationErrors": "Vennligst rett opp valideringsfeil før du lagrer",
+    "accessBreadcrumb": "Tilgang",
+    "accessEditorTabsLabel": "Tilgangsfaner for API-nøkkel",
+    "errorBadgeLabel": "{count, plural, one {# valideringsfeil} other {# valideringsfeil}}",
+    "throttleDelayRangeError": "Strupingsforsinkelse må være mellom 0 og 300000 ms",
+    "maxSessionsNegativeError": "Maksimalt antall økter må være ikke-negativt",
+    "rateLimitPositiveError": "Hastighetsbegrensninger må ha positive forespørsler og sekunder"
   },
   "apiKeyDetails": {
     "pageTitle": "API-nøkkeldetaljer",

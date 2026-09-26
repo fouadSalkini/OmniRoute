@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Du har osparade ändringar. Är du säker på att du vill lämna denna sida?",
     "accessUpdatedSuccess": "API-nyckelns åtkomst har uppdaterats",
     "failedUpdateAccess": "Det gick inte att uppdatera API-nyckelns åtkomst",
-    "fixValidationErrors": "Åtgärda valideringsfelen innan du sparar"
+    "fixValidationErrors": "Åtgärda valideringsfelen innan du sparar",
+    "accessBreadcrumb": "Åtkomst",
+    "accessEditorTabsLabel": "Flikar för API-nyckelåtkomst",
+    "errorBadgeLabel": "{count, plural, one {# valideringsfel} other {# valideringsfel}}",
+    "throttleDelayRangeError": "Strypningsfördröjning måste vara mellan 0 och 300000 ms",
+    "maxSessionsNegativeError": "Maximalt antal sessioner måste vara icke-negativt",
+    "rateLimitPositiveError": "Hastighetsbegränsningar måste ha positiva förfrågningar och sekunder"
   },
   "apiKeyDetails": {
     "pageTitle": "API-nyckeldetaljer",

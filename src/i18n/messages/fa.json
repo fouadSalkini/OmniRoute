@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "شما تغییرات ذخیره‌نشده دارید. آیا مطمئن هستید که می‌خواهید این صفحه را ترک کنید؟",
     "accessUpdatedSuccess": "دسترسی کلید API با موفقیت به‌روزرسانی شد",
     "failedUpdateAccess": "به‌روزرسانی دسترسی کلید API ناموفق بود",
-    "fixValidationErrors": "لطفاً پیش از ذخیره، خطاهای اعتبارسنجی را برطرف کنید"
+    "fixValidationErrors": "لطفاً پیش از ذخیره، خطاهای اعتبارسنجی را برطرف کنید",
+    "accessBreadcrumb": "دسترسی",
+    "accessEditorTabsLabel": "تب‌های دسترسی کلید API",
+    "errorBadgeLabel": "{count, plural, one {# خطای اعتبارسنجی} other {# خطای اعتبارسنجی}}",
+    "throttleDelayRangeError": "تأخیر Throttle باید بین 0 و 300000 میلی‌ثانیه باشد",
+    "maxSessionsNegativeError": "حداکثر تعداد نشست‌ها باید عددی نامنفی باشد",
+    "rateLimitPositiveError": "محدودیت‌های نرخ باید دارای مقادیر مثبت برای درخواست‌ها و ثانیه‌ها باشند"
   },
   "apiKeyDetails": {
     "pageTitle": "جزئیات کلید API",

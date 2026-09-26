@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Imate neshranjene spremembe. Ali ste prepričani, da želite zapustiti to stran?",
     "accessUpdatedSuccess": "Dostop do API ključa je bil uspešno posodobljen",
     "failedUpdateAccess": "Posodobitev dostopa do API ključa ni uspela",
-    "fixValidationErrors": "Pred shranjevanjem odpravite napake pri preverjanju veljavnosti"
+    "fixValidationErrors": "Pred shranjevanjem odpravite napake pri preverjanju veljavnosti",
+    "accessBreadcrumb": "Dostop",
+    "accessEditorTabsLabel": "Zavihki za dostop z API-ključi",
+    "errorBadgeLabel": "{count, plural, one {# validacijska napaka} two {# validacijski napaki} few {# validacijske napake} other {# validacijskih napak}}",
+    "throttleDelayRangeError": "Zakasnitev omejevanja mora biti med 0 in 300000 ms",
+    "maxSessionsNegativeError": "Največje število sej mora biti nenegativno",
+    "rateLimitPositiveError": "Omejitve hitrosti morajo imeti pozitivne zahteve in sekunde"
   },
   "apiKeyDetails": {
     "pageTitle": "Podrobnosti ključa API",

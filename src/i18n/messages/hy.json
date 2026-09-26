@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Դուք ունեք չպահպանված փոփոխություններ: Համոզվա՞ծ եք, որ ցանկանում եք լքել այս էջը:",
     "accessUpdatedSuccess": "API բանալու հասանելիությունը հաջողությամբ թարմացվեց",
     "failedUpdateAccess": "Չհաջողվեց թարմացնել API բանալու հասանելիությունը",
-    "fixValidationErrors": "Խնդրում ենք շտկել վավերացման սխալները պահպանելուց առաջ"
+    "fixValidationErrors": "Խնդրում ենք շտկել վավերացման սխալները պահպանելուց առաջ",
+    "accessBreadcrumb": "Հասանելիություն",
+    "accessEditorTabsLabel": "API բանալու հասանելիության ներդիրներ",
+    "errorBadgeLabel": "{count, plural, one {# վավերացման սխալ} other {# վավերացման սխալ}}",
+    "throttleDelayRangeError": "Throttle-ի հապաղումը պետք է լինի 0-ից 300000 մվ-ի միջև",
+    "maxSessionsNegativeError": "Սեսիաների առավելագույն քանակը պետք է լինի ոչ բացասական",
+    "rateLimitPositiveError": "Հարցումների սահմանաչափերը պետք է ունենան դրական հարցումներ և վայրկյաններ"
   },
   "apiKeyDetails": {
     "pageTitle": "API բանալու մանրամասները",

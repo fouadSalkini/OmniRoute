@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Teil on salvestamata muudatusi. Kas olete kindel, et soovite sellelt lehelt lahkuda?",
     "accessUpdatedSuccess": "API-võtme juurdepääs edukalt uuendatud",
     "failedUpdateAccess": "API-võtme juurdepääsu uuendamine ebaõnnestus",
-    "fixValidationErrors": "Palun parandage enne salvestamist valideerimisvead"
+    "fixValidationErrors": "Palun parandage enne salvestamist valideerimisvead",
+    "accessBreadcrumb": "Juurdepääs",
+    "accessEditorTabsLabel": "API-võtme juurdepääsu vahekaardid",
+    "errorBadgeLabel": "{count, plural, one {# valideerimistõrge} other {# valideerimistõrget}}",
+    "throttleDelayRangeError": "Drosseldusviivitus peab olema vahemikus 0 kuni 300000 ms",
+    "maxSessionsNegativeError": "Maksimaalne seansside arv peab olema mittenegatiivne",
+    "rateLimitPositiveError": "Päringupiirangutel peab olema positiivne päringute ja sekundite arv"
   },
   "apiKeyDetails": {
     "pageTitle": "API-võtme üksikasjad",

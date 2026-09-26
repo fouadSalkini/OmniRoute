@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Имате незапазени промени. Сигурни ли сте, че искате да напуснете тази страница?",
     "accessUpdatedSuccess": "Достъпът за API ключа е обновен успешно",
     "failedUpdateAccess": "Неуспешно обновяване на достъпа за API ключа",
-    "fixValidationErrors": "Моля, отстранете грешките при валидация, преди да запазите"
+    "fixValidationErrors": "Моля, отстранете грешките при валидация, преди да запазите",
+    "accessBreadcrumb": "Достъп",
+    "accessEditorTabsLabel": "Раздели за достъп с API ключ",
+    "errorBadgeLabel": "{count, plural, one {# грешка при валидиране} other {# грешки при валидиране}}",
+    "throttleDelayRangeError": "Забавянето при регулиране трябва да бъде между 0 и 300000 ms",
+    "maxSessionsNegativeError": "Максималният брой сесии трябва да бъде неотрицателно число",
+    "rateLimitPositiveError": "Ограниченията на честотата трябва да имат положителни стойности за заявки и секунди"
   },
   "apiKeyDetails": {
     "pageTitle": "Подробности за API ключа",

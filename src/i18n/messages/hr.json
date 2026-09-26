@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Imate nespremljene promjene. Jeste li sigurni da želite napustiti ovu stranicu?",
     "accessUpdatedSuccess": "Pristup API ključu uspješno je ažuriran",
     "failedUpdateAccess": "Ažuriranje pristupa API ključu nije uspjelo",
-    "fixValidationErrors": "Ispravite pogreške provjere valjanosti prije spremanja"
+    "fixValidationErrors": "Ispravite pogreške provjere valjanosti prije spremanja",
+    "accessBreadcrumb": "Pristup",
+    "accessEditorTabsLabel": "Kartice pristupa API ključevima",
+    "errorBadgeLabel": "{count, plural, one {# validacijska pogreška} few {# validacijske pogreške} other {# validacijskih pogrešaka}}",
+    "throttleDelayRangeError": "Odgoda prigušivanja mora biti između 0 i 300000 ms",
+    "maxSessionsNegativeError": "Maksimalan broj sesija mora biti nenegativan",
+    "rateLimitPositiveError": "Ograničenja brzine moraju imati pozitivne zahtjeve i sekunde"
   },
   "apiKeyDetails": {
     "pageTitle": "Pojedinosti API ključa",

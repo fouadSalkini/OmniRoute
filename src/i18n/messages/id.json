@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin meninggalkan halaman ini?",
     "accessUpdatedSuccess": "Akses kunci API berhasil diperbarui",
     "failedUpdateAccess": "Gagal memperbarui akses kunci API",
-    "fixValidationErrors": "Harap perbaiki kesalahan validasi sebelum menyimpan"
+    "fixValidationErrors": "Harap perbaiki kesalahan validasi sebelum menyimpan",
+    "accessBreadcrumb": "Akses",
+    "accessEditorTabsLabel": "Tab Akses Kunci API",
+    "errorBadgeLabel": "{count, plural, one {# kesalahan validasi} other {# kesalahan validasi}}",
+    "throttleDelayRangeError": "Jeda throttle harus antara 0 dan 300000 ms",
+    "maxSessionsNegativeError": "Sesi maksimum harus non-negatif",
+    "rateLimitPositiveError": "Batas laju harus memiliki permintaan dan detik bernilai positif"
   },
   "apiKeyDetails": {
     "pageTitle": "Detail kunci API",

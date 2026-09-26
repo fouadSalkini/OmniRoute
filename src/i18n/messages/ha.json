@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Kuna da canje-canjen da ba a ajiye ba. Kuna da tabbacin kuna son barin wannan shafin?",
     "accessUpdatedSuccess": "An sabunta damar maɓallin API cikin nasara",
     "failedUpdateAccess": "An kasa sabunta damar maɓallin API",
-    "fixValidationErrors": "Da fatan za a gyara kura-kuran tabbatarwa kafin ajiye"
+    "fixValidationErrors": "Da fatan za a gyara kura-kuran tabbatarwa kafin ajiye",
+    "accessBreadcrumb": "Samun Dama",
+    "accessEditorTabsLabel": "Tabs na Samun Dama na Maɓallin API",
+    "errorBadgeLabel": "{count, plural, one {# kuskuren tantancewa} other {# kurakuran tantancewa}}",
+    "throttleDelayRangeError": "Dole ne jinkirin throttle ya kasance tsakanin 0 da 300000 ms",
+    "maxSessionsNegativeError": "Dole ne matsakaicin zama ya kasance ba lambar korau ba",
+    "rateLimitPositiveError": "Dole ne iyakokin rate limits su kasance da buƙatu da daƙiƙoƙi masu lamba tabbatacciya"
   },
   "apiKeyDetails": {
     "pageTitle": "Cikakkun bayanai na maɓallin API",

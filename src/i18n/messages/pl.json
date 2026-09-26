@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Masz niezapisane zmiany. Czy na pewno chcesz opuścić tę stronę?",
     "accessUpdatedSuccess": "Pomyślnie zaktualizowano dostęp do klucza API",
     "failedUpdateAccess": "Nie udało się zaktualizować dostępu do klucza API",
-    "fixValidationErrors": "Popraw błędy walidacji przed zapisaniem"
+    "fixValidationErrors": "Popraw błędy walidacji przed zapisaniem",
+    "accessBreadcrumb": "Dostęp",
+    "accessEditorTabsLabel": "Karty dostępu klucza API",
+    "errorBadgeLabel": "{count, plural, one {# błąd walidacji} few {# błędy walidacji} many {# błędów walidacji} other {# błędów walidacji}}",
+    "throttleDelayRangeError": "Opóźnienie dławienia musi wynosić od 0 do 300000 ms",
+    "maxSessionsNegativeError": "Maksymalna liczba sesji musi być nieujemna",
+    "rateLimitPositiveError": "Limity szybkości muszą mieć dodatnie wartości żądań i sekund"
   },
   "apiKeyDetails": {
     "pageTitle": "Szczegóły klucza API",

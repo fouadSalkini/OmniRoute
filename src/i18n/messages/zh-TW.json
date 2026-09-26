@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "您有未儲存的變更。確定要離開此頁面嗎？",
     "accessUpdatedSuccess": "API 金鑰存取權限已成功更新",
     "failedUpdateAccess": "無法更新 API 金鑰存取權限",
-    "fixValidationErrors": "請在儲存前修正驗證錯誤"
+    "fixValidationErrors": "請在儲存前修正驗證錯誤",
+    "accessBreadcrumb": "存取",
+    "accessEditorTabsLabel": "API 金鑰存取分頁",
+    "errorBadgeLabel": "{count, plural, one {# 個驗證錯誤} other {# 個驗證錯誤}}",
+    "throttleDelayRangeError": "節流延遲必須介於 0 至 300000 毫秒之間",
+    "maxSessionsNegativeError": "最大工作階段數必須為非負數",
+    "rateLimitPositiveError": "速率限制的請求次數與秒數必須為正數"
   },
   "apiKeyDetails": {
     "pageTitle": "API 金鑰詳細資料",

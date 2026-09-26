@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Je hebt niet-opgeslagen wijzigingen. Weet je zeker dat je deze pagina wilt verlaten?",
     "accessUpdatedSuccess": "API-sleuteltoegang succesvol bijgewerkt",
     "failedUpdateAccess": "Bijwerken van API-sleuteltoegang mislukt",
-    "fixValidationErrors": "Los de validatiefouten op voordat je opslaat"
+    "fixValidationErrors": "Los de validatiefouten op voordat je opslaat",
+    "accessBreadcrumb": "Toegang",
+    "accessEditorTabsLabel": "Tabbladen voor API-sleuteltoegang",
+    "errorBadgeLabel": "{count, plural, one {# validatiefout} other {# validatiefouten}}",
+    "throttleDelayRangeError": "Throttle-vertraging moet tussen 0 en 300000 ms liggen",
+    "maxSessionsNegativeError": "Maximaal aantal sessies mag niet negatief zijn",
+    "rateLimitPositiveError": "Rate limits moeten een positief aantal verzoeken en seconden hebben"
   },
   "apiKeyDetails": {
     "pageTitle": "API-sleuteldetails",

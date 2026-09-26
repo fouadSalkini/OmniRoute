@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "آپ کی تبدیلیاں غیر محفوظ شدہ ہیں۔ کیا آپ واقعی اس صفحے سے جانا چاہتے ہیں؟",
     "accessUpdatedSuccess": "API key کی رسائی کامیابی سے اپ ڈیٹ ہو گئی",
     "failedUpdateAccess": "API key کی رسائی کو اپ ڈیٹ کرنے میں ناکامی",
-    "fixValidationErrors": "براہ کرم محفوظ کرنے سے پہلے توثیقی غلطیوں کو درست کریں"
+    "fixValidationErrors": "براہ کرم محفوظ کرنے سے پہلے توثیقی غلطیوں کو درست کریں",
+    "accessBreadcrumb": "رسائی",
+    "accessEditorTabsLabel": "API Key تک رسائی کے ٹیبز",
+    "errorBadgeLabel": "{count, plural, one {# توثیقی خرابی} other {# توثیقی خرابیاں}}",
+    "throttleDelayRangeError": "Throttle تاخیر 0 اور 300000 ms کے درمیان ہونی چاہیے",
+    "maxSessionsNegativeError": "زیادہ سے زیادہ سیشنز غیر منفی ہونے چاہئیں",
+    "rateLimitPositiveError": "Rate limits میں مثبت درخواستیں اور سیکنڈز ہونے چاہئیں"
   },
   "apiKeyDetails": {
     "pageTitle": "API کلید کی تفصیلات",

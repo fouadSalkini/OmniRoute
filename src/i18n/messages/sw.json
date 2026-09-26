@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Una mabadiliko ambayo hayajahifadhiwa. Je, una uhakika unataka kuondoka kwenye ukurasa huu?",
     "accessUpdatedSuccess": "Ufikiaji wa ufunguo wa API umesasishwa kwa mafanikio",
     "failedUpdateAccess": "Imeshindwa kusasisha ufikiaji wa ufunguo wa API",
-    "fixValidationErrors": "Tafadhali rekebisha makosa ya uthibitishaji kabla ya kuhifadhi"
+    "fixValidationErrors": "Tafadhali rekebisha makosa ya uthibitishaji kabla ya kuhifadhi",
+    "accessBreadcrumb": "Ufikiaji",
+    "accessEditorTabsLabel": "Vichupo vya Ufikiaji wa Ufunguo wa API",
+    "errorBadgeLabel": "{count, plural, one {# kosa la uthibitishaji} other {# makosa ya uthibitishaji}}",
+    "throttleDelayRangeError": "Ucheleweshaji wa throttle lazima uwe kati ya 0 na 300000 ms",
+    "maxSessionsNegativeError": "Upeo wa vipindi lazima usiwe hasi",
+    "rateLimitPositiveError": "Vikomo vya kasi lazima viwe na maombi na sekunde chanya"
   },
   "apiKeyDetails": {
     "pageTitle": "Maelezo ya ufunguo wa API",

@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "I nwere mgbanwe ndị a na-echekwaghị. Ị ma n'aka na ị chọrọ ịhapụ ibe a?",
     "accessUpdatedSuccess": "Emelitere nnweta API key nke ọma",
     "failedUpdateAccess": "E nweghị ike imelite nnweta API key",
-    "fixValidationErrors": "Biko dozie mmejọ nkwado tupu ị chekwaa"
+    "fixValidationErrors": "Biko dozie mmejọ nkwado tupu ị chekwaa",
+    "accessBreadcrumb": "Nnweta",
+    "accessEditorTabsLabel": "Taabụ Nnweta Igodo API",
+    "errorBadgeLabel": "{count, plural, one {# mperi nkwado} other {# mperi nkwado}}",
+    "throttleDelayRangeError": "Oge igbu oge throttle ga-adịrịrị n'etiti 0 na 300000 ms",
+    "maxSessionsNegativeError": "Max sessions ga-abụrịrị nke na-erughị efu",
+    "rateLimitPositiveError": "Rate limits ga-enwerịrị arịrịọ na sekọnd karịrị efu"
   },
   "apiKeyDetails": {
     "pageTitle": "Nkọwa igodo API",

@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Du har ikke-gemte ændringer. Er du sikker på, at du vil forlade denne side?",
     "accessUpdatedSuccess": "Adgang for API-nøgle blev opdateret",
     "failedUpdateAccess": "Kunne ikke opdatere adgang for API-nøgle",
-    "fixValidationErrors": "Ret venligst valideringsfejl, før du gemmer"
+    "fixValidationErrors": "Ret venligst valideringsfejl, før du gemmer",
+    "accessBreadcrumb": "Adgang",
+    "accessEditorTabsLabel": "Faner til API-nøgleadgang",
+    "errorBadgeLabel": "{count, plural, one {# valideringsfejl} other {# valideringsfejl}}",
+    "throttleDelayRangeError": "Throttle-forsinkelse skal være mellem 0 og 300000 ms",
+    "maxSessionsNegativeError": "Maks. sessioner skal være ikke-negativ",
+    "rateLimitPositiveError": "Hastighedsgrænser skal have positive anmodninger og sekunder"
   },
   "apiKeyDetails": {
     "pageTitle": "API-nøgledetaljer",

@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "អ្នកមានការផ្លាស់ប្តូរដែលមិនទាន់រក្សាទុក។ តើអ្នកពិតជាចង់ចាកចេញពីទំព័រនេះមែនទេ?",
     "accessUpdatedSuccess": "បានធ្វើបច្ចុប្បន្នភាពការចូលប្រើ API key ដោយជោគជ័យ",
     "failedUpdateAccess": "មិនអាចធ្វើបច្ចុប្បន្នភាពការចូលប្រើ API key បានទេ",
-    "fixValidationErrors": "សូមកែសម្រួលកំហុសផ្ទៀងផ្ទាត់ មុនពេលរក្សាទុក"
+    "fixValidationErrors": "សូមកែសម្រួលកំហុសផ្ទៀងផ្ទាត់ មុនពេលរក្សាទុក",
+    "accessBreadcrumb": "ការចូលប្រើ",
+    "accessEditorTabsLabel": "ផ្ទាំងចូលប្រើ API Key",
+    "errorBadgeLabel": "{count, plural, one {# កំហុសផ្ទៀងផ្ទាត់} other {# កំហុសផ្ទៀងផ្ទាត់}}",
+    "throttleDelayRangeError": "ការពន្យារពេល Throttle ត្រូវតែនៅចន្លោះពី 0 ដល់ 300000 ms",
+    "maxSessionsNegativeError": "Session អតិបរមាត្រូវតែជាចំនួនមិនអវិជ្ជមាន",
+    "rateLimitPositiveError": "Rate limits ត្រូវតែមានចំនួនសំណើ និងវិនាទីវិជ្ជមាន"
   },
   "apiKeyDetails": {
     "pageTitle": "ព័ត៌មានលម្អិតអំពី API key",

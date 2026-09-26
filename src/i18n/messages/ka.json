@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "თქვენ გაქვთ შეუნახავი ცვლილებები. დარწმუნებული ხართ, რომ გსურთ ამ გვერდის დატოვება?",
     "accessUpdatedSuccess": "API გასაღების წვდომა წარმატებით განახლდა",
     "failedUpdateAccess": "API გასაღების წვდომის განახლება ვერ მოხერხდა",
-    "fixValidationErrors": "გთხოვთ, შენახვამდე გაასწოროთ ვალიდაციის შეცდომები"
+    "fixValidationErrors": "გთხოვთ, შენახვამდე გაასწოროთ ვალიდაციის შეცდომები",
+    "accessBreadcrumb": "წვდომა",
+    "accessEditorTabsLabel": "API გასაღების წვდომის ჩანართები",
+    "errorBadgeLabel": "{count, plural, one {# ვალიდაციის შეცდომა} other {# ვალიდაციის შეცდომა}}",
+    "throttleDelayRangeError": "Throttle-ის დაყოვნება უნდა იყოს 0-სა და 300000 ms-ს შორის",
+    "maxSessionsNegativeError": "სესიების მაქსიმალური რაოდენობა უნდა იყოს არაუარყოფითი",
+    "rateLimitPositiveError": "Rate limit-ებს უნდა ჰქონდეს დადებითი მოთხოვნები და წამები"
   },
   "apiKeyDetails": {
     "pageTitle": "API გასაღების დეტალები",

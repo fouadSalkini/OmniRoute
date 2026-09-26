@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Имате несачуване промене. Да ли сте сигурни да желите да напустите ову страницу?",
     "accessUpdatedSuccess": "Приступ API кључу је успешно ажуриран",
     "failedUpdateAccess": "Ажурирање приступа API кључу није успело",
-    "fixValidationErrors": "Исправите грешке приликом валидације пре чувања"
+    "fixValidationErrors": "Исправите грешке приликом валидације пре чувања",
+    "accessBreadcrumb": "Приступ",
+    "accessEditorTabsLabel": "Картице за приступ API кључу",
+    "errorBadgeLabel": "{count, plural, one {# грешка при валидацији} few {# грешке при валидацији} other {# грешака при валидацији}}",
+    "throttleDelayRangeError": "Throttle кашњење мора бити између 0 и 300000 ms",
+    "maxSessionsNegativeError": "Максималан број сесија мора бити ненегативан",
+    "rateLimitPositiveError": "Ограничења брзине морају имати позитивне захтеве и секунде"
   },
   "apiKeyDetails": {
     "pageTitle": "Детаљи о API кључу",

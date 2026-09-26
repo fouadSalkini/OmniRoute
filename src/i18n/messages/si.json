@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "ඔබ සතුව සුරැක නොමැති වෙනස්කම් ඇත. ඔබට මෙම පිටුවෙන් ඉවත් වීමට අවශ්‍ය බව සහතිකද?",
     "accessUpdatedSuccess": "API යතුරු ප්‍රවේශය සාර්ථකව යාවත්කාලීන කරන ලදී",
     "failedUpdateAccess": "API යතුරු ප්‍රවේශය යාවත්කාලීන කිරීමට නොහැකි විය",
-    "fixValidationErrors": "කරුණාකර සුරැකීමට පෙර වලංගුකරණ දෝෂ නිවැරදි කරන්න"
+    "fixValidationErrors": "කරුණාකර සුරැකීමට පෙර වලංගුකරණ දෝෂ නිවැරදි කරන්න",
+    "accessBreadcrumb": "ප්‍රවේශය",
+    "accessEditorTabsLabel": "API Key ප්‍රවේශ ටැබ්",
+    "errorBadgeLabel": "{count, plural, one {# වලංගුකරණ දෝෂයක්} other {# වලංගුකරණ දෝෂ}}",
+    "throttleDelayRangeError": "Throttle ප්‍රමාදය 0 සහ 300000 ms අතර විය යුතුය",
+    "maxSessionsNegativeError": "උපරිම සැසි ගණන ඍණ නොවන අගයක් විය යුතුය",
+    "rateLimitPositiveError": "Rate limits සඳහා ධන අගයක් සහිත ඉල්ලීම් සහ තත්පර තිබිය යුතුය"
   },
   "apiKeyDetails": {
     "pageTitle": "API යතුරු විස්තර",

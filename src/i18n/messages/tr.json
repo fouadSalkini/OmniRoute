@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Kaydedilmemiş değişiklikleriniz var. Bu sayfadan ayrılmak istediğinizden emin misiniz?",
     "accessUpdatedSuccess": "API anahtarı erişimi başarıyla güncellendi",
     "failedUpdateAccess": "API anahtarı erişimi güncellenemedi",
-    "fixValidationErrors": "Lütfen kaydetmeden önce doğrulama hatalarını düzeltin"
+    "fixValidationErrors": "Lütfen kaydetmeden önce doğrulama hatalarını düzeltin",
+    "accessBreadcrumb": "Erişim",
+    "accessEditorTabsLabel": "API Anahtarı Erişim Sekmeleri",
+    "errorBadgeLabel": "{count, plural, one {# doğrulama hatası} other {# doğrulama hatası}}",
+    "throttleDelayRangeError": "Kısıtlama gecikmesi 0 ile 300000 ms arasında olmalıdır",
+    "maxSessionsNegativeError": "Maksimum oturum sayısı negatif olamaz",
+    "rateLimitPositiveError": "Hız sınırları pozitif istek ve saniye değerlerine sahip olmalıdır"
   },
   "apiKeyDetails": {
     "pageTitle": "API anahtarı ayrıntıları",

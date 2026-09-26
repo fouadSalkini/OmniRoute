@@ -2473,7 +2473,13 @@
     "unsavedChangesWarning": "Turite neišsaugotų pakeitimų. Ar tikrai norite išeiti iš šio puslapio?",
     "accessUpdatedSuccess": "API rakto prieiga sėkmingai atnaujinta",
     "failedUpdateAccess": "Nepavyko atnaujinti API rakto prieigos",
-    "fixValidationErrors": "Prieš išsaugodami ištaisykite patikros klaidas"
+    "fixValidationErrors": "Prieš išsaugodami ištaisykite patikros klaidas",
+    "accessBreadcrumb": "Prieiga",
+    "accessEditorTabsLabel": "API rakto prieigos skirtukai",
+    "errorBadgeLabel": "{count, plural, one {# validavimo klaida} few {# validavimo klaidos} other {# validavimo klaidų}}",
+    "throttleDelayRangeError": "Droseliavimo delsa turi būti nuo 0 iki 300000 ms",
+    "maxSessionsNegativeError": "Maksimalus seansų skaičius turi būti neneigiamas",
+    "rateLimitPositiveError": "Spartos ribojimai turi turėti teigiamą užklausų skaičių ir sekundes"
   },
   "apiKeyDetails": {
     "pageTitle": "API rakto informacija",
