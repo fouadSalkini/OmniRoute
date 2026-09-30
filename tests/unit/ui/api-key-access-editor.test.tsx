@@ -255,6 +255,21 @@ describe("ApiKeyAccessEditorClient", () => {
     const limitsTab = screen.getByRole("tab", { name: /limits/i });
     expect(limitsTab.getAttribute("aria-selected")).toBe("true");
     expect(screen.getByText(/Max Active Sessions/i)).toBeDefined();
+    expect(await screen.findByText(messages.apiKeyDetails.tokenLimitsTitle)).toBeDefined();
+    fireEvent.click(
+      await screen.findByRole("button", { name: messages.apiKeyDetails.tokenLimitAdd })
+    );
+    const tokenForm = screen.getByRole("form", { name: messages.apiKeyDetails.tokenLimitAddTitle });
+    fireEvent.change(within(tokenForm).getByRole("spinbutton"), {
+      target: { value: "1000000" },
+    });
+    fireEvent.click(within(tokenForm).getByRole("button", { name: messages.common.save }));
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("form", { name: messages.apiKeyDetails.tokenLimitAddTitle })
+      ).toBeNull();
+    });
+    expect(patchCalls).toHaveLength(0);
   });
 
   it("fetches the key and the model/combo/connection lists in parallel", async () => {
@@ -500,7 +515,7 @@ describe("ApiKeyAccessEditorClient", () => {
     currentSearch = "tab=limits";
     await renderLoaded();
 
-    fireEvent.click(screen.getByRole("button", { name: /add limit/i }));
+    fireEvent.click(screen.getByRole("button", { name: "addAdd Limit", exact: true }));
     const [requestsInput] = screen.getAllByPlaceholderText(
       messages.apiManager.apiManagerRateLimitRequestsPlaceholder
     );
