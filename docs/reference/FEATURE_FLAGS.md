@@ -46,7 +46,7 @@ A boolean flag is considered **enabled** when its effective value is `"true"`,
 
 ## Flag Catalog
 
-81 flags across 6 categories. **Default** is the definition default — the value
+82 flags across 6 categories. **Default** is the definition default — the value
 used when neither a DB override nor an environment variable is present.
 
 ### Security (10)
@@ -91,7 +91,7 @@ used when neither a DB override nor an environment variable is present.
 | `OMNIROUTE_ALLOW_LOCAL_PROVIDER_URLS`           | boolean | `true`  |         | Allow adding/validating providers on local/private addresses (127.0.0.1, localhost, LAN). On by default (local-first); disable for strict public-only blocking. Cloud-metadata stays blocked.                                                                                                                                                                                                                                                           |
 | `ENABLE_CC_COMPATIBLE_PROVIDER`                 | boolean | `false` | ✓       | Enable Claude Code compatible provider mode.                                                                                                                                                                                                                                                                                                                                                                                                            |
 
-### Policies (6)
+### Policies (7)
 
 | Key                              | Type    | Default    | Description                                                                                                                                                                                                                                            |
 | -------------------------------- | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
