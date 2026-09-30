@@ -10,7 +10,7 @@ import { hasSelfAccountQuotaScope } from "@/shared/constants/selfServiceScopes";
  * limit window state, its org id), not the caller's own usage. Forwarding
  * them to an API key holder who does not exclusively own that account (or
  * who is not opted into sharing that account's quota) leaks another
- * account's identity/quota data. `mode: "forward"` (the default) preserves legacy forwarding; `mode: "auto"` only forwards
+ * account's identity/quota data. `mode: "auto"` (the default) only forwards
  * when the key is both scoped for it AND pinned to exactly one connection.
  */
 
@@ -42,8 +42,7 @@ export function isAnthropicAccountHeader(name: string): boolean {
  *   (unchanged, pre-existing behavior for unauthenticated/local usage).
  * - `anthropicRateLimitHeaders === "forward"` → forward.
  * - `anthropicRateLimitHeaders === "strip"` → strip.
- * - Unset (the default) or `"forward"` → forward (preserves pre-PR behavior for all existing keys).
- * - `"auto"` → forward ONLY IF the key's scopes
+ * - `"auto"` (or unset, the default) → forward ONLY IF the key's scopes
  *   include `self:account-quota` AND (`sharedQuotaProviders` is
  *   null/undefined, i.e. "all providers", OR it includes `provider`) AND
  *   `allowedConnections` has exactly one entry (the key is pinned to a
@@ -56,7 +55,7 @@ export function shouldStripAnthropicAccountHeaders(
 ): boolean {
   if (!apiKeyInfo) return false;
 
-  const mode = apiKeyInfo.anthropicRateLimitHeaders ?? "forward";
+  const mode = apiKeyInfo.anthropicRateLimitHeaders ?? "auto";
   if (mode === "forward") return false;
   if (mode === "strip") return true;
 
