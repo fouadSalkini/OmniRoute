@@ -543,7 +543,8 @@
       "tests/unit/metered-budget-must-not-disable-flat-rate.test.ts",
       "tests/unit/expiry-first-account-rotation.test.ts",
       "tests/unit/claude-passthrough-empty-response.test.ts",
-      "tests/unit/responses-ws-proxy-error-sanitization.test.mjs"
+      "tests/unit/responses-ws-proxy-error-sanitization.test.mjs",
+      "tests/unit/anthropic-account-header-policy.test.ts"
     ],
     "nodeArgs": [
       "--import",
