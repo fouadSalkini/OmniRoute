@@ -370,6 +370,19 @@ function getAuthoritativeStaticContextWindow(
   return null;
 }
 
+// Windows an `auto:discovery` override may not undercut: model-id entries only (native
+// Claude/GLM). Hosted-provider entries stay overridable because hosts can cap lower.
+function getDiscoveryProtectedContextWindow(
+  modelId: string | null,
+  rawModel: string | null
+): number | null {
+  for (const candidate of [modelId, rawModel]) {
+    const contextWindow = getAuthoritativeContextWindow(candidate);
+    if (typeof contextWindow === "number") return contextWindow;
+  }
+  return null;
+}
+
 // #8697-adjacent: this used to rescan Object.entries(MODEL_SPECS) per candidate per
 // call — the top hotspot in a full catalog-rebuild profile once the pricing-path and
 // getCanonicalModelSpecId() bottlenecks were fixed. Reuses the lazy index already built
@@ -695,11 +708,7 @@ export function getResolvedModelContextOverride(
   const resolved = resolveCapabilityInput(input);
   const override = getContextOverride(resolved, snapshot);
   if (override === null) return null;
-  const authoritative = getAuthoritativeStaticContextWindow(
-    resolved.provider,
-    resolved.model,
-    resolved.rawModel
-  );
+  const authoritative = getDiscoveryProtectedContextWindow(resolved.model, resolved.rawModel);
   if (authoritative !== null && override < authoritative) {
     const source = getContextOverrideSource(resolved, snapshot);
     if (source === "auto:discovery") {
@@ -909,7 +918,9 @@ export function getResolvedModelCapabilities(
     : null;
   const persistedContextWindow = (() => {
     if (rawPersistedContextWindow === null) return null;
-    if (authoritativeContextWindow === null) return rawPersistedContextWindow;
+    if (getDiscoveryProtectedContextWindow(resolved.model, resolved.rawModel) === null) {
+      return rawPersistedContextWindow;
+    }
     const source = getContextOverrideSource(resolved, snapshot);
     if (source === "auto:discovery") return null;
     return rawPersistedContextWindow;
@@ -1080,11 +1091,7 @@ export function resolveInputTokenCapForGate(
   if (isCombo) {
     const contextOverride = getContextOverride(resolved);
     if (contextOverride !== null) {
-      const authoritative = getAuthoritativeStaticContextWindow(
-        resolved.provider,
-        resolved.model,
-        resolved.rawModel
-      );
+      const authoritative = getDiscoveryProtectedContextWindow(resolved.model, resolved.rawModel);
       if (authoritative === null || contextOverride >= authoritative) {
         return contextOverride;
       }

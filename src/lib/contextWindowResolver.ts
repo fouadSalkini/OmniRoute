@@ -5,10 +5,7 @@ import {
   setModelContextOverride,
   removeModelContextOverride,
 } from "./db/modelContextOverrides";
-import {
-  getAuthoritativeContextWindow,
-  getAuthoritativeProviderContextWindow,
-} from "../shared/constants/modelSpecs";
+import { getAuthoritativeContextWindow } from "../shared/constants/modelSpecs";
 
 /**
  * Feature 5004 — self-correcting context-window reconciler.
@@ -125,9 +122,8 @@ export async function runContextWindowReconcile(): Promise<ReconcileResult> {
     removeOverride: (provider, modelId) => {
       removeModelContextOverride(provider, modelId);
     },
-    isAuthoritative: (provider, modelId) =>
-      getAuthoritativeProviderContextWindow(provider, modelId) !== null ||
-      getAuthoritativeContextWindow(modelId) !== null,
+    // Model-id entries only: hosted-provider windows may legitimately be discovered lower.
+    isAuthoritative: (_provider, modelId) => getAuthoritativeContextWindow(modelId) !== null,
   });
 }
 
