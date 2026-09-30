@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnera saite",
     "dismissAriaLabel": "Aizvērt"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Atspējot domāšanas līmeņu variantu (piem., -low, -medium, -high) ģenerēšanu /v1/models katalogā."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Atspējot domāšanas līmeņu variantu (piem., -low, -medium, -high) ģenerēšanu /v1/models katalogā.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Skaitīt modeļu bez cenas izmantošanu kā $0 katras atslēgas USD izmantošanas kvotās, nevis uzskatīt kvotu par pārsniegtu. Pēc noklusējuma izslēgts: modelis bez cenas vai maršrutēšanas aizstājvārds var slēpt faktiskos izdevumus, tāpēc kvota kļūdas gadījumā tiek bloķēta."
 }

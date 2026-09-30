@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerlink",
     "dismissAriaLabel": "Sulge"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Keela mõtlemistaseme variantide (nt -low, -medium, -high) loomine /v1/models kataloogis."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Keela mõtlemistaseme variantide (nt -low, -medium, -high) loomine /v1/models kataloogis.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Arvesta hinnata mudelite kasutus võtmepõhistes USD-kasutuskvootides $0-na, selle asemel et käsitleda kvooti ületatuna. Vaikimisi väljas: hinnata mudel või marsruutimisalias võib varjata tegelikke kulusid, seega keeldub kvoot tõrke korral toimimast."
 }

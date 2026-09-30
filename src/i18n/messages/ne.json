@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "साझेदार लिङ्क",
     "dismissAriaLabel": "बन्द गर्नुहोस्"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models क्याटलगमा सोचाइ स्तरका भेरियन्टहरू (जस्तै -low, -medium, -high) उत्पन्न गर्ने सुविधा निष्क्रिय गर्नुहोस्।"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models क्याटलगमा सोचाइ स्तरका भेरियन्टहरू (जस्तै -low, -medium, -high) उत्पन्न गर्ने सुविधा निष्क्रिय गर्नुहोस्।",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "कोटा नाघेको मान्नुको सट्टा प्रति-कुञ्जी USD प्रयोग कोटामा मूल्य नभएका मोडेलहरूको प्रयोगलाई $0 का रूपमा गणना गर्नुहोस्। पूर्वनिर्धारित रूपमा बन्द: मूल्य नभएको मोडेल वा राउटिङ उपनामले वास्तविक खर्च लुकाउन सक्छ, त्यसैले कोटा fail-closed हुन्छ।"
 }

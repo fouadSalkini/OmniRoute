@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "የአጋር አገናኝ",
     "dismissAriaLabel": "ዝጋ"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "በ/v1/models ካታሎግ ውስጥ የአስተሳሰብ ደረጃ ተለዋጮችን (ለምሳሌ -low, -medium, -high) ማመንጨትን አሰናክል።"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "በ/v1/models ካታሎግ ውስጥ የአስተሳሰብ ደረጃ ተለዋጮችን (ለምሳሌ -low, -medium, -high) ማመንጨትን አሰናክል።",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "ኮታው እንደተላለፈ ከመቁጠር ይልቅ፣ በእያንዳንዱ ቁልፍ የUSD አጠቃቀም ኮታዎች ውስጥ ዋጋ የሌላቸውን ሞዴሎች አጠቃቀም እንደ $0 ይቁጠሩ። በነባሪ ጠፍቷል፦ ዋጋ የሌለው ሞዴል ወይም የማዞሪያ ተለዋጭ ስም ትክክለኛ ወጪን ሊደብቅ ስለሚችል ኮታው ተዘግቶ ይከሽፋል።"
 }

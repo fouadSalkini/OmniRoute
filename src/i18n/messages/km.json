@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "តំណដៃគូ",
     "dismissAriaLabel": "បិទ"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "បិទការបង្កើតវ៉ារ្យ៉ង់កម្រិតនៃការគិត (ឧ. -low, -medium, -high) នៅក្នុងកាតាឡុក /v1/models។"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "បិទការបង្កើតវ៉ារ្យ៉ង់កម្រិតនៃការគិត (ឧ. -low, -medium, -high) នៅក្នុងកាតាឡុក /v1/models។",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "រាប់ការប្រើប្រាស់ម៉ូដែលដែលគ្មានតម្លៃជា $0 នៅក្នុងកូតាការប្រើប្រាស់ជា USD តាមសោនីមួយៗ ជំនួសឱ្យការចាត់ទុកថាកូតាត្រូវបានលើសកំណត់។ បិទតាមលំនាំដើម៖ ម៉ូដែលដែលគ្មានតម្លៃ ឬឈ្មោះហៅក្រៅនៃការកំណត់ផ្លូវអាចលាក់បាំងការចំណាយពិតប្រាកដ ដូច្នេះកូតានឹងបរាជ័យដោយបិទការចូលប្រើ។"
 }

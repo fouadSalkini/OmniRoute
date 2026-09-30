@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Nasc comhpháirtíochta",
     "dismissAriaLabel": "Dún"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Díchumasaigh giniúint leaganacha leibhéil smaointeoireachta (m.sh. -low, -medium, -high) i gcatalóg /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Díchumasaigh giniúint leaganacha leibhéil smaointeoireachta (m.sh. -low, -medium, -high) i gcatalóg /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Áirigh úsáid samhlacha nach bhfuil aon phraghas orthu mar $0 i gcuótaí úsáide USD in aghaidh eochrach in ionad caitheamh leis an gcuóta mar rud sáraithe. As de réir réamhshocraithe: is féidir le samhail gan phraghas nó ailias ródaithe fíorchaiteachas a cheilt, mar sin teipeann ar an gcuóta ar bhealach dúnta."
 }

@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Ìjápọ̀ aláṣiṣẹ́pọ̀",
     "dismissAriaLabel": "Pa á tì"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Pa ṣíṣẹ̀dá àwọn ẹ̀yà ìpele ìrònú (fún àpẹẹrẹ -low, -medium, -high) nínú àkójọ /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Pa ṣíṣẹ̀dá àwọn ẹ̀yà ìpele ìrònú (fún àpẹẹrẹ -low, -medium, -high) nínú àkójọ /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Ka lílo àwọn awoṣe tí kò ní iye owó sí $0 nínú àwọn ìwọ̀n lílo USD fún kọ́kọ́rọ́ kọ̀ọ̀kan dípò kí a kà á sí pé ó ti kọjá ìwọ̀n. Ó wà ní pípa ní àkọ́kọ́: awoṣe tí a kò fún ní iye owó tàbí orúkọ ìnagijẹ ìdarí ipa-ọ̀nà lè fi ìnáwó gidi pamọ́, nítorí náà ìwọ̀n náà yóò kọ ìbéèrè sílẹ̀."
 }

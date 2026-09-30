@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "പങ്കാളി ലിങ്ക്",
     "dismissAriaLabel": "അടയ്ക്കുക"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models കാറ്റലോഗിൽ ചിന്താതല വേരിയന്റുകൾ (ഉദാ. -low, -medium, -high) സൃഷ്ടിക്കുന്നത് പ്രവർത്തനരഹിതമാക്കുക."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models കാറ്റലോഗിൽ ചിന്താതല വേരിയന്റുകൾ (ഉദാ. -low, -medium, -high) സൃഷ്ടിക്കുന്നത് പ്രവർത്തനരഹിതമാക്കുക.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "ക്വാട്ട കവിഞ്ഞതായി കണക്കാക്കുന്നതിന് പകരം, ഓരോ കീയ്ക്കുമുള്ള USD ഉപയോഗ ക്വാട്ടകളിൽ വിലയില്ലാത്ത മോഡലുകളുടെ ഉപയോഗം $0 ആയി കണക്കാക്കുക. ഡിഫോൾട്ടായി ഓഫാണ്: വില നിശ്ചയിക്കാത്ത മോഡലിനോ റൂട്ടിംഗ് അപരനാമത്തിനോ യഥാർത്ഥ ചെലവ് മറച്ചുവെക്കാൻ കഴിയും, അതിനാൽ ക്വാട്ട അടച്ച നിലയിൽ പരാജയപ്പെടുന്നു."
 }

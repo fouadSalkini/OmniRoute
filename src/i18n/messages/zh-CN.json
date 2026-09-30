@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "合作伙伴链接",
     "dismissAriaLabel": "关闭"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "禁用在 /v1/models 目录中生成思考级别变体（例如 -low、-medium、-high）。"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "禁用在 /v1/models 目录中生成思考级别变体（例如 -low、-medium、-high）。",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "在按密钥的 USD 使用配额中，将未定价模型的使用量计为 $0，而不是视为超出配额。默认关闭：未定价模型或路由别名可能会隐藏实际支出，因此配额采取故障闭合。"
 }

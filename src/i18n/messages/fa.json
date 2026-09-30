@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "پیوند شریک",
     "dismissAriaLabel": "بستن"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "تولید گونههای سطح تفکر (برای مثال -low، -medium و -high) را در کاتالوگ /v1/models غیرفعال کنید."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "تولید گونههای سطح تفکر (برای مثال -low، -medium و -high) را در کاتالوگ /v1/models غیرفعال کنید.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "محاسبه مصرف مدل‌های بدون قیمت به‌عنوان $0 در سهمیه‌های مصرف USD به ازای هر کلید به‌جای اینکه سهمیه تمام‌شده تلقی شود. به‌طور پیش‌فرض غیرفعال است: یک مدل بدون قیمت یا نام مستعار مسیریابی می‌تواند هزینه واقعی را پنهان کند، بنابراین سهمیه مسدود می‌شود."
 }

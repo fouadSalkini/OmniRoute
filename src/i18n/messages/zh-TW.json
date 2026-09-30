@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "合作夥伴連結",
     "dismissAriaLabel": "關閉"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "停用在 /v1/models 目錄中產生思考層級變體（例如 -low、-medium、-high）。"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "停用在 /v1/models 目錄中產生思考層級變體（例如 -low、-medium、-high）。",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "在每個金鑰的 USD 用量配額中，將未定價模型的使用量計為 $0，而非視為超出配額。預設關閉：未定價模型或路由別名可能會隱藏實際支出，因此配額採取封閉式失敗。"
 }

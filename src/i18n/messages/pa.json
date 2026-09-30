@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "ਭਾਈਵਾਲ ਲਿੰਕ",
     "dismissAriaLabel": "ਬੰਦ ਕਰੋ"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models ਕੈਟਾਲਾਗ ਵਿੱਚ ਸੋਚਣ ਦੇ ਪੱਧਰ ਦੇ ਰੂਪਾਂ (ਉਦਾਹਰਨ ਲਈ -low, -medium, -high) ਦੀ ਰਚਨਾ ਨੂੰ ਅਯੋਗ ਕਰੋ।"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models ਕੈਟਾਲਾਗ ਵਿੱਚ ਸੋਚਣ ਦੇ ਪੱਧਰ ਦੇ ਰੂਪਾਂ (ਉਦਾਹਰਨ ਲਈ -low, -medium, -high) ਦੀ ਰਚਨਾ ਨੂੰ ਅਯੋਗ ਕਰੋ।",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "ਕੋਟਾ ਸੀਮਾ ਤੋਂ ਵੱਧ ਮੰਨਣ ਦੀ ਬਜਾਏ ਪ੍ਰਤੀ-ਕੁੰਜੀ USD ਵਰਤੋਂ ਕੋਟੇ ਵਿੱਚ ਬਿਨਾਂ ਕੀਮਤ ਵਾਲੇ ਮਾਡਲਾਂ ਦੀ ਵਰਤੋਂ ਨੂੰ $0 ਵਜੋਂ ਗਿਣੋ। ਮੂਲ ਰੂਪ ਵਿੱਚ ਬੰਦ: ਬਿਨਾਂ ਕੀਮਤ ਵਾਲਾ ਮਾਡਲ ਜਾਂ ਰੂਟਿੰਗ ਉਪਨਾਮ ਅਸਲ ਖਰਚ ਨੂੰ ਛੁਪਾ ਸਕਦਾ ਹੈ, ਇਸ ਲਈ ਕੋਟਾ ਫੇਲ-ਕਲੋਜ਼ਡ ਹੁੰਦਾ ਹੈ।"
 }

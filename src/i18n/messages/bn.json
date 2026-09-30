@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "অংশীদার লিঙ্ক",
     "dismissAriaLabel": "বন্ধ করুন"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models ক্যাটালগে চিন্তার স্তরের ভ্যারিয়েন্ট (যেমন -low, -medium, -high) তৈরি করা বন্ধ করুন।"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models ক্যাটালগে চিন্তার স্তরের ভ্যারিয়েন্ট (যেমন -low, -medium, -high) তৈরি করা বন্ধ করুন।",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "কোটা অতিক্রান্ত হিসেবে বিবেচনা করার পরিবর্তে, প্রতি-কী USD ব্যবহারের কোটায় মূল্যবিহীন মডেলগুলোর ব্যবহার $0 হিসেবে গণনা করুন। ডিফল্টভাবে বন্ধ: একটি মূল্যহীন মডেল বা রাউটিং উপনাম প্রকৃত খরচ গোপন করতে পারে, তাই কোটা ফেইল ক্লোজড হয়।"
 }

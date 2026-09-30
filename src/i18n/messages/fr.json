@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Lien partenaire",
     "dismissAriaLabel": "Fermer"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Désactiver la génération des variantes de niveau de réflexion (par ex. -low, -medium, -high) dans le catalogue /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Désactiver la génération des variantes de niveau de réflexion (par ex. -low, -medium, -high) dans le catalogue /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Compter l'utilisation des modèles sans prix comme $0 dans les quotas d'utilisation en USD par clé au lieu de considérer le quota comme dépassé. Désactivé par défaut : un modèle sans prix ou un alias de routage peut masquer les dépenses réelles, le quota est donc bloquant en cas d'échec."
 }

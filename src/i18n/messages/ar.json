@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "رابط الشريك",
     "dismissAriaLabel": "إغلاق"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "تعطيل إنشاء متغيرات مستوى التفكير (مثل -low و-medium و-high) في كتالوج /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "تعطيل إنشاء متغيرات مستوى التفكير (مثل -low و-medium و-high) في كتالوج /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "احتساب استخدام النماذج التي ليس لها سعر كـ $0 في حصص استخدام USD لكل مفتاح بدلًا من معاملة الحصة على أنها تم تجاوزها. معطّل افتراضيًا: يمكن لنموذج غير مسعر أو اسم مستعار للتوجيه أن يخفي الإنفاق الحقيقي، لذا تفشل الحصة في وضع الإغلاق."
 }

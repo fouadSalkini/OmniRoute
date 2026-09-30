@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Njikọ onye mmekọ",
     "dismissAriaLabel": "Mechie"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Gbanyụọ imepụta ụdị ọkwa echiche dị iche iche (dịka -low, -medium, -high) na katalọgụ /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Gbanyụọ imepụta ụdị ọkwa echiche dị iche iche (dịka -low, -medium, -high) na katalọgụ /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Gụọ ojiji nke model ndị na-enweghị ọnụahịa dị ka $0 n'oke ojiji USD nke igodo ọ bụla kama iwere na agafela oke ahụ. A gbanyụrụ ya na ndabara: model na-enweghị ọnụahịa ma ọ bụ aha ọzọ maka nhazi ụzọ nwere ike izochi ezigbo mmefu, ya mere oke ahụ na-emechi ma jụ arịrịọ mgbe o dara."
 }

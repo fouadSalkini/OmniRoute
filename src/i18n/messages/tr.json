@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "İş ortağı bağlantısı",
     "dismissAriaLabel": "Kapat"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models kataloğunda düşünme düzeyi varyantlarının (ör. -low, -medium, -high) oluşturulmasını devre dışı bırakın."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models kataloğunda düşünme düzeyi varyantlarının (ör. -low, -medium, -high) oluşturulmasını devre dışı bırakın.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Kotanın aşıldığını varsaymak yerine, anahtar başına USD kullanım kotalarında fiyatı olmayan modellerin kullanımını $0 olarak sayın. Varsayılan olarak kapalıdır: fiyatlandırılmamış bir model veya yönlendirme takma adı gerçek harcamayı gizleyebilir, bu nedenle kota kapalı kalarak başarısız olur."
 }

@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "パートナーリンク",
     "dismissAriaLabel": "閉じる"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/modelsカタログで思考レベルのバリアント（例：-low、-medium、-high）を生成しないようにします。"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/modelsカタログで思考レベルのバリアント（例：-low、-medium、-high）を生成しないようにします。",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "クォータを超過したものとして扱う代わりに、キー単位のUSD使用量クォータで価格設定のないモデルの使用量を $0 としてカウントします。デフォルトではオフです。価格のないモデルやルーティングエイリアスによって実際の支出が隠れる可能性があるため、クォータはクローズ状態で失敗（拒否）します。"
 }

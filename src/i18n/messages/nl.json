@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerlink",
     "dismissAriaLabel": "Sluiten"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Schakel het genereren van varianten op denkniveau (bijv. -low, -medium, -high) in de catalogus /v1/models uit."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Schakel het genereren van varianten op denkniveau (bijv. -low, -medium, -high) in de catalogus /v1/models uit.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Tel het gebruik van modellen zonder prijs als $0 in USD-gebruiksquota per sleutel in plaats van het quotum als overschreden te beschouwen. Standaard uitgeschakeld: een model zonder prijs of een routeringsalias kan werkelijke uitgaven verbergen, waardoor het quotum fail-closed gaat."
 }

@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Link de partener",
     "dismissAriaLabel": "Închideți"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Dezactivați generarea variantelor de nivel de gândire (de ex. -low, -medium, -high) în catalogul /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Dezactivați generarea variantelor de nivel de gândire (de ex. -low, -medium, -high) în catalogul /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Contorizează utilizarea modelelor fără preț ca $0 în cotele de utilizare USD per cheie în loc să trateze cota ca fiind depășită. Dezactivat în mod implicit: un model fără preț sau un alias de dirijare poate ascunde cheltuielile reale, astfel încât cota eșuează în mod închis."
 }

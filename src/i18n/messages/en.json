@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Disable the generation of thinking level variants (e.g. -low, -medium, -high) in the /v1/models catalog."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Disable the generation of thinking level variants (e.g. -low, -medium, -high) in the /v1/models catalog.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Count usage of models that have no price as $0 in per-key USD usage quotas instead of treating the quota as exceeded. Off by default: an unpriced model or routing alias can hide real spend, so the quota fails closed."
 }

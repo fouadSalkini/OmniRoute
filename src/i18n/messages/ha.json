@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Hanyar haɗin abokin hulɗa",
     "dismissAriaLabel": "Yi watsi"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Kashe samar da nau'ikan matakan tunani (misali -low, -medium, -high) a cikin kundin /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Kashe samar da nau'ikan matakan tunani (misali -low, -medium, -high) a cikin kundin /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Ƙididdige amfani da samfuran da ba su da farashi a matsayin $0 a cikin iyakokin amfani da USD na kowane maɓalli maimakon ɗaukar cewa an wuce iyakar. A kashe yake ta tsohuwa: samfurin da ba shi da farashi ko sunan laƙabin zaɓin hanya na iya ɓoye ainihin kuɗin da aka kashe, don haka iyakar tana toshewa."
 }

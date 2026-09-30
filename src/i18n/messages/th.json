@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "ลิงก์พาร์ทเนอร์",
     "dismissAriaLabel": "ปิด"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "ปิดใช้งานการสร้างโมเดลรูปแบบย่อยตามระดับการคิด (เช่น -low, -medium, -high) ในแค็ตตาล็อก /v1/models"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "ปิดใช้งานการสร้างโมเดลรูปแบบย่อยตามระดับการคิด (เช่น -low, -medium, -high) ในแค็ตตาล็อก /v1/models",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "นับการใช้งานโมเดลที่ไม่มีราคาเป็น $0 ในโควตาการใช้งาน USD ต่อคีย์ แทนที่จะถือว่าเกินโควตา ปิดใช้งานเป็นค่าเริ่มต้น: โมเดลที่ไม่มีการกำหนดราคาหรือนามแฝงการกำหนดเส้นทางอาจซ่อนค่าใช้จ่ายจริง ดังนั้นโควตาจึงล้มเหลวแบบปิดการทำงาน"
 }

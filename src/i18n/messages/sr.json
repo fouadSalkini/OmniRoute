@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Партнерски линк",
     "dismissAriaLabel": "Затвори"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Онемогући генерисање варијанти нивоа размишљања (нпр. -low, -medium, -high) у каталогу /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Онемогући генерисање варијанти нивоа размишљања (нпр. -low, -medium, -high) у каталогу /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Рачунај коришћење модела који немају цену као $0 у USD квотама коришћења по кључу уместо да се квота третира као прекорачена. Подразумевано је искључено: модел без цене или алијас рутирања може сакрити стварну потрошњу, па квота подразумевано блокира захтеве."
 }

@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "ಪಾಲುದಾರರ ಲಿಂಕ್",
     "dismissAriaLabel": "ವಜಾಗೊಳಿಸಿ"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models ಕ್ಯಾಟಲಾಗ್ನಲ್ಲಿ ಚಿಂತನಾ ಮಟ್ಟದ ರೂಪಾಂತರಗಳ (ಉದಾ. -low, -medium, -high) ರಚನೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models ಕ್ಯಾಟಲಾಗ್ನಲ್ಲಿ ಚಿಂತನಾ ಮಟ್ಟದ ರೂಪಾಂತರಗಳ (ಉದಾ. -low, -medium, -high) ರಚನೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "ಕೋಟಾ ಮೀರಿದೆ ಎಂದು ಪರಿಗಣಿಸುವ ಬದಲಿಗೆ, ಪ್ರತಿ-ಕೀ USD ಬಳಕೆ ಕೋಟಾಗಳಲ್ಲಿ ಬೆಲೆಯಿಲ್ಲದ ಮಾದರಿಗಳ ಬಳಕೆಯನ್ನು $0 ಎಂದು ಪರಿಗಣಿಸಿ. ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ ಆಫ್: ಬೆಲೆಯಿಲ್ಲದ ಮಾದರಿ ಅಥವಾ ರೂಟಿಂಗ್ ಅಲಿಯಾಸ್ ನೈಜ ವೆಚ್ಚವನ್ನು ಮರೆಮಾಡಬಹುದು, ಆದ್ದರಿಂದ ಕೋಟಾ ವಿಫಲವಾದಾಗ ಡೀಫಾಲ್ಟ್ ಆಗಿ ನಿರಾಕರಿಸುತ್ತದೆ."
 }

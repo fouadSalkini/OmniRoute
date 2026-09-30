@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "პარტნიორის ბმული",
     "dismissAriaLabel": "დახურვა"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "გამორთეთ აზროვნების დონის ვარიანტების (მაგ. -low, -medium, -high) გენერირება /v1/models კატალოგში."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "გამორთეთ აზროვნების დონის ვარიანტების (მაგ. -low, -medium, -high) გენერირება /v1/models კატალოგში.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "იმის ნაცვლად, რომ კვოტა გადაჭარბებულად ჩაითვალოს, თითოეული გასაღებისთვის USD-ის გამოყენების კვოტებში უფასო მოდელების გამოყენება $0-ად აღრიცხეთ. ნაგულისხმევად გამორთულია: მოდელმა ფასის გარეშე ან მარშრუტიზაციის ფსევდონიმმა შესაძლოა რეალური დანახარჯი დამალოს, ამიტომ კვოტა უარყოფით იხურება."
 }

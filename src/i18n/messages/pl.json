@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Link partnerski",
     "dismissAriaLabel": "Zamknij"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Wyłącz generowanie wariantów poziomu rozumowania (np. -low, -medium, -high) w katalogu /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Wyłącz generowanie wariantów poziomu rozumowania (np. -low, -medium, -high) w katalogu /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Licz użycie modeli bez określonej ceny jako $0 w limitach użycia w USD na klucz, zamiast traktować limit jako przekroczony. Domyślnie wyłączone: model bez ceny lub alias routingu może ukryć rzeczywiste wydatki, dlatego limit blokuje dostęp (fail-closed)."
 }

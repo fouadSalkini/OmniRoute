@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Партнёрская ссылка",
     "dismissAriaLabel": "Закрыть"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Отключить создание вариантов уровней рассуждения (например, -low, -medium, -high) в каталоге /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Отключить создание вариантов уровней рассуждения (например, -low, -medium, -high) в каталоге /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Учитывать использование моделей без цены как $0 в квотах использования в USD для каждого ключа вместо того, чтобы считать квоту превышенной. Отключено по умолчанию: модель без цены или псевдоним маршрутизации могут скрыть реальные расходы, поэтому квота блокируется при сбое (fail-closed)."
 }

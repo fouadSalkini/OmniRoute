@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerlink",
     "dismissAriaLabel": "Schließen"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Deaktiviert die Generierung von Denkstufenvarianten (z. B. -low, -medium, -high) im /v1/models-Katalog."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Deaktiviert die Generierung von Denkstufenvarianten (z. B. -low, -medium, -high) im /v1/models-Katalog.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Die Nutzung von Modellen ohne Preis in USD-Nutzungskontingenten pro Schlüssel als $0 zählen, anstatt das Kontingent als überschritten zu behandeln. Standardmäßig deaktiviert: Ein Modell ohne Preis oder ein Routing-Alias kann tatsächliche Ausgaben verbergen, sodass das Kontingent geschlossen fehlschlägt."
 }

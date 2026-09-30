@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "ભાગીદાર લિંક",
     "dismissAriaLabel": "બંધ કરો"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models કેટલોગમાં વિચાર-સ્તરના વેરિઅન્ટ્સ (દા.ત. -low, -medium, -high) બનાવવાનું નિષ્ક્રિય કરો."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models કેટલોગમાં વિચાર-સ્તરના વેરિઅન્ટ્સ (દા.ત. -low, -medium, -high) બનાવવાનું નિષ્ક્રિય કરો.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "ક્વોટા વટાવી ગયો છે તેમ ગણવાને બદલે, કી-દીઠ USD વપરાશ ક્વોટામાં કિંમત વિનાના મોડલ્સના વપરાશને $0 તરીકે ગણો. ડિફૉલ્ટ રૂપે બંધ: કિંમત વગરનું મોડલ અથવા રૂટિંગ ઉપનામ વાસ્તવિક ખર્ચ છુપાવી શકે છે, તેથી ક્વોટા બંધ થઈ જાય છે."
 }

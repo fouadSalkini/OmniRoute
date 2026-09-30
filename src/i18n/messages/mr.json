@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "भागीदार लिंक",
     "dismissAriaLabel": "बंद करा"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models कॅटलॉगमध्ये विचार-पातळीच्या प्रकारांची (उदा. -low, -medium, -high) निर्मिती अक्षम करा."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models कॅटलॉगमध्ये विचार-पातळीच्या प्रकारांची (उदा. -low, -medium, -high) निर्मिती अक्षम करा.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "कोटा ओलांडला गेला असल्याचे मानण्याऐवजी, प्रति-की USD वापर कोट्यामध्ये किंमत नसलेल्या मॉडेल्सचा वापर $0 म्हणून मोजा. डीफॉल्टनुसार बंद: किंमत नसलेले मॉडेल किंवा रूटिंग Alias वास्तविक खर्च लपवू शकते, त्यामुळे कोटा fail closed होतो."
 }

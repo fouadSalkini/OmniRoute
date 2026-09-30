@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerlenke",
     "dismissAriaLabel": "Lukk"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Deaktiver generering av varianter for resonneringsnivå (f.eks. -low, -medium, -high) i /v1/models-katalogen."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Deaktiver generering av varianter for resonneringsnivå (f.eks. -low, -medium, -high) i /v1/models-katalogen.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Tell bruk av modeller som ikke har noen pris som $0 i USD-brukskvoter per nøkkel i stedet for å behandle kvoten som overskredet. Av som standard: en modell uten pris eller et rutingsalias kan skjule faktisk forbruk, så kvoten feiler lukket."
 }

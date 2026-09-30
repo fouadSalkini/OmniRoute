@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Tautan mitra",
     "dismissAriaLabel": "Tutup"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Nonaktifkan pembuatan varian tingkat pemikiran (misalnya -low, -medium, -high) dalam katalog /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Nonaktifkan pembuatan varian tingkat pemikiran (misalnya -low, -medium, -high) dalam katalog /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Hitung penggunaan model yang tidak memiliki harga sebagai $0 dalam kuota penggunaan USD per kunci alih-alih menganggap kuota telah terlampaui. Nonaktif secara default: model tanpa harga atau alias perutean dapat menyembunyikan pengeluaran sebenarnya, sehingga kuota gagal tertutup."
 }

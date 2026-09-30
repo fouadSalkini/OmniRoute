@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Партнерське посилання",
     "dismissAriaLabel": "Закрити"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Вимкнути створення варіантів рівня міркування (наприклад, -low, -medium, -high) у каталозі /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Вимкнути створення варіантів рівня міркування (наприклад, -low, -medium, -high) у каталозі /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Враховувати використання моделей без ціни як $0 у квотах використання в USD для кожного ключа замість того, щоб вважати квоту перевищеною. За замовчуванням вимкнено: модель без ціни або псевдонім маршрутизації можуть приховати реальні витрати, тому квота блокується (fail-closed)."
 }

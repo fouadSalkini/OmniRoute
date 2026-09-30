@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "ସହଭାଗୀ ଲିଙ୍କ୍",
     "dismissAriaLabel": "ବନ୍ଦ କରନ୍ତୁ"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models କ୍ୟାଟାଲଗ୍ରେ ଚିନ୍ତନ ସ୍ତର ଭାରିଆଣ୍ଟଗୁଡ଼ିକର (ଯଥା -low, -medium, -high) ସୃଷ୍ଟିକୁ ଅକ୍ଷମ କରନ୍ତୁ।"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models କ୍ୟାଟାଲଗ୍ରେ ଚିନ୍ତନ ସ୍ତର ଭାରିଆଣ୍ଟଗୁଡ଼ିକର (ଯଥା -low, -medium, -high) ସୃଷ୍ଟିକୁ ଅକ୍ଷମ କରନ୍ତୁ।",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "କୋଟା ଅତିକ୍ରାନ୍ତ ହୋଇଥିବା ଭାବେ ଧରିବା ପରିବର୍ତ୍ତେ ପ୍ରତି-କୀ USD ବ୍ୟବହାର କୋଟାରେ ମୂଲ୍ୟ ନଥିବା ମଡେଲଗୁଡ଼ିକର ବ୍ୟବହାରକୁ $0 ଭାବେ ଗଣନା କରନ୍ତୁ। ଡିଫଲ୍ଟ ଭାବେ ବନ୍ଦ: ମୂଲ୍ୟ ନଥିବା ଏକ ମଡେଲ୍ କିମ୍ବା ରାଉଟିଂ ଉପନାମ ପ୍ରକୃତ ଖର୍ଚ୍ଚକୁ ଲୁଚାଇ ପାରେ, ତେଣୁ କୋଟା ସୁରକ୍ଷାମୂଳକ ଭାବେ ଅବରୋଧ ହୁଏ।"
 }

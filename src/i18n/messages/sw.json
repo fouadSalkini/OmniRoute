@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Kiungo cha mshirika",
     "dismissAriaLabel": "Funga"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Zima uundaji wa vibadala vya kiwango cha kufikiri (k.m. -low, -medium, -high) katika katalogi ya /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Zima uundaji wa vibadala vya kiwango cha kufikiri (k.m. -low, -medium, -high) katika katalogi ya /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Hesabu matumizi ya modeli zisizo na bei kama $0 katika viwango vya matumizi vya USD kwa kila ufunguo badala ya kuchukulia kuwa kiwango kimezidiwa. Imezimwa kwa chaguomsingi: modeli isiyo na bei au jina mbadala la uelekezaji inaweza kuficha matumizi halisi, hivyo kiwango hushindwa kikiwa kimefungwa."
 }

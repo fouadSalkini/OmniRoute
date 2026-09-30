@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Liên kết đối tác",
     "dismissAriaLabel": "Đóng"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Tắt tính năng tạo biến thể cấp độ suy nghĩ (ví dụ: -low, -medium, -high) trong danh mục /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Tắt tính năng tạo biến thể cấp độ suy nghĩ (ví dụ: -low, -medium, -high) trong danh mục /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Tính mức sử dụng của các mô hình không có giá là $0 trong hạn ngạch sử dụng USD cho mỗi khóa thay vì coi hạn ngạch đã bị vượt quá. Mặc định tắt: một mô hình chưa định giá hoặc bí danh định tuyến có thể che giấu chi tiêu thực tế, do đó hạn ngạch sẽ bị từ chối mặc định (fail-closed)."
 }

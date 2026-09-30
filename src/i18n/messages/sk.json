@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerský odkaz",
     "dismissAriaLabel": "Zavrieť"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Zakázať generovanie variantov úrovne uvažovania (napr. -low, -medium, -high) v katalógu /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Zakázať generovanie variantov úrovne uvažovania (napr. -low, -medium, -high) v katalógu /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Započítavať využitie modelov bez stanovenej ceny ako $0 v kvótach využitia v USD na kľúč namiesto toho, aby sa kvóta považovala za prekročenú. Predvolene vypnuté: model bez ceny alebo alias smerovania môže skryť skutočné výdavky, takže kvóta zlyhá v uzatvorenom stave."
 }

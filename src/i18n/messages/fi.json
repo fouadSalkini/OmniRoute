@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Kumppanilinkki",
     "dismissAriaLabel": "Sulje"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Poista käytöstä ajattelutason varianttien (esim. -low, -medium, -high) luonti /v1/models-luettelossa."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Poista käytöstä ajattelutason varianttien (esim. -low, -medium, -high) luonti /v1/models-luettelossa.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Laske hinnattomien mallien käyttö $0:ksi avainkohtaisissa USD-käyttökiintiöissä sen sijaan, että kiintiö katsottaisiin ylittyneeksi. Oletusarvoisesti poissa käytöstä: hinnoittelematon malli tai reititysalias voi piilottaa todellisen kulutuksen, joten kiintiö epäonnistuu suljettu-tilaan."
 }

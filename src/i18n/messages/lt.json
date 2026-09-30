@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerio nuoroda",
     "dismissAriaLabel": "Uždaryti"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Išjungti mąstymo lygio variantų (pvz., -low, -medium, -high) generavimą /v1/models kataloge."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Išjungti mąstymo lygio variantų (pvz., -low, -medium, -high) generavimą /v1/models kataloge.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Kainos neturinčių modelių naudojimą pagal raktą nustatytose USD naudojimo kvotose skaičiuoti kaip $0, užuot laikant, kad kvota viršyta. Pagal numatytąsias nuostatas išjungta: modelis be kainos arba nukreipimo alternatyvusis pavadinimas gali paslėpti faktines išlaidas, todėl kvota klaidos atveju blokuojama."
 }

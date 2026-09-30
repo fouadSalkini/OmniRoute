@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Enlace del socio",
     "dismissAriaLabel": "Cerrar"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Desactiva la generación de variantes del nivel de razonamiento (p. ej., -low, -medium, -high) en el catálogo /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Desactiva la generación de variantes del nivel de razonamiento (p. ej., -low, -medium, -high) en el catálogo /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Contabiliza el uso de modelos sin precio como $0 en las cuotas de uso en USD por clave en lugar de considerar la cuota como excedida. Desactivado de forma predeterminada: un modelo sin precio o un alias de enrutamiento puede ocultar el gasto real, por lo que la cuota se bloquea ante fallos."
 }

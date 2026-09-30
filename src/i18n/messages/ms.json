@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Pautan rakan kongsi",
     "dismissAriaLabel": "Tutup"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Lumpuhkan penjanaan varian tahap pemikiran (cth. -low, -medium, -high) dalam katalog /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Lumpuhkan penjanaan varian tahap pemikiran (cth. -low, -medium, -high) dalam katalog /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Kira penggunaan model yang tiada harga sebagai $0 dalam kuota penggunaan USD setiap kunci dan bukannya menganggap kuota telah melebihi had. Dimatikan secara lalai: model tanpa harga atau alias penghalaan boleh menyembunyikan perbelanjaan sebenar, jadi kuota gagal ditutup."
 }

@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "شراکت دار کا لنک",
     "dismissAriaLabel": "بند کریں"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models کیٹلاگ میں سوچنے کی سطح کی مختلف صورتوں (مثلاً -low، -medium، -high) کی تخلیق غیر فعال کریں۔"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models کیٹلاگ میں سوچنے کی سطح کی مختلف صورتوں (مثلاً -low، -medium، -high) کی تخلیق غیر فعال کریں۔",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "کوٹہ سے تجاوز سمجھنے کے بجائے، فی کلید USD استعمال کے کوٹوں میں بغیر قیمت والے ماڈلز کے استعمال کو $0 کے طور پر شمار کریں۔ ڈیفالٹ طور پر بند ہے: بغیر قیمت والا ماڈل یا روٹنگ عرفی نام حقیقی خرچ کو چھپا سکتا ہے، اس لیے کوٹہ فیل کلوزڈ ہو جاتا ہے۔"
 }

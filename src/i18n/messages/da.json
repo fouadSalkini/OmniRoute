@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerlink",
     "dismissAriaLabel": "Luk"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Deaktivér genereringen af varianter af tænkeniveau (f.eks. -low, -medium, -high) i /v1/models-kataloget."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Deaktivér genereringen af varianter af tænkeniveau (f.eks. -low, -medium, -high) i /v1/models-kataloget.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Tæl forbrug af modeller uden pris som $0 i USD-forbrugskvoter pr. nøgle i stedet for at behandle kvoten som overskredet. Deaktiveret som standard: en model uden pris eller et routingalias kan skjule det reelle forbrug, så kvoten fejler lukket."
 }

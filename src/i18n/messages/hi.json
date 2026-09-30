@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "पार्टनर लिंक",
     "dismissAriaLabel": "बंद करें"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models कैटलॉग में थिंकिंग लेवल वेरिएंट (जैसे -low, -medium, -high) के निर्माण को अक्षम करें।"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models कैटलॉग में थिंकिंग लेवल वेरिएंट (जैसे -low, -medium, -high) के निर्माण को अक्षम करें।",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "कोटा पार हो गया मानने के बजाय, प्रति-कुंजी USD उपयोग कोटा में बिना मूल्य वाले मॉडलों के उपयोग को $0 के रूप में गिनें। डिफ़ॉल्ट रूप से बंद: बिना मूल्य वाला मॉडल या रूटिंग उपनाम वास्तविक खर्च को छिपा सकता है, इसलिए कोटा फ़ेल क्लोज़ हो जाता है।"
 }

@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "קישור שותפים",
     "dismissAriaLabel": "סגירה"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "השבתת היצירה של וריאציות של רמת החשיבה (למשל -low, -medium, -high) בקטלוג /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "השבתת היצירה של וריאציות של רמת החשיבה (למשל -low, -medium, -high) בקטלוג /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "ספירת השימוש במודלים שאין להם מחיר כ-$0 במכסות שימוש ב-USD לפי מפתח, במקום להתייחס למכסה כאילו נחרגה. מושבת כברירת מחדل: מודל ללא תמחור או כינוי ניתוב עלולים להסתיר הוצאות אמיתיות, ולכן המכסה נכשלת במצב סגור."
 }

@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Tərəfdaş keçidi",
     "dismissAriaLabel": "Bağla"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models kataloqunda düşünmə səviyyəsi variantlarının (məsələn, -low, -medium, -high) yaradılmasını deaktiv edin."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models kataloqunda düşünmə səviyyəsi variantlarının (məsələn, -low, -medium, -high) yaradılmasını deaktiv edin.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Kvotanın aşıldığını hesab etmək əvəzinə, açar üzrə USD istifadə kvotalarında qiyməti olmayan modellərin istifadəsini $0 kimi hesablayın. Defolt olaraq deaktivdir: qiymətləndirilməmiş model və ya marşrutlaşdırma aliası real xərcləri gizlədə bilər, buna görə də kvota qapalı vəziyyətdə xəta verir."
 }

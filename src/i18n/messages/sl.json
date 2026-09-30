@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerska povezava",
     "dismissAriaLabel": "Zapri"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Onemogoči ustvarjanje različic ravni razmišljanja (npr. -low, -medium, -high) v katalogu /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Onemogoči ustvarjanje različic ravni razmišljanja (npr. -low, -medium, -high) v katalogu /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Štejte porabo modelov brez določene cene kot $0 v kvotah porabe v USD na ključ, namesto da se kvota obravnava kot presežena. Privzeto je izklopljeno: model brez cene ali usmerjevalni vzdevek lahko skrije dejansko porabo, zato kvota ob napaki zavrne zahteve."
 }

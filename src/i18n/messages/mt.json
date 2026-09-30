@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Link tas-sieħeb",
     "dismissAriaLabel": "Agħlaq"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Itfi l-ġenerazzjoni ta’ varjanti tal-livell ta’ ħsieb (eż. -low, -medium, -high) fil-katalgu /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Itfi l-ġenerazzjoni ta’ varjanti tal-livell ta’ ħsieb (eż. -low, -medium, -high) fil-katalgu /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Għodd l-użu ta’ mudelli li m’għandhomx prezz bħala $0 fil-kwoti tal-użu f'USD għal kull ċavetta minflok ma tqis li l-kwota nqabżet. Diżattivat b’mod awtomatiku: mudell mingħajr prezz jew isem alternattiv tad-direzzjonar jista’ jaħbi l-infiq reali, għalhekk il-kwota tfalli billi tiċħad l-aċċess."
 }

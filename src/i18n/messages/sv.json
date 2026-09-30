@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerlänk",
     "dismissAriaLabel": "Stäng"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Inaktivera genereringen av varianter med olika tankenivåer (t.ex. -low, -medium, -high) i katalogen /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Inaktivera genereringen av varianter med olika tankenivåer (t.ex. -low, -medium, -high) i katalogen /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Räkna användning av modeller som saknar pris som $0 i USD-användningskvoter per nyckel istället för att behandla kvoten som överskriden. Av som standard: en modell utan pris eller ett routningsalias kan dölja faktiska kostnader, så kvoten blockeras vid fel."
 }

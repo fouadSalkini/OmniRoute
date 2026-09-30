@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Գործընկերային հղում",
     "dismissAriaLabel": "Փակել"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Անջատել մտածողության մակարդակի տարբերակների (օր.՝ -low, -medium, -high) ստեղծումը /v1/models կատալոգում։"
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Անջատել մտածողության մակարդակի տարբերակների (օր.՝ -low, -medium, -high) ստեղծումը /v1/models կատալոգում։",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Գին չունեցող մոդելների օգտագործումը հաշվարկել որպես $0 ըստ բանալու USD-ով օգտագործման քվոտաներում՝ քվոտան գերազանցված համարելու փոխարեն։ Լռելյայն անջատված է․ գին չունեցող մոդելը կամ երթուղման այլանունը կարող են թաքցնել իրական ծախսը, ուստի քվոտան արգելափակվում է։"
 }

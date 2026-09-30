@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Partnerski link",
     "dismissAriaLabel": "Zatvori"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Onemogućite generisanje varijanti nivoa razmišljanja (npr. -low, -medium, -high) u /v1/models katalogu."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Onemogućite generisanje varijanti nivoa razmišljanja (npr. -low, -medium, -high) u /v1/models katalogu.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Računaj potrošnju modela koji nemaju cijenu kao $0 u USD kvotama potrošnje po ključu umjesto da se kvota tretira kao prekoračena. Podrazumijevano isključeno: model bez cijene ili alias za rutiranje može sakriti stvarnu potrošnju, pa se kvota automatski odbija."
 }

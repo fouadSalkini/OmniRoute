@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Link de parceiro",
     "dismissAriaLabel": "Dispensar"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Desative a geração de variantes de nível de pensamento (por exemplo, -low, -medium, -high) no catálogo /v1/models."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "Desative a geração de variantes de nível de pensamento (por exemplo, -low, -medium, -high) no catálogo /v1/models.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Contar a utilização de modelos sem preço como $0 nas quotas de utilização em USD por chave, em vez de tratar a quota como excedida. Desativado por predefinição: um modelo sem preço ou alias de encaminhamento pode ocultar o gasto real, pelo que a quota falha fechada."
 }

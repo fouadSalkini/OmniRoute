@@ -14444,5 +14444,6 @@
     "partnerLinkNote": "Hamkor havolasi",
     "dismissAriaLabel": "Yopish"
   },
-  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models katalogida fikrlash darajasi variantlarini (masalan, -low, -medium, -high) yaratishni o‘chirib qo‘ying."
+  "featureFlagOmnirouteDisableThinkingLevelVariantsDescription": "/v1/models katalogida fikrlash darajasi variantlarini (masalan, -low, -medium, -high) yaratishni o‘chirib qo‘ying.",
+  "featureFlagUsageLimitIgnoreUnpricedDescription": "Kvotadan oshib ketgan deb hisoblash oʻrniga, har bir kalit boʻyicha USD sarf-xarajat kvotalarida narxi belgilanmagan modellardan foydalanishni $0 deb hisoblang. Standart holatda oʻchiq: narxlanmagan model yoki marshrutlash taxallusi haqiqiy xarajatni yashirishi mumkin, shuning uchun kvota yopiq holatda ishlamay qoladi."
 }
