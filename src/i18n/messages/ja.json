@@ -14650,5 +14650,6 @@
     "previous": "前へ",
     "next": "次へ",
     "pageOf": "{page} / {pages} ページ · {total} 件のセッション"
-  }
+  },
+  "featureFlagAgentSessionMessagesEnabledDescription": "コーディングエージェントセッションの簡略化された会話ターン（ユーザープロンプト、アシスタントの応答、呼び出されたツール）を記録し、GET /v1/me/sessions/{id}/messages 経由でセッション所有者に公開します。デフォルトではオフになっており、このフラグを有効にしない限りターンは記録されません。noLog APIキーでは一切記録されません。"
 }

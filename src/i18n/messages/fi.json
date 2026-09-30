@@ -14650,5 +14650,6 @@
     "previous": "Edellinen",
     "next": "Seuraava",
     "pageOf": "Sivu {page} / {pages} · {total} istuntoa"
-  }
+  },
+  "featureFlagAgentSessionMessagesEnabledDescription": "Tallenna yksinkertaistetut keskusteluvuorot (käyttäjän kehote, avustajan vastaus, kutsutut työkalut) koodausagentti-istunnoista ja tuo ne istunnon omistajan saataville reitin GET /v1/me/sessions/{id}/messages kautta. Oletusarvoisesti pois käytöstä: vuoroja ei tallenneta, ellei tätä asetusta ole otettu käyttöön. Ei tallenneta koskaan noLog-API-avaimille."
 }

@@ -14650,5 +14650,6 @@
     "previous": "Forrige",
     "next": "Neste",
     "pageOf": "Side {page} av {pages} · {total} økter"
-  }
+  },
+  "featureFlagAgentSessionMessagesEnabledDescription": "Registrer forenklede samtalevendinger (brukerprompt, assistentrespons, kalte verktøy) for kodeagent-økter og eksponer dem via GET /v1/me/sessions/{id}/messages for økteieren. Deaktivert som standard: vendinger registreres ikke med mindre dette flagget er aktivert. Registreres aldri for noLog-API-nøkler."
 }

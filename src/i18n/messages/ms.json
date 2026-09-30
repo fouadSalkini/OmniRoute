@@ -14650,5 +14650,6 @@
     "previous": "Sebelumnya",
     "next": "Seterusnya",
     "pageOf": "Halaman {page} daripada {pages} · {total} sesi"
-  }
+  },
+  "featureFlagAgentSessionMessagesEnabledDescription": "Rakam giliran perbualan yang dipermudah (gesaan pengguna, respons pembantu, alat yang dipanggil) untuk sesi ejen pengekodan dan dedahkannya melalui GET /v1/me/sessions/{id}/messages kepada pemilik sesi. Dimatikan secara lalai: giliran tidak dirakam melainkan bendera ini didayakan. Tidak pernah dirakam untuk kunci API noLog."
 }

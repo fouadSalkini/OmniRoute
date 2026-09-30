@@ -14650,5 +14650,6 @@
     "previous": "अघिल्लो",
     "next": "अर्को",
     "pageOf": "{pages} मध्ये पृष्ठ {page} · {total} सत्रहरू"
-  }
+  },
+  "featureFlagAgentSessionMessagesEnabledDescription": "coding-agent सत्रहरूका लागि सरलीकृत कुराकानी पालोहरू (user prompt, assistant response, called tools) क्याप्चर गर्नुहोस् र सत्र मालिकलाई GET /v1/me/sessions/{id}/messages मार्फत उपलब्ध गराउनुहोस्। पूर्वनिर्धारित रूपमा बन्द: यो फ्ल्याग सक्षम नगरिएसम्म पालोहरू क्याप्चर गरिँदैनन्। noLog API कुञ्जीहरूका लागि कहिल्यै क्याप्चर गरिँदैन।"
 }

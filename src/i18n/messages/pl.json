@@ -14650,5 +14650,6 @@
     "previous": "Poprzednia",
     "next": "Następna",
     "pageOf": "Strona {page} z {pages} · {total} sesji"
-  }
+  },
+  "featureFlagAgentSessionMessagesEnabledDescription": "Rejestruj uproszczone tury konwersacji (prompt użytkownika, odpowiedź asystenta, wywołane narzędzia) dla sesji agenta kodującego i udostępniaj je właścicielowi sesji przez GET /v1/me/sessions/{id}/messages. Domyślnie wyłączone: tury nie są rejestrowane, dopóki ta flaga nie zostanie włączona. Nigdy nierejestrowane w przypadku kluczy API noLog."
 }

@@ -14650,5 +14650,6 @@
     "previous": "ቀዳሚ",
     "next": "ቀጣይ",
     "pageOf": "ገጽ {page} ከ {pages} · {total} ክፍለ-ጊዜዎች"
-  }
+  },
+  "featureFlagAgentSessionMessagesEnabledDescription": "ለcoding-agent ክፍለ-ጊዜዎች የቀለሉ የውይይት ምልልሶችን (የተጠቃሚ መጠየቂያ፣ የአጋዥ ምላሽ፣ የተጠሩ መሣሪያዎች) ይቅረጹ እና በGET /v1/me/sessions/{id}/messages በኩል ለክፍለ-ጊዜው ባለቤት ያቅርቡ። በነባሪ ጠፍቷል፦ ይህ flag ካልበራ በስተቀር ምልልሶች አይቀረጹም። ለnoLog API keys በጭራሽ አይቀረጽም።"
 }

@@ -52,7 +52,9 @@ const {
 // takes it to 80.
 // USAGE_LIMIT_IGNORE_UNPRICED (opt-in flag to count unpriced usage as $0 in USD
 // quotas, default off) takes it to 81.
-const EXPECTED_FEATURE_FLAG_COUNT = 81;
+// AGENT_SESSION_MESSAGES_ENABLED (opt-in agent session turn capture for
+// GET /v1/me/sessions/{id}/messages, default off) takes it to 82.
+const EXPECTED_FEATURE_FLAG_COUNT = 82;
 
 // ──────────────────────────────────────────────────────
 // Test group 1 — Flag definitions registry

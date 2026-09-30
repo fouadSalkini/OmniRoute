@@ -332,7 +332,7 @@ import {
 } from "./chatCore/pluginOnResponse.ts";
 import { scheduleStreamingQuotaShareConsumption } from "./chatCore/streamingQuotaShare.ts";
 import { recordStreamingUsageStats } from "./chatCore/streamingUsageStats.ts";
-import { resolveUsageAgentContext } from "./chatCore/agentContext.ts";
+import { resolveUsageAgentContext, resolveSessionTurn } from "./chatCore/agentContext.ts";
 import { recordStreamingCost, buildStreamLedgerDetails } from "./chatCore/streamingCost.ts";
 import { isJsonRecord } from "./chatCore/nonStreamingResponseParse.ts";
 import { recordNonStreamingUsageStats } from "./chatCore/nonStreamingUsageStats.ts";
@@ -1114,7 +1114,7 @@ async function handleChatCoreInner({
       detailedLoggingEnabled,
       reqLogger,
       pendingRequestId,
-      clientRawRequest,
+      clientRawRequest, agentContext,
       requestedModel,
       credentials,
       startTime,
@@ -5460,7 +5460,7 @@ async function handleChatCoreInner({
         effectiveServiceTier,
         isCombo,
         comboStrategy,
-        endpoint: endpointPath, cpaAuthIndex: readCpaAuthIndex(providerResponse), agentContext,
+        endpoint: endpointPath, cpaAuthIndex: readCpaAuthIndex(providerResponse), agentContext, sessionTurn: resolveSessionTurn({ clientRawRequest, body, responses: [okLeg.response], agentContext, apiKeyInfo }),
       });
 
       // #12150 P1b surface 3 (fix round 1): a video-bridge-observed request's
@@ -6125,7 +6125,7 @@ async function handleChatCoreInner({
       effectiveServiceTier,
       isCombo,
       comboStrategy,
-      endpoint: endpointPath, cpaAuthIndex: readCpaAuthIndex(providerResponse), agentContext,
+      endpoint: endpointPath, cpaAuthIndex: readCpaAuthIndex(providerResponse), agentContext, sessionTurn: resolveSessionTurn({ clientRawRequest, body, responses: [clientPayload?.summary, streamResponseBody], streamStatus: normalizedStreamStatus, agentContext, apiKeyInfo }),
     });
 
     // Routing event (feedback foundation) — fire-and-forget, cheap, never blocks

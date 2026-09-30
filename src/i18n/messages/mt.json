@@ -14650,5 +14650,6 @@
     "previous": "Preċedenti",
     "next": "Li jmiss",
     "pageOf": "Paġna {page} minn {pages} · {total} sessjonijiet"
-  }
+  },
+  "featureFlagAgentSessionMessagesEnabledDescription": "Ikkattura dawriet ta' konversazzjoni simplifikati (prompt tal-utent, tweġiba tal-assistent, għodod imsejħa) għal sessjonijiet ta' coding-agent u esponihom permezz ta' GET /v1/me/sessions/{id}/messages lis-sid tas-sessjoni. Mitfi awtomatikament: id-dawriet ma jiġux ikkatturati sakemm din il-flag ma tkunx attivata. Qatt ma jiġu kkatturati għal noLog API keys."
 }
