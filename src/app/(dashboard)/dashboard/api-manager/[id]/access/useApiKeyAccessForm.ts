@@ -5,6 +5,10 @@ import { hasProviderQuotaBypassScope } from "@/shared/constants/apiKeyPolicyScop
 import { mergeApiKeyPermissionScopes } from "@/app/(dashboard)/dashboard/api-manager/apiManagerScopes";
 import { buildModelAccessSavePayload } from "@/app/(dashboard)/dashboard/api-manager/apiManagerPageUtils";
 import type { CatalogScope } from "@/app/(dashboard)/dashboard/api-manager/components/ApiKeyCatalogScopeSelect";
+import {
+  readSelfServiceQuota,
+  type SelfServiceQuota,
+} from "@/app/(dashboard)/dashboard/api-manager/selfServiceQuota";
 
 export const MAX_KEY_NAME_LENGTH = 200;
 export const MAX_SELECTED_MODELS = 500;
@@ -93,7 +97,8 @@ export interface RateLimitEntry {
   window: number;
 }
 
-export interface ApiKeyAccessData {
+/** GET /api/keys/[id] also returns the key's self-service quota settings. */
+export interface ApiKeyAccessData extends Partial<SelfServiceQuota> {
   id: string;
   name: string;
   key?: string | null;
@@ -133,7 +138,7 @@ export interface ApiKeyAccessData {
 export type AccessEditorTab =
   "general" | "models" | "combos" | "connections" | "limits" | "behaviour";
 
-export interface ApiKeyAccessFormState {
+export interface ApiKeyAccessFormState extends SelfServiceQuota {
   name: string;
   allowAll: boolean;
   selectedModels: string[];
@@ -329,6 +334,7 @@ export function createInitialFormState(apiKey: StoredApiKey): ApiKeyAccessFormSt
     ...initialScheduleState(apiKey),
     ...initialScopeState(apiKey),
     ...initialBehaviourState(apiKey),
+    ...readSelfServiceQuota(apiKey),
   };
 }
 
@@ -459,6 +465,9 @@ export function buildApiKeyAccessPayload(
     dailyUsageLimitUsd: parseUsdLimitInput(formState.dailyUsageLimitUsd),
     weeklyUsageLimitUsd: parseUsdLimitInput(formState.weeklyUsageLimitUsd),
     chaosModeEnabled: formState.chaosModeEnabled,
+    // Sent last and on every save, like the old modal's `...selfServiceQuota` spread.
+    sharedQuotaProviders: formState.sharedQuotaProviders,
+    anthropicRateLimitHeaders: formState.anthropicRateLimitHeaders,
   };
 }
 
@@ -575,6 +584,17 @@ function useScopeAndEndpointSetters(setFormState: FormStateSetter) {
     [setFormState]
   );
 
+  const setSelfServiceQuota = useCallback(
+    (next: SelfServiceQuota) => {
+      setFormState((prev) => ({
+        ...prev,
+        sharedQuotaProviders: next.sharedQuotaProviders,
+        anthropicRateLimitHeaders: next.anthropicRateLimitHeaders,
+      }));
+    },
+    [setFormState]
+  );
+
   const setAllowAllEndpoints = useCallback(
     (allowAllEndpoints: boolean) => {
       setFormState((prev) => ({
@@ -604,6 +624,7 @@ function useScopeAndEndpointSetters(setFormState: FormStateSetter) {
     setManageEnabled,
     setSelfUsageEnabled,
     setSelfAccountQuotaEnabled,
+    setSelfServiceQuota,
     setAllowAllEndpoints,
     toggleEndpoint,
   };

@@ -3,10 +3,16 @@ import React, { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import ApiManagerPageClient from "../../../src/app/(dashboard)/dashboard/api-manager/ApiManagerPageClient";
+import ApiKeyAccessEditorClient from "../../../src/app/(dashboard)/dashboard/api-manager/[id]/access/ApiKeyAccessEditorClient";
 import ApiKeyDetailsPageClient from "../../../src/app/(dashboard)/dashboard/api-manager/[id]/ApiKeyDetailsPageClient";
 import { SelfServiceQuotaSettings } from "../../../src/app/(dashboard)/dashboard/api-manager/components/SelfServiceQuotaSettings";
 import type { SelfServiceQuota } from "../../../src/app/(dashboard)/dashboard/api-manager/selfServiceQuota";
 import { SELF_SERVICE_FIXTURE } from "../fixtures/apiKeySelfServiceView";
+
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams("tab=general"),
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+}));
 
 interface Call {
   url: string;
@@ -112,26 +118,22 @@ describe("SelfServiceQuotaSettings", () => {
   });
 });
 
-describe("API key permissions modal", () => {
-  it("includes sharedQuotaProviders and anthropicRateLimitHeaders in the PATCH payload", async () => {
-    const calls = stubFetch((url) => {
-      if (url === "/api/keys") {
+describe("API key access editor", () => {
+  function routeEditor() {
+    return stubFetch((url) => {
+      if (url === "/api/keys/key-1") {
         return {
           body: {
-            keys: [
-              {
-                id: "key-1",
-                name: "Team key",
-                key: "sk-test-1234",
-                allowedModels: [],
-                allowedCombos: [],
-                allowedConnections: [],
-                scopes: ["self:usage", "self:account-quota"],
-                sharedQuotaProviders: ["anthropic"],
-                anthropicRateLimitHeaders: "auto",
-                createdAt: "2026-09-01T00:00:00.000Z",
-              },
-            ],
+            id: "key-1",
+            name: "Team key",
+            key: "sk-test-1234",
+            allowedModels: [],
+            allowedCombos: [],
+            allowedConnections: [],
+            scopes: ["self:usage", "self:account-quota"],
+            sharedQuotaProviders: ["anthropic"],
+            anthropicRateLimitHeaders: "auto",
+            createdAt: "2026-09-01T00:00:00.000Z",
           },
         };
       }
@@ -157,18 +159,20 @@ describe("API key permissions modal", () => {
       }
       return { body: {} };
     });
+  }
 
-    render(<ApiManagerPageClient />);
-    fireEvent.click(await screen.findByTitle("Edit permissions"));
-    expect(
-      screen.getByRole("link", { name: /View usage, limits and quota for Team key/ })
-    ).toBeTruthy();
+  it("includes sharedQuotaProviders and anthropicRateLimitHeaders in the PATCH payload", async () => {
+    const calls = routeEditor();
+    render(<ApiKeyAccessEditorClient apiKeyId="key-1" />);
 
-    fireEvent.click(await screen.findByRole("checkbox", { name: /codex/ }));
-    fireEvent.change(screen.getByLabelText("Anthropic rate-limit headers"), {
+    // The settings sit on the General tab, inside the self-service visibility card.
+    const card = (await screen.findByText("Self-Service Visibility")).closest("div.rounded-lg");
+    expect(card).toBeTruthy();
+    fireEvent.click(await within(card as HTMLElement).findByRole("checkbox", { name: /codex/ }));
+    fireEvent.change(within(card as HTMLElement).getByLabelText("Anthropic rate-limit headers"), {
       target: { value: "strip" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Save Permissions" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save Changes" }));
 
     await waitFor(() => expect(calls.some((c) => c.method === "PATCH")).toBe(true));
     const patch = calls.find((c) => c.method === "PATCH");
@@ -177,6 +181,47 @@ describe("API key permissions modal", () => {
       sharedQuotaProviders: ["anthropic", "codex"],
       anthropicRateLimitHeaders: "strip",
     });
+  });
+
+  it("shows the provider picker only while shared account quota is enabled", async () => {
+    routeEditor();
+    render(<ApiKeyAccessEditorClient apiKeyId="key-1" />);
+
+    expect(await screen.findByRole("radio", { name: "Only selected providers" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("switch", { name: /account_balance/ }));
+
+    expect(screen.queryByRole("radio", { name: "Only selected providers" })).toBeNull();
+    expect(screen.queryByRole("checkbox", { name: /anthropic/ })).toBeNull();
+    expect(screen.getByLabelText("Anthropic rate-limit headers")).toBeTruthy();
+  });
+});
+
+describe("API key list", () => {
+  it("links each key to its usage, limits and quota page", async () => {
+    stubFetch((url) =>
+      url === "/api/keys"
+        ? {
+            body: {
+              keys: [
+                {
+                  id: "key-1",
+                  name: "Team key",
+                  key: "sk-test-1234",
+                  allowedModels: [],
+                  scopes: ["self:usage"],
+                  createdAt: "2026-09-01T00:00:00.000Z",
+                },
+              ],
+            },
+          }
+        : { body: {} }
+    );
+    render(<ApiManagerPageClient />);
+
+    const link = await screen.findByRole("link", {
+      name: "View usage, limits and quota for Team key",
+    });
+    expect(link.getAttribute("href")).toBe("/dashboard/api-manager/key-1");
   });
 });
 
