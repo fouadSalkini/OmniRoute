@@ -95,8 +95,16 @@ test("the requesting key's anthropic header policy decides the strip flag", () =
       true,
     ],
     [
-      "default unset mode → forward (legacy behavior preserved)",
+      "default unset mode → auto (prod default): strip for a key that does not qualify",
       { apiKeyInfo: { scopes: [], allowedConnections: [] } },
+      true,
+    ],
+    [
+      "default unset mode → auto (prod default): forward for a pinned self:account-quota key",
+      {
+        provider: "claude",
+        apiKeyInfo: { scopes: ["self:account-quota"], allowedConnections: ["conn-1"] },
+      },
       false,
     ],
     [

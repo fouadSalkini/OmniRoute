@@ -94,7 +94,11 @@ export function findMigrationAnomalies(filenames, knownDuplicates, knownGaps) {
   duplicates.sort((a, b) => a.version.localeCompare(b.version));
 
   // Gaps: buracos na sequência min..max que não estão na allowlist.
-  const versions = [...byVersion.keys()].map((v) => parseInt(v, 10)).sort((a, b) => a - b);
+  // Deploy fork: 9000+ is the reserved prod-only range (unmerged PR migrations), never a gap source.
+  const versions = [...byVersion.keys()]
+    .map((v) => parseInt(v, 10))
+    .filter((v) => v < 9000)
+    .sort((a, b) => a - b);
   const gaps = [];
   if (versions.length > 0) {
     const min = versions[0];
