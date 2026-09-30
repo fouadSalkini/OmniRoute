@@ -820,9 +820,10 @@ export async function saveRequestUsage(entry: UsageEntry) {
     };
     const agentSessionUsage = await buildAgentSessionUsage(entry, tokens, timestamp, serviceTier);
     // Only /v1/me key holders read turns: no keyless or env-key rows, and the call-log noLog source.
-    const turnReadable = entry.apiKeyId && !isSyntheticApiKeyId(entry.apiKeyId);
+    const apiKeyId = entry.apiKeyId;
+    const turnReadable = apiKeyId && !isSyntheticApiKeyId(apiKeyId);
     const sessionTurn =
-      turnReadable && !isNoLog(entry.apiKeyId) ? await redactSessionTurn(entry.sessionTurn) : null;
+      turnReadable && !isNoLog(apiKeyId) ? await redactSessionTurn(entry.sessionTurn) : null;
     const connection = entry.connectionId
       ? (db.prepare("SELECT * FROM provider_connections WHERE id = ?").get(entry.connectionId) as
           Record<string, unknown> | undefined)
