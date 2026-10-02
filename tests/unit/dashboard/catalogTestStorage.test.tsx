@@ -28,6 +28,23 @@ describe("catalogTestStorage", () => {
     expect(results).toEqual({});
   });
 
+  it("tolerates browsers denying access to the localStorage property", () => {
+    const descriptor = Object.getOwnPropertyDescriptor(window, "localStorage");
+    Object.defineProperty(window, "localStorage", {
+      configurable: true,
+      get() {
+        throw new DOMException("Storage access denied", "SecurityError");
+      },
+    });
+    try {
+      expect(loadCatalogTestResults()).toEqual({});
+      expect(saveCatalogTestResults({})).toEqual({});
+      expect(() => clearCatalogTestResults()).not.toThrow();
+    } finally {
+      if (descriptor) Object.defineProperty(window, "localStorage", descriptor);
+    }
+  });
+
   it("handles corrupt JSON in localStorage gracefully without throwing", () => {
     localStorage.setItem(CATALOG_TEST_RESULTS_STORAGE_NAME, "this is not valid json {{{");
     const results = loadCatalogTestResults();

@@ -123,11 +123,9 @@ function keepStoredTestResults(parsed: object): Record<string, CatalogTestResult
 }
 
 export function loadCatalogTestResults(): Record<string, CatalogTestResult> {
-  if (typeof window === "undefined" || !window.localStorage) {
-    return {};
-  }
+  if (typeof window === "undefined") return {};
   try {
-    const raw = window.localStorage.getItem(CATALOG_TEST_RESULTS_STORAGE_NAME);
+    const raw = window.localStorage?.getItem(CATALOG_TEST_RESULTS_STORAGE_NAME);
     if (!raw) return {};
     const parsed: unknown = JSON.parse(raw);
     if (!isPlainObject(parsed)) {
@@ -143,9 +141,9 @@ export function saveCatalogTestResults(
   results: Record<string, CatalogTestResult>
 ): Record<string, CatalogTestResult> {
   const capped = capTestResults(results);
-  if (typeof window !== "undefined" && window.localStorage) {
+  if (typeof window !== "undefined") {
     try {
-      window.localStorage.setItem(CATALOG_TEST_RESULTS_STORAGE_NAME, JSON.stringify(capped));
+      window.localStorage?.setItem(CATALOG_TEST_RESULTS_STORAGE_NAME, JSON.stringify(capped));
     } catch {
       // Ignore quota errors or storage restrictions
     }
@@ -170,9 +168,9 @@ export function saveBatchTestResults(
 }
 
 export function clearCatalogTestResults(): void {
-  if (typeof window !== "undefined" && window.localStorage) {
+  if (typeof window !== "undefined") {
     try {
-      window.localStorage.removeItem(CATALOG_TEST_RESULTS_STORAGE_NAME);
+      window.localStorage?.removeItem(CATALOG_TEST_RESULTS_STORAGE_NAME);
     } catch {
       // Ignore
     }
