@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { parse } from "yaml";
 import { validateManifest, resolveProfile } from "../../../scripts/quality/gate-manifest.mjs";
 
 function fixture() {
@@ -90,6 +91,22 @@ test("the committed inventory covers current scripts without command drift", () 
   assert.ok(full.some((gate) => gate.name === "check:gate-manifest"));
   assert.ok(fast.some((gate) => gate.name === "check:cycles:ratchet"));
   assert.ok(!fast.some((gate) => gate.name === "check:cycles"));
+});
+
+test("the quality workflow invokes the bounded cycle ratchet", () => {
+  const workflow = parse(readFileSync(".github/workflows/quality.yml", "utf8"));
+  const step = workflow.jobs["fast-gates"].steps.find(
+    (entry: { name?: string }) => entry.name === "Quality gates (all, non-fail-fast)"
+  );
+  const gates = /gates=\(([\s\S]*?)\n\s*\)/
+    .exec(step.run)?.[1]
+    .split("\n")
+    .map((line) => line.replace(/#.*/, ""))
+    .join(" ")
+    .split(/\s+/)
+    .filter(Boolean);
+  assert.ok(gates?.includes("cycles:ratchet"));
+  assert.ok(!gates?.includes("cycles"));
 });
 
 test("real aggregator list mode uses the manifest without running any gate", () => {

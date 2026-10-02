@@ -230,7 +230,7 @@ jobs:
             route-guard-membership test-discovery test-runner-api
             mutation-test-coverage any-budget:t11 build-scope pack-policy
             complexity-ratchets model-lifecycle
-            cycles lockfile duplication dead-code type-coverage compression-budget
+            cycles:ratchet lockfile duplication dead-code type-coverage compression-budget
             # #8781: open-sse workspace typecheck gate — the workspace imports @/ which
             # escapes to src/ via undeclared path aliases. See check-open-sse-typecheck.mjs.
             open-sse-typecheck
