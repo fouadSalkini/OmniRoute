@@ -55,6 +55,12 @@ function startFlakyRedis(): Promise<{ port: number; close: () => void }> {
     const server = net.createServer((socket) => {
       socket.on("data", (buf) => {
         const cmd = buf.toString().toLowerCase();
+        // ioredis 5.11 pipelines two CLIENT SETINFO commands before the INFO ready check.
+        if (cmd.includes("client") && cmd.includes("setinfo")) {
+          const commands = cmd.split("client").length - 1;
+          socket.write("+OK\r\n".repeat(commands));
+          return;
+        }
         if (cmd.includes("hgetall") || cmd.includes("hset") || cmd.includes("hget")) {
           socket.destroy(); // the outage: connection drops mid-command
           return;

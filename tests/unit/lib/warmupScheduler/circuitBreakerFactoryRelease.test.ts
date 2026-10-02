@@ -49,7 +49,14 @@ function startProbeRefusingRedis(): Promise<{
       });
       socket.on("error", () => {});
       socket.on("data", (buf) => {
-        if (buf.toString().toLowerCase().includes("info")) {
+        const cmd = buf.toString().toLowerCase();
+        // ioredis 5.11 pipelines two CLIENT SETINFO commands before the INFO ready check.
+        if (cmd.includes("client") && cmd.includes("setinfo")) {
+          const commands = cmd.split("client").length - 1;
+          socket.write("+OK\r\n".repeat(commands));
+          return;
+        }
+        if (cmd.includes("info")) {
           const body = "redis_version:7.0.0\r\n";
           socket.write(`$${body.length}\r\n${body}\r\n`);
           return;
