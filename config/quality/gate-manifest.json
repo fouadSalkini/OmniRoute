@@ -704,7 +704,7 @@
       ]
     },
     "quality-scan-fast": {
-      "description": "Static filesystem scan excluding duplication and cycles; not full acceptance.",
+      "description": "Static filesystem scan excluding duplication; cycle count is enforced against the ratchet baseline.",
       "aliases": [
         "check:gate-manifest",
         "check:tracked-artifacts",
@@ -726,7 +726,8 @@
         "check:known-symbols",
         "check:route-guard-membership",
         "check:test-discovery",
-        "check:test-masking"
+        "check:test-masking",
+        "check:cycles:ratchet"
       ]
     }
   }
