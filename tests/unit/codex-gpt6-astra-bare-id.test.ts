@@ -26,6 +26,10 @@ const ASTRA_IDS = getProviderModels("codex")
   .map((model) => model.id)
   .filter((id) => /^gpt-6-astra(?:-(?:ultra|max|xhigh|high|medium|low))?$/.test(id));
 assert.ok(ASTRA_IDS.length >= 7, `expected the Astra effort tiers, got ${ASTRA_IDS}`);
+const SOL_61_IDS = [
+  "gpt-6.1-sol",
+  ...["low", "medium", "high", "xhigh", "max", "ultra"].map((effort) => `gpt-6.1-sol-${effort}`),
+];
 
 async function seedConnection(provider: "codex" | "openai") {
   await providersDb.createProviderConnection({
@@ -54,8 +58,8 @@ test.after(() => {
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 });
 
-test("every GPT-6 Astra id in the Codex catalog is Codex-native when unprefixed", () => {
-  for (const id of ASTRA_IDS) {
+test("GPT-6 Astra and GPT-6.1 Sol catalog ids are Codex-native when unprefixed", () => {
+  for (const id of [...ASTRA_IDS, ...SOL_61_IDS]) {
     assert.equal(CODEX_NATIVE_UNPREFIXED_MODELS.has(id), true, id);
   }
 });
@@ -64,7 +68,7 @@ test("bare gpt-6-astra routes to Codex when Codex and OpenAI are both active", a
   await seedConnection("codex");
   await seedConnection("openai");
 
-  for (const id of ["gpt-6-astra", "gpt-5.6-sol"]) {
+  for (const id of ["gpt-6-astra", "gpt-5.6-sol", ...SOL_61_IDS]) {
     const info = await getModelInfoCore(id, null);
     assert.equal(info.provider, "codex", id);
     assert.equal(info.model, id);
@@ -89,7 +93,7 @@ test("/v1/models lists the bare GPT-6 Astra ids under their codex/ rows", async 
   const body = (await response.json()) as { data: Array<{ id: string; parent?: string | null }> };
   const parentById = new Map(body.data.map((row) => [row.id, row.parent ?? null]));
 
-  for (const id of ASTRA_IDS) {
+  for (const id of [...ASTRA_IDS, ...SOL_61_IDS]) {
     assert.equal(parentById.get(id), `codex/${id}`, id);
   }
 });
