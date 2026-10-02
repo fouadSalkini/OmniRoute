@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { getModelsByProviderId } from "../../open-sse/config/providerModels.ts";
 import { CodexExecutor } from "../../open-sse/executors/codex.ts";
 import { splitCodexReasoningSuffix } from "../../open-sse/executors/codex/reasoningSuffix.ts";
+import { withReasoningRuleContext } from "../../open-sse/utils/reasoningRuleContext.ts";
 import { openaiToOpenAIResponsesRequest } from "../../open-sse/translator/request/openai-responses/toResponses.ts";
 import {
   normalizeCodexModelsResponse,
@@ -40,6 +41,62 @@ const LIVE_MODEL = {
 test.after(async () => {
   const { resetDbInstance } = await import("../../src/lib/db/core.ts");
   resetDbInstance();
+});
+
+test("omitted GPT-6.1 Sol effort uses low on translated and native paths without changing other models", () => {
+  const executor = new CodexExecutor();
+  for (const native of [false, true]) {
+    for (const model of [MODEL, "gpt-6-sol", "gpt-6-astra", "gpt-5.5"]) {
+      const transformed = executor.transformRequest(
+        model,
+        { model, input: [], _nativeCodexPassthrough: native },
+        true,
+        { requestEndpointPath: "/responses", providerSpecificData: {} }
+      );
+      assert.equal(transformed.reasoning.effort, model === MODEL ? "low" : "medium");
+    }
+  }
+});
+
+test("GPT-6.1 Sol fallback preserves connection, request, suffix and force-rule precedence", () => {
+  const executor = new CodexExecutor();
+  const cases = [
+    { model: MODEL, body: {}, expected: "high" },
+    { model: MODEL, body: { reasoning_effort: "xhigh" }, expected: "xhigh" },
+    {
+      model: MODEL,
+      body: { reasoning: { effort: "max" }, reasoning_effort: "xhigh" },
+      expected: "max",
+    },
+    { model: `${MODEL}-low`, body: { reasoning: { effort: "max" } }, expected: "low" },
+    {
+      model: `${MODEL}-low`,
+      body: { reasoning: { effort: "max" } },
+      force: true,
+      expected: "medium",
+    },
+  ];
+  for (const native of [false, true]) {
+    for (const scenario of cases) {
+      const credentials = {
+        requestEndpointPath: "/responses",
+        providerSpecificData: { requestDefaults: { reasoningEffort: "high" } },
+      };
+      const transformed = executor.transformRequest(
+        scenario.model,
+        { model: scenario.model, input: [], _nativeCodexPassthrough: native, ...scenario.body },
+        true,
+        scenario.force
+          ? withReasoningRuleContext(credentials, {
+              id: "force-sol",
+              effortMode: "force",
+              targetEffort: "medium",
+            })
+          : credentials
+      );
+      assert.equal(transformed.reasoning.effort, scenario.expected);
+    }
+  }
 });
 
 test("GPT-6.1 Sol registry exposes only verified limits and effort aliases", () => {
