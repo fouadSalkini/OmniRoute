@@ -1,12 +1,13 @@
 // Agent sessions: saveRequestUsage aggregates each attributed request into its session row
-// (197_agent_sessions) and links the usage row to it (198_usage_history_agent_session_id).
+// (9191_agent_sessions) and links the usage row to it (9192_usage_history_agent_session_id).
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-agent-sessions-"));
+const scratchDir = process.env.DATA_DIR || path.resolve("_artifacts/tests");
+fs.mkdirSync(scratchDir, { recursive: true });
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(scratchDir, "omniroute-agent-sessions-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../src/lib/db/core.ts");

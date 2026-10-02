@@ -90,10 +90,7 @@ import { collectClaudeDelta, collectToolUseName, withToolUseNames } from "./stre
 import { createStreamTiming, registerStreamTiming, type StreamTiming } from "./streamTiming.ts";
 import { buildUsageOnlyChunk } from "./usageOnlyChunk.ts";
 
-/**
- * Race a response body read against a timeout.
- * Prevents indefinite hangs when the upstream sends headers but stalls on the body.
- */
+/** Race a body read against a timeout to prevent hanging after upstream headers arrive. */
 export function withBodyTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number = FETCH_BODY_TIMEOUT_MS

@@ -106,7 +106,7 @@ OmniRoute solves the problem of managing multiple AI provider subscriptions, quo
 │   │   │   └── streaming.ts      # SSE streaming for A2A
 │   │   ├── acp/                  # Agent Communication Protocol registry and manager
 │   │   ├── compliance/           # Compliance policy engine
-│   │   ├── db/                   # SQLite database layer (137 modules + migrations)
+│   │   ├── db/                   # SQLite database layer (142 modules + migrations)
 │   │   │   ├── core.ts           # Database initialization, connection, schema
 │   │   │   ├── providers.ts      # Provider connection CRUD
 │   │   │   ├── models.ts         # Model catalog management

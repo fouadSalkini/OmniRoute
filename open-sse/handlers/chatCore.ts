@@ -701,8 +701,6 @@ async function handleChatCoreInner({
     );
   }
   let effectiveServiceTier: EffectiveServiceTier = "standard";
-  // Codex service-tier resolvers extracted to chatCore/serviceTier.ts (#3501); bind the per-request
-  // provider/credentials once and delegate so the existing call sites stay byte-identical.
   const resolveEffectiveServiceTier = (requestBody?: unknown): EffectiveServiceTier =>
     resolveEffectiveServiceTierFor(provider, credentials?.providerSpecificData, requestBody);
   const resolveReportedServiceTier = (

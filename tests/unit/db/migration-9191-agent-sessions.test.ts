@@ -1,10 +1,9 @@
-// 197 creates agent_sessions; 198 links usage_history rows to it. They are separate files because
+// 9191 creates agent_sessions; 9192 links usage_history rows to it. They are separate files because
 // the runner records a file as applied when an ALTER hits "duplicate column name" and rolls the
 // rest of that file back: a database that already has the column must still get the table.
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import Database from "better-sqlite3";
@@ -13,8 +12,14 @@ const repoMigrations = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "../../../src/lib/db/migrations"
 );
-const MIGRATION_FILES = ["9191_agent_sessions.sql", "9192_usage_history_agent_session_id.sql"];
-const migrationsDir = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-migration-197-"));
+const MIGRATION_FILES = [
+  "9191_agent_sessions.sql",
+  "9192_usage_history_agent_session_id.sql",
+  "9193_agent_session_messages.sql",
+];
+const scratchDir = process.env.DATA_DIR || path.resolve("_artifacts/tests");
+fs.mkdirSync(scratchDir, { recursive: true });
+const migrationsDir = fs.mkdtempSync(path.join(scratchDir, "omniroute-migration-9191-"));
 for (const file of MIGRATION_FILES) {
   fs.copyFileSync(path.join(repoMigrations, file), path.join(migrationsDir, file));
 }
@@ -62,11 +67,12 @@ function appliedVersions(db: Database.Database): string[] {
 test("an older database gains agent_sessions and usage_history.agent_session_id; a rerun is a no-op", () => {
   const db = openDb(false);
   try {
-    assert.equal(runMigrations(db, { isNewDb: true }), 2);
+    assert.equal(runMigrations(db, { isNewDb: true }), 3);
+    assert.ok(tableExists(db, "agent_session_messages"));
     assert.ok(tableExists(db, "agent_sessions"));
     assert.ok(usageColumns(db).includes("agent_session_id"));
     assert.equal(runMigrations(db, { isNewDb: true }), 0);
-    assert.deepEqual(appliedVersions(db), ["9191", "9192"]);
+    assert.deepEqual(appliedVersions(db), ["9191", "9192", "9193"]);
   } finally {
     db.close();
   }
@@ -75,10 +81,11 @@ test("an older database gains agent_sessions and usage_history.agent_session_id;
 test("a database that already has the column still gets the agent_sessions table", () => {
   const db = openDb(true);
   try {
-    assert.equal(runMigrations(db, { isNewDb: true }), 2);
+    assert.equal(runMigrations(db, { isNewDb: true }), 3);
+    assert.ok(tableExists(db, "agent_session_messages"));
     assert.ok(tableExists(db, "agent_sessions"));
     assert.equal(usageColumns(db).filter((name) => name === "agent_session_id").length, 1);
-    assert.deepEqual(appliedVersions(db), ["9191", "9192"]);
+    assert.deepEqual(appliedVersions(db), ["9191", "9192", "9193"]);
   } finally {
     db.close();
   }
