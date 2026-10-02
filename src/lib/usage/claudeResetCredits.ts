@@ -114,7 +114,7 @@ async function fetchClaudeUsageBody(connectionId: string, accessToken: string): 
   const result = await withConnectionProxy(connectionId, () =>
     fetchAndSeedClaudeResetCreditUsage(connectionId, accessToken)
   );
-  if (result.ok) return result.body;
+  if (result.ok === true) return result.body;
   const errBody = result.body as JsonRecord | null;
   const msg =
     (typeof errBody?.message === "string" ? errBody.message : null) ||

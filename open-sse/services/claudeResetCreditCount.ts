@@ -134,7 +134,7 @@ function applyListResult(
   result: ClaudeResetCreditUsageResult,
   seededAt: number
 ): void {
-  if (result.ok) {
+  if (result.ok === true) {
     setBoundedEntry(
       entries,
       connectionId,

@@ -14,6 +14,8 @@ process.env.API_KEY_SECRET = "claude-reset-wiring-test-secret";
 
 const { createProviderConnection } = await import("../../src/lib/db/providers.ts");
 const { getProviderLimitsCache } = await import("../../src/lib/db/providerLimits.ts");
+const { acquireExclusiveConnectionLease } =
+  await import("../../src/lib/db/exclusiveConnectionLeases.ts");
 const { fetchAndPersistProviderLimits } = await import("../../src/lib/usage/providerLimits.ts");
 const { listClaudeResetCredits, consumeClaudeResetCredit } =
   await import("../../src/lib/usage/claudeResetCredits.ts");
@@ -28,7 +30,7 @@ const CLAIM_URL = "https://api.anthropic.com/api/organizations/org-uuid-1/reset_
 const originalFetch = globalThis.fetch;
 const calls: string[] = [];
 
-function mockUpstream(options: { usageStatus?: number } = {}) {
+function mockUpstream(options: { usageStatus?: number; listStatus?: number } = {}) {
   calls.length = 0;
   globalThis.fetch = (async (input: unknown, init?: RequestInit) => {
     const url = String(input);
@@ -43,6 +45,9 @@ function mockUpstream(options: { usageStatus?: number } = {}) {
         cedar_ember: null,
         juniper_tide: null,
       });
+    }
+    if (url === RESET_CREDIT_LIST_URL && options.listStatus) {
+      return new Response(null, { status: options.listStatus });
     }
     if (url === RESET_CREDIT_LIST_URL) {
       return Response.json({
@@ -68,6 +73,62 @@ test.afterEach(() => {
 test.after(() => {
   resetDbInstance();
   fs.rmSync(dataDir, { recursive: true, force: true });
+});
+
+test("reset-credit operations reject leased connections and missing tokens before upstream I/O", async () => {
+  for (const leased of [false, true]) {
+    const connection = await createProviderConnection({
+      provider: "claude",
+      authType: "oauth",
+      name: leased ? "Leased credits" : "Missing credit token",
+      ...(leased ? { accessToken: "leased-token" } : {}),
+      expiresAt: "2099-01-01T00:00:00Z",
+    });
+    const id = String(connection.id);
+    if (leased) {
+      const lease = acquireExclusiveConnectionLease({
+        leaseOwnerId: `vlo_${"c".repeat(43)}`,
+        apiKeyId: "reset-credit-test-key",
+        provider: "claude",
+        connectionId: id,
+      });
+      assert.equal(lease.kind, "ACQUIRED");
+    }
+    mockUpstream();
+    const expected = {
+      status: leased ? 409 : 401,
+      code: leased ? "exclusive_lease_active" : "claude_access_token_missing",
+    };
+    await assert.rejects(listClaudeResetCredits(id), expected);
+    await assert.rejects(consumeClaudeResetCredit(id, "guard-idem", "grant:a"), expected);
+    assert.deepEqual(calls, []);
+  }
+});
+
+test("failed reset-credit lists preserve throttling and invalidate refused counts", async () => {
+  const connection = await createProviderConnection({
+    provider: "claude",
+    authType: "oauth",
+    name: "List failures",
+    accessToken: "list-failures-token",
+    expiresAt: "2099-01-01T00:00:00Z",
+  });
+  const id = String(connection.id);
+  for (const [upstreamStatus, expectedStatus, expectedCode, expectedCount] of [
+    [429, 429, "rate_limited", 3],
+    [503, 502, "claude_usage_failed", 3],
+    [403, 502, "claude_usage_failed", null],
+  ] as const) {
+    mockUpstream();
+    await listClaudeResetCredits(id);
+    mockUpstream({ listStatus: upstreamStatus });
+    await assert.rejects(listClaudeResetCredits(id), {
+      name: "ClaudeResetCreditError",
+      status: expectedStatus,
+      code: expectedCode,
+    });
+    assert.equal(resetCreditMemo.peekClaudeResetCreditCount(id), expectedCount);
+  }
 });
 
 test("dashboard quota refresh shows reset credits without opening the credits modal", async () => {
