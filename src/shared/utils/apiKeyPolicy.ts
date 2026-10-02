@@ -848,10 +848,18 @@ function withSelfServiceSettings(apiKeyInfo: ApiKeyMetadata): ApiKeyMetadata {
       anthropicRateLimitHeaders: settings.anthropicRateLimitHeaders,
     };
   } catch (error) {
-    log.warn("API_POLICY", "API key self-service settings unavailable; using defaults.", {
-      error,
-    });
-    return apiKeyInfo;
+    log.warn(
+      "API_POLICY",
+      "API key self-service settings unavailable; withholding account quotas.",
+      {
+        error,
+      }
+    );
+    return {
+      ...apiKeyInfo,
+      sharedQuotaProviders: [],
+      anthropicRateLimitHeaders: "strip",
+    };
   }
 }
 

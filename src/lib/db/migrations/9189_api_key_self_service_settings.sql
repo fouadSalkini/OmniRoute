@@ -1,4 +1,4 @@
--- 9189_api_key_self_service_settings.sql (prod-only number; upstream uses 190)
+-- 9189_api_key_self_service_settings.sql (prod-only number; upstream PR uses 197)
 -- Per-API-key self-service settings, kept in their own table instead of new
 -- api_keys columns.
 --

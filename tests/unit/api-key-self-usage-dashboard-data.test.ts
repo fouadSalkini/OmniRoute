@@ -89,6 +89,24 @@ test("parsers degrade to empty values for a partial or foreign body", () => {
   assert.deepEqual(details.parseKeyQuota({ limits: { tpmLimit: 0, rpmLimit: 30 } }).tpmLimit, null);
 });
 
+test("token-limit API reset timestamps retain scheduled epoch-ms resets", () => {
+  const iso = "2026-10-02T12:00:00.000Z";
+  for (const [nextResetAt, expected] of [
+    [Date.parse(iso), iso],
+    [iso, iso],
+    [0, "1970-01-01T00:00:00.000Z"],
+    [null, null],
+    [Number.NaN, null],
+    [Number.POSITIVE_INFINITY, null],
+    [1e20, null],
+  ] as const) {
+    const rows = details.parseTokenLimits({
+      limits: [{ id: "daily-limit", scopeType: "global", period: "daily", nextResetAt }],
+    });
+    assert.equal(rows[0].nextResetAt, expected);
+  }
+});
+
 test("limit inputs: blank = unlimited, invalid = undefined", () => {
   assert.equal(details.parseOptionalLimitInput(""), null);
   assert.equal(details.parseOptionalLimitInput("0"), null);

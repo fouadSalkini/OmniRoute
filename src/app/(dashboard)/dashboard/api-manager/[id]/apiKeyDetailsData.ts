@@ -122,6 +122,10 @@ function asString(value: unknown, fallback = ""): string {
 }
 
 function asIso(value: unknown): string | null {
+  if (typeof value === "number") {
+    const date = new Date(value);
+    return Number.isFinite(date.getTime()) ? date.toISOString() : null;
+  }
   if (typeof value !== "string" || !value.trim()) return null;
   return Number.isFinite(Date.parse(value)) ? value : null;
 }

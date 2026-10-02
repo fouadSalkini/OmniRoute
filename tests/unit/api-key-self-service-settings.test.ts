@@ -1,5 +1,5 @@
 /**
- * Per-key self-service settings (migration 194) end to end on a temp SQLite DB:
+ * Per-key self-service settings (prod migration 9189) end to end on a temp SQLite DB:
  * the DB module, the Zod schemas, the admin routes (GET/PUT
  * /api/keys/[id]/self-service, GET /api/keys, PATCH/DELETE /api/keys/[id]),
  * GET /v1/me/status auth via Bearer or x-api-key, and the policy merge into
@@ -8,10 +8,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 
-const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-self-service-settings-"));
+const DATA_ROOT = process.env.DATA_DIR ?? path.resolve("_artifacts/self-service-settings-tests");
+fs.mkdirSync(DATA_ROOT, { recursive: true });
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(DATA_ROOT, "self-service-settings-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 process.env.API_KEY_SECRET = "self-service-settings-test-secret";
 process.env.DISABLE_SQLITE_AUTO_BACKUP = "true";
@@ -69,6 +70,57 @@ function assertNoStackLeak(body: unknown) {
 }
 
 // ──────────────── DB module ────────────────
+
+test("deployed settings migration 9189 coexists with upstream attempt timing migration 194", () => {
+  // Regression: stale stack children reused 194 and collided with upstream schema updates.
+  const db = core.getDbInstance();
+  const applied = db
+    .prepare("SELECT version FROM _omniroute_migrations WHERE name = ?")
+    .all("api_key_self_service_settings");
+  assert.deepEqual(applied, [{ version: "9189" }]);
+  const timingColumns = db.prepare("PRAGMA table_info(proxy_logs)").all() as { name: string }[];
+  assert.ok(timingColumns.some((column) => column.name === "headers_ms"));
+  assert.deepEqual(
+    settingsDb.updateApiKeySelfServiceSettings("migration-key", {
+      sharedQuotaProviders: ["codex"],
+      anthropicRateLimitHeaders: "strip",
+    }),
+    { sharedQuotaProviders: ["codex"], anthropicRateLimitHeaders: "strip" }
+  );
+});
+
+test("historical self-service migration 194 upgrades to the deployed slot without skipping timing", async () => {
+  const db = core.getDbInstance();
+  const saved = settingsDb.updateApiKeySelfServiceSettings("historical-key", {
+    sharedQuotaProviders: ["codex"],
+    anthropicRateLimitHeaders: "strip",
+  });
+  db.exec(`
+    DELETE FROM _omniroute_migrations WHERE version = '194';
+    UPDATE _omniroute_migrations SET version = '194'
+      WHERE version = '9189' AND name = 'api_key_self_service_settings';
+    ALTER TABLE proxy_logs DROP COLUMN headers_ms;
+    ALTER TABLE proxy_logs DROP COLUMN first_chunk_ms;
+  `);
+  const { runMigrations } = await import("../../src/lib/db/migrationRunner.ts");
+  runMigrations(db);
+  settingsDb.clearApiKeySelfServiceSettingsCache();
+  assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("historical-key"), saved);
+  assert.deepEqual(
+    db
+      .prepare(
+        "SELECT version, name FROM _omniroute_migrations WHERE version IN ('194', '9189') ORDER BY version"
+      )
+      .all(),
+    [
+      { version: "194", name: "proxy_logs_attempt_timing" },
+      { version: "9189", name: "api_key_self_service_settings" },
+    ]
+  );
+  const columns = db.prepare("PRAGMA table_info(proxy_logs)").all() as { name: string }[];
+  assert.ok(columns.some((column) => column.name === "headers_ms"));
+  assert.ok(columns.some((column) => column.name === "first_chunk_ms"));
+});
 
 test("settings default to all providers + auto when no row exists", () => {
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("no-such-key"), {
@@ -419,6 +471,28 @@ test("GET /v1/me/status returns 403 without self:usage and honors sharedQuotaPro
 });
 
 // ──────────────── Policy merge ────────────────
+
+test("unreadable self-service settings cannot silently re-enable stripped account headers", async () => {
+  const key = await apiKeys.createApiKey("private headers", "test-machine", [SELF_USAGE_SCOPE]);
+  settingsDb.updateApiKeySelfServiceSettings(key.id, { anthropicRateLimitHeaders: "strip" });
+  settingsDb.clearApiKeySelfServiceSettingsCache();
+  core
+    .getDbInstance()
+    .exec(
+      "ALTER TABLE api_key_self_service_settings RENAME COLUMN anthropic_ratelimit_headers TO unreadable_headers"
+    );
+
+  const policy = await enforceApiKeyPolicy(
+    new Request("http://localhost/v1/messages", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key.key}` },
+    }),
+    null
+  );
+
+  assert.equal(policy.apiKeyInfo?.anthropicRateLimitHeaders, "strip");
+  assert.deepEqual(policy.apiKeyInfo?.sharedQuotaProviders, []);
+});
 
 test("enforceApiKeyPolicy merges the key's self-service settings into apiKeyInfo", async () => {
   const key = await apiKeys.createApiKey("policy", "test-machine", [SELF_USAGE_SCOPE]);
