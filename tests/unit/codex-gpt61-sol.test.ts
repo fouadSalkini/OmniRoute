@@ -16,6 +16,7 @@ import {
   getCodexDefaultHeaders,
 } from "../../open-sse/config/codexClient.ts";
 import { getPricingForModel } from "../../src/shared/constants/pricing.ts";
+import { getCodexFastCostMultiplier } from "../../src/lib/usage/costCalculator.ts";
 import { applyCodexGlobalFastServiceTier } from "../../src/lib/providers/codexFastTier.ts";
 import { extendCodexGpt56EffortValues } from "../../src/shared/reasoning/effortStandardization.ts";
 import {
@@ -112,7 +113,14 @@ test("GPT-6.1 Sol registry exposes only verified limits and effort aliases", () 
       assert.equal(model.toolCalling, true);
       assert.equal(model.targetFormat, "openai-responses");
       assert.deepEqual(model.supportedThinkingEfforts, EFFORTS);
-      assert.equal(getPricingForModel("cx", id), null);
+      assert.deepEqual(getPricingForModel("cx", id), {
+        input: 2,
+        cached: 0.1,
+        output: 10,
+        reasoning: 10,
+        cache_creation: 2,
+      });
+      assert.equal(getCodexFastCostMultiplier("codex", id, "priority"), 2);
       const credentials = { providerSpecificData: {} };
       const body: Record<string, unknown> = {};
       const resolved = applyCodexGlobalFastServiceTier(

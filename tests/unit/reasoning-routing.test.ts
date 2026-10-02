@@ -386,13 +386,13 @@ test("static registry vocabulary outranks the operator override so the gate matc
     "a narrowed operator override is terminal and must not fall through to the Codex alias-set fallback"
   );
 
-  // Case 3: registry model WITHOUT any declared vocabulary, operator
+  // Case 3: an unregistered model WITHOUT a declared vocabulary, operator
   // override WIDENS. The sanitizer forwards verbatim for undeclared models
-  // (#8057), so the gate must accept. codex entries declare no vocabulary.
+  // (#8057), so the gate must accept even when another Codex model has a vocabulary.
   const undeclaredModel = "codex/test-only-undeclared-model";
   assert.ok(
-    getProviderModels("codex").every((entry) => !Array.isArray(entry.supportedThinkingEfforts)),
-    "precondition: codex entries declare no static effort vocabulary"
+    !getProviderModels("codex").some((entry) => entry.id === "test-only-undeclared-model"),
+    "precondition: the selected model has no static effort vocabulary"
   );
   setModelCapabilityOverride(undeclaredModel, "reasoning_efforts", ["low", "high", "max"]);
   const passthrough = await policy.resolveReasoningRoutingRule({

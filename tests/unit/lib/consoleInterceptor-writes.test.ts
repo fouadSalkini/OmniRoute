@@ -149,15 +149,16 @@ test("a log directory removed at runtime is recreated and logging recovers (#818
 
 test("the log-unavailable notice is emitted at most once, to the real stderr", () => {
   const r = runChild([
-    `const { rmSync, mkdirSync, chmodSync } = await import("node:fs");`,
+    `const { rmSync, writeFileSync } = await import("node:fs");`,
     `const { dirname } = await import("node:path");`,
     `M.initConsoleInterceptor();`,
-    // Make the directory unrecreatable so the retry fails and the notice path is exercised.
-    `const parent = dirname(dirname(LOG_FILE));`,
-    `rmSync(dirname(LOG_FILE), { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });`,
-    `chmodSync(parent, 0o500);`,
+    // A file in the parent path makes mkdirSync fail even for root (chmod does not).
+    `const logDir = dirname(LOG_FILE);`,
+    `const parent = dirname(logDir);`,
+    `rmSync(logDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });`,
+    `rmSync(parent, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });`,
+    `writeFileSync(parent, "blocked");`,
     `for (let i = 0; i < 5; i++) console.error("unwritable " + i);`,
-    `chmodSync(parent, 0o700);`,
     `setTimeout(() => process.exit(0), 200);`,
   ]);
 

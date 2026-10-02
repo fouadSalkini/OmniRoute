@@ -1334,23 +1334,23 @@
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "Openai-Beta": "responses_websockets=2026-02-06",
-        "User-Agent": "codex-cli/0.156.1 (<OS>; <ARCH>)",
-        "Version": "0.156.1"
+        "User-Agent": "codex-cli/0.160.0 (<OS>; <ARCH>)",
+        "Version": "0.160.0"
       },
       "nonStream": {
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "Openai-Beta": "responses_websockets=2026-02-06",
-        "User-Agent": "codex-cli/0.156.1 (<OS>; <ARCH>)",
-        "Version": "0.156.1"
+        "User-Agent": "codex-cli/0.160.0 (<OS>; <ARCH>)",
+        "Version": "0.160.0"
       },
       "oauth": {
         "Accept": "text/event-stream",
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "Openai-Beta": "responses_websockets=2026-02-06",
-        "User-Agent": "codex-cli/0.156.1 (<OS>; <ARCH>)",
-        "Version": "0.156.1"
+        "User-Agent": "codex-cli/0.160.0 (<OS>; <ARCH>)",
+        "Version": "0.160.0"
       }
     },
     "url": {
@@ -2492,7 +2492,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.88",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.88 (linux) term/unknown",
+        "user-agent": "copilot/1.0.88 (<OS>) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user"
@@ -2506,7 +2506,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.88",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.88 (linux) term/unknown",
+        "user-agent": "copilot/1.0.88 (<OS>) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user"
@@ -2520,7 +2520,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.88",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.88 (linux) term/unknown",
+        "user-agent": "copilot/1.0.88 (<OS>) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user"
@@ -2566,7 +2566,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.88",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.88 (linux) term/unknown",
+        "user-agent": "copilot/1.0.88 (<OS>) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user",
@@ -2581,7 +2581,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.88",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.88 (linux) term/unknown",
+        "user-agent": "copilot/1.0.88 (<OS>) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user",
@@ -2596,7 +2596,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.88",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.88 (linux) term/unknown",
+        "user-agent": "copilot/1.0.88 (<OS>) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user",

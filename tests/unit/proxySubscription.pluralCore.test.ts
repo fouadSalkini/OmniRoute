@@ -16,6 +16,7 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const proxies = await import("../../src/lib/db/proxies.ts");
 const sub = await import("../../src/lib/proxySubscription/index.ts");
+const proxyHealth = await import("../../src/lib/proxyHealth.ts");
 
 function reset() {
   core.resetDbInstance();
@@ -371,30 +372,27 @@ test("port-less entry probes the row port, not the probe default", async () => {
   reset();
   const feed = await startFeedServer(NEEDS_CORE_FEED);
   try {
-    // A listener on the upsert-rule port (8080) proves the verdict came from
-    // the row's effective port, not the probe's scheme default (socks5→1080).
-    const probe = await new Promise<{ port: number; close: () => Promise<void> }>(
-      (resolve, reject) => {
-        const srv = net.createServer((sock) => sock.end());
-        srv.on("error", reject);
-        srv.listen(8080, "127.0.0.1", () =>
-          resolve({ port: 8080, close: () => new Promise((r) => srv.close(() => r())) })
-        );
-      }
-    );
+    // Probe the real subscription flow at the TCP seam, without binding a
+    // host-global port that another service may own (the row still defaults to 8080).
+    const probedPorts: number[] = [];
+    proxyHealth.__setProxyHealthTcpCheckForTesting(async (_host, port) => {
+      probedPorts.push(port);
+      return true;
+    });
     try {
       insertSubscription("s1", feed.url, "socks5://127.0.0.1");
       await sub.syncSubscription("s1");
       const rows = rowsForSub("s1");
       assert.equal(rows.length, 1);
       assert.equal(rows[0].port, 8080);
+      assert.deepEqual(probedPorts, [8080], "probe must dial the persisted row port, not 1080");
       assert.equal(
         errorOf("s1"),
         null,
         `port-less reachable entry must not warn: ${errorOf("s1")}`
       );
     } finally {
-      await probe.close();
+      proxyHealth.__setProxyHealthTcpCheckForTesting(null);
     }
   } finally {
     await feed.close();

@@ -101,7 +101,10 @@ export function getCodexFastCostMultiplier(
 
   const modelKey = stripCodexEffortSuffix(normalizeModelName(String(model || "")).toLowerCase());
   const compactModelKey = modelKey.replace(/-/g, "");
-  // Codex GPT-6 Fast is 2.5x Standard (https://developers.openai.com/codex/pricing).
+  // GPT-6.1 Sol Fast uses 2x purchased credits; subscription limits use 2.5x.
+  // Cost estimates track purchased-credit rates, not subscription-limit headroom.
+  if (modelKey === "gpt-6.1-sol" || compactModelKey === "gpt6.1sol") return 2;
+  // GPT-6 Fast is 2.5x Standard under the existing model-specific rate card.
   if (
     /^gpt-6-(?:astra|sol|luna)$/.test(modelKey) ||
     /^gpt6(?:astra|sol|luna)$/.test(compactModelKey)

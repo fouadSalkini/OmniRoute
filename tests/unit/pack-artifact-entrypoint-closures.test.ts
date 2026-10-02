@@ -173,7 +173,9 @@ function shippedScripts(filesEntries: string[]): string[] {
       out.push(rel);
     }
   };
-  for (const entry of filesEntries) if (!entry.startsWith("!")) walk(entry);
+  // Generated dist chunks are checked by the real pack/boot gates, not by this
+  // source-script import walker (their bundler-local imports are not package roots).
+  for (const entry of filesEntries) if (!entry.startsWith("!") && entry !== "dist/") walk(entry);
   return out;
 }
 

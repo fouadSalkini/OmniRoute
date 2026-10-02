@@ -37,7 +37,7 @@ test("Codex exposes Astra and its effort variants with live OAuth limits", () =>
       assert.equal(model.supportsXHighEffort, true);
     }
     assert.deepEqual(
-      models.slice(0, ids.length).map((model) => model.id),
+      models.filter((model) => model.id.startsWith(MODEL)).map((model) => model.id),
       ids
     );
   }

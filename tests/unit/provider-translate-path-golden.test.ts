@@ -78,6 +78,7 @@ function sanitize(headers: Record<string, unknown>): Record<string, unknown> {
         /Macintosh; Intel Mac OS X 10_15_7|Windows NT 10\.0; Win64; x64|X11; Linux x86_64/g,
         "<PLATFORM>"
       )
+      .replace(/(copilot\/\d+\.\d+\.\d+ \()(?:linux|darwin|win32)(\) term\/unknown)/g, "$1<OS>$2")
       .replace(/(antigravity\/ide\/\d+\.\d+\.\d+) [^/\s]+\/[^\s)]+/g, "$1 <OS>/<ARCH>")
       .replace(
         /(antigravity\/cli\/\d+\.\d+\.\d+ \(aidev_client; os_type=)[^;]+(; arch=)[^;]+(; auth_method=[^)]+\))/g,

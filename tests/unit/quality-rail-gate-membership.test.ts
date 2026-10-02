@@ -51,7 +51,7 @@ test("fast-gates carries the deterministic ratchets and security scanners from t
   // #8542: all gates run inside a single aggregation step's bash loop.
   // Check that the gate names appear in the arrays or the loop body.
   for (const needle of [
-    "cycles lockfile duplication dead-code type-coverage compression-budget",
+    "cycles:ratchet lockfile duplication dead-code type-coverage compression-budget",
     "secrets vuln-ratchet workflows openapi-breaking",
     "typecheck:core",
     "check:dashboard-typecheck",

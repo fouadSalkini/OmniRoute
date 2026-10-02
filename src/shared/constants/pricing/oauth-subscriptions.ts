@@ -21,8 +21,9 @@ const ANTIGRAVITY_GEMINI_3_7_PRICING = {
   "gemini-3.7-flash-high": GEMINI_3_7_FLASH_PROMO_PRICING,
 };
 
-// Codex Standard: 250 / 25 / 1250 credits per MTok, at 25 credits per USD.
-// https://developers.openai.com/codex/pricing
+// Codex Standard credit rates converted to USD-equivalent estimates at 25 credits/USD.
+// Credit purchase prices vary by plan; these are NOT provider-billed dollar amounts.
+// https://learn.chatgpt.com/docs/pricing
 const GPT_6_ASTRA_CODEX_PRICING = GPT_6_ASTRA_PRICING;
 // Codex Standard: Sol 50 / 5 / 250 and Luna 2.5 / 0.25 / 12.5 credits per MTok.
 const GPT_6_SOL_CODEX_PRICING = {
@@ -31,6 +32,15 @@ const GPT_6_SOL_CODEX_PRICING = {
   cached: 0.2,
   reasoning: 10.0,
   cache_creation: 2.5,
+};
+// GPT-6.1 Sol: 50 / 2.5 / 250 credits per MTok (input / cached / output).
+// Codex credit billing has no separate cache-write charge; estimate writes at input rate.
+const GPT_6_1_SOL_CODEX_PRICING = {
+  input: 2.0,
+  output: 10.0,
+  cached: 0.1,
+  reasoning: 10.0,
+  cache_creation: 2.0,
 };
 const GPT_6_LUNA_CODEX_PRICING = {
   input: 0.1,
@@ -110,6 +120,13 @@ export const DEFAULT_PRICING_OAUTH = {
     },
   },
   cx: {
+    "gpt-6.1-sol": GPT_6_1_SOL_CODEX_PRICING,
+    "gpt-6.1-sol-ultra": GPT_6_1_SOL_CODEX_PRICING,
+    "gpt-6.1-sol-max": GPT_6_1_SOL_CODEX_PRICING,
+    "gpt-6.1-sol-xhigh": GPT_6_1_SOL_CODEX_PRICING,
+    "gpt-6.1-sol-high": GPT_6_1_SOL_CODEX_PRICING,
+    "gpt-6.1-sol-medium": GPT_6_1_SOL_CODEX_PRICING,
+    "gpt-6.1-sol-low": GPT_6_1_SOL_CODEX_PRICING,
     "gpt-6-astra": GPT_6_ASTRA_CODEX_PRICING,
     "gpt-6-astra-ultra": GPT_6_ASTRA_CODEX_PRICING,
     "gpt-6-astra-max": GPT_6_ASTRA_CODEX_PRICING,
@@ -131,8 +148,7 @@ export const DEFAULT_PRICING_OAUTH = {
     "gpt-6-luna-medium": GPT_6_LUNA_CODEX_PRICING,
     "gpt-6-luna-low": GPT_6_LUNA_CODEX_PRICING,
     "codex-auto-review": GPT_5_5_PRICING,
-    // Codex uses credits per 1M tokens. OmniRoute stores the dollar-equivalent
-    // values below at the documented conversion of 25 credits per USD.
+    // Codex token rates below are USD-equivalent estimates, not actual billed dollars.
     "gpt-5.6-sol": GPT_5_6_SOL_PRICING,
     "gpt-5.6-sol-ultra": GPT_5_6_SOL_PRICING,
     "gpt-5.6-sol-max": GPT_5_6_SOL_PRICING,
