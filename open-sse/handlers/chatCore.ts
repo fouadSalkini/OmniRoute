@@ -114,7 +114,7 @@ import { deleteSessionAccountAffinity } from "@/lib/db/sessionAccountAffinity";
 import {
   buildStreamingResponseHeaders,
   materializeDeduplicatedExecutionResult,
-  stripNextMiddlewareControlHeaders,
+  stripNonStreamingForwardedHeaders,
   stripStaleForwardingHeaders,
 } from "./chatCore/responseHeaders.ts";
 import {
@@ -332,6 +332,7 @@ import {
 } from "./chatCore/pluginOnResponse.ts";
 import { scheduleStreamingQuotaShareConsumption } from "./chatCore/streamingQuotaShare.ts";
 import { recordStreamingUsageStats } from "./chatCore/streamingUsageStats.ts";
+import { resolveUsageAgentContext, resolveSessionTurn } from "./chatCore/agentContext.ts";
 import { recordStreamingCost, buildStreamLedgerDetails } from "./chatCore/streamingCost.ts";
 import { isJsonRecord } from "./chatCore/nonStreamingResponseParse.ts";
 import { recordNonStreamingUsageStats } from "./chatCore/nonStreamingUsageStats.ts";
@@ -709,6 +710,7 @@ async function handleChatCoreInner({
     maxDepth = 3
   ): EffectiveServiceTier | null => resolveReportedServiceTierFor(provider, payload, maxDepth);
   let providerResponse;
+  const agentContext = resolveUsageAgentContext(body, clientRawRequest?.headers, apiKeyInfo);
   // Failure usage record building extracted to chatCore/failureUsage.ts (#3501); the handler keeps
   // the fire-and-forget save + computes latencyMs, so the call sites stay byte-identical.
   const persistFailureUsage = (
@@ -730,6 +732,7 @@ async function handleChatCoreInner({
         latencyMs: Date.now() - startTime,
         endpoint: endpointPath,
         cpaAuthIndex: readCpaAuthIndex(providerResponse),
+        agentContext,
         aggregate: aggregate ?? undefined,
       })
     ).catch(() => {});
@@ -1114,7 +1117,7 @@ async function handleChatCoreInner({
       detailedLoggingEnabled,
       reqLogger,
       pendingRequestId,
-      clientRawRequest,
+      clientRawRequest, agentContext,
       requestedModel,
       credentials,
       startTime,
@@ -3566,7 +3569,7 @@ async function handleChatCoreInner({
         const headersObj = normalizeHeaders(rawResult.response.headers);
         const responseHeaders = new Headers(headersObj);
         stripStaleForwardingHeaders(responseHeaders);
-        stripNextMiddlewareControlHeaders(responseHeaders);
+        stripNonStreamingForwardedHeaders(responseHeaders, apiKeyInfo, provider);
         // The upstream headers (turn-state included) are about to be committed
         // to the client — record which connection minted the blob so a later
         // cross-account echo can be stripped (Codex failover guard).
@@ -5457,7 +5460,7 @@ async function handleChatCoreInner({
         effectiveServiceTier,
         isCombo,
         comboStrategy,
-        endpoint: endpointPath, cpaAuthIndex: readCpaAuthIndex(providerResponse),
+        endpoint: endpointPath, cpaAuthIndex: readCpaAuthIndex(providerResponse), agentContext, sessionTurn: resolveSessionTurn({ clientRawRequest, body, responses: [okLeg.response], agentContext, apiKeyInfo }),
       });
 
       // #12150 P1b surface 3 (fix round 1): a video-bridge-observed request's
@@ -5997,6 +6000,7 @@ async function handleChatCoreInner({
     isCombo, // #14116: foreign-account quota-header strip (only meaningful when true)
     requestedConnectionId: forcedConnectionId || null,
     selectedConnectionId: credentials?.connectionId ?? null,
+    apiKeyInfo, // per-key upstream anthropic-ratelimit-* header policy
   });
 
   // The streaming headers (turn-state included, when present) are committed to
@@ -6122,7 +6126,7 @@ async function handleChatCoreInner({
       effectiveServiceTier,
       isCombo,
       comboStrategy,
-      endpoint: endpointPath, cpaAuthIndex: readCpaAuthIndex(providerResponse),
+      endpoint: endpointPath, cpaAuthIndex: readCpaAuthIndex(providerResponse), agentContext, sessionTurn: resolveSessionTurn({ clientRawRequest, body, responses: [clientPayload?.summary, streamResponseBody], streamStatus: normalizedStreamStatus, agentContext, apiKeyInfo }),
     });
 
     // Routing event (feedback foundation) — fire-and-forget, cheap, never blocks

@@ -5,10 +5,12 @@ const {
   executeWithAnthropicThinkingSignatureRecovery,
   isAnthropicThinkingSignatureError,
   stripHistoricalThinkingForSignatureRecovery,
+  redactPassthroughThinkingSignatures,
 } = await import("@omniroute/open-sse/handlers/chatCore/passthroughHelpers.ts");
-const { recoverAnthropicThinkingSignature } = await import(
-  "@omniroute/open-sse/handlers/chatCore/thinkingSignatureRecovery.ts"
-);
+const { DEFAULT_THINKING_CLAUDE_SIGNATURE } =
+  await import("@omniroute/open-sse/config/defaultThinkingSignature.ts");
+const { recoverAnthropicThinkingSignature } =
+  await import("@omniroute/open-sse/handlers/chatCore/thinkingSignatureRecovery.ts");
 
 function makeHistory() {
   return {
@@ -296,4 +298,106 @@ test("Anthropic thinking-signature recovery contract", async (t) => {
     assert.equal(attempts, 1);
     assert.equal(stripHistoricalThinkingForSignatureRecovery(body), body);
   });
+
+  await t.test(
+    "targeted signature 400 in active tool cycle converts thinking to redacted_thinking and retries successfully",
+    async () => {
+      const body = {
+        messages: [
+          { role: "user", content: [{ type: "text", text: "run" }] },
+          {
+            role: "assistant",
+            content: [
+              { type: "thinking", thinking: "codex-thought", signature: "FOREIGN_CODEX" },
+              { type: "tool_use", id: "toolu_1", name: "Bash", input: {} },
+            ],
+          },
+          {
+            role: "user",
+            content: [{ type: "tool_result", tool_use_id: "toolu_1", content: "ok" }],
+          },
+        ],
+      };
+      let attempts = 0;
+      const out = await executeWithAnthropicThinkingSignatureRecovery({
+        provider: "claude",
+        body,
+        execute: async (reqBody: unknown) => {
+          const typedBody = reqBody as typeof body;
+          attempts += 1;
+          if (attempts === 1) {
+            return {
+              status: 400,
+              message: "messages.1.content.0: Invalid `signature` in `thinking` block",
+            };
+          }
+          // Second attempt must have converted the invalid thinking block to redacted_thinking
+          assert.equal(typedBody.messages[1].content[0].type, "redacted_thinking");
+          assert.equal(
+            (typedBody.messages[1].content[0] as { type: string; data?: string }).data,
+            DEFAULT_THINKING_CLAUDE_SIGNATURE
+          );
+          return { status: 200, message: "ok" };
+        },
+        getError: (result) => (result.status >= 400 ? result : null),
+      });
+
+      assert.equal(out.retried, true);
+      assert.equal(attempts, 2);
+      assert.equal(out.result.status, 200);
+    }
+  );
+
+  await t.test(
+    "passthrough drops unsigned blocks without rewriting signed history before recovery",
+    () => {
+      const messages = [
+        { role: "user", content: [{ type: "text", text: "hi" }] },
+        {
+          role: "assistant",
+          content: [
+            {
+              type: "thinking",
+              thinking: "synthetic",
+              signature: DEFAULT_THINKING_CLAUDE_SIGNATURE,
+            },
+            { type: "thinking", thinking: "unsigned relay" },
+            { type: "redacted_thinking", data: "" },
+            { type: "text", text: "hello" },
+          ],
+        },
+        { role: "user", content: [{ type: "text", text: "next" }] },
+        {
+          role: "assistant",
+          content: [
+            { type: "thinking", thinking: "genuine", signature: "CAISgenuineProtobufSignature==" },
+            { type: "text", text: "answer" },
+          ],
+        },
+      ];
+
+      type ContentBlockWithMeta = {
+        type: string;
+        data?: string;
+        signature?: string;
+        text?: string;
+      };
+      const sanitized = redactPassthroughThinkingSignatures(messages) as Array<{
+        role: string;
+        content: ContentBlockWithMeta[];
+      }>;
+      assert.deepEqual(sanitized[1].content, [messages[1].content[0], messages[1].content[3]]);
+      assert.equal(
+        sanitized[1].content[0],
+        messages[1].content[0],
+        "signed history stays verbatim"
+      );
+      assert.equal(sanitized[3], messages[3], "genuine latest turn stays verbatim");
+      assert.equal(messages[1].content.length, 4, "proactive cleanup never mutates the input");
+
+      const recovery = stripHistoricalThinkingForSignatureRecovery({ messages: sanitized });
+      assert.deepEqual(recovery.messages[1].content, [{ type: "text", text: "hello" }]);
+      assert.equal(recovery.messages[3], messages[3], "recovery preserves the latest turn");
+    }
+  );
 });

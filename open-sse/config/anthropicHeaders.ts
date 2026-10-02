@@ -279,6 +279,8 @@ export const FORWARDABLE_CLIENT_BETAS = Object.freeze([
   "dangerous-tool-use-2026-09-03",
   "afk-mode-2026-01-31",
   "timing-2026-09-09",
+  // inline-tools-2026-09-15 enables dynamic tool_removal and inline tool modifications
+  // sent by newer Claude Code versions in long-running sessions.
   "inline-tools-2026-09-15",
 ]);
 

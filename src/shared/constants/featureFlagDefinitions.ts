@@ -393,7 +393,7 @@ export const FEATURE_FLAG_DEFINITIONS: FeatureFlagDefinition[] = [
     warningLevel: "info",
   },
 
-  // ──────────────── Policies (5) ────────────────
+  // ──────────────── Policies (6) ────────────────
   {
     key: "TOOL_POLICY_MODE",
     label: "Tool Policy Mode",
@@ -435,6 +435,18 @@ export const FEATURE_FLAG_DEFINITIONS: FeatureFlagDefinition[] = [
     description:
       "Reject requests before dispatch when the target model lacks required capabilities (vision, tools, structured output, context window). Protects direct single-provider requests that bypass the combo-layer compatibility filter.",
     descriptionI18nKey: "featureFlagCapabilityFilterEnabledDescription",
+    category: "policies",
+    defaultValue: "false",
+    type: "boolean",
+    requiresRestart: false,
+    warningLevel: "caution",
+  },
+  {
+    key: "USAGE_LIMIT_IGNORE_UNPRICED",
+    label: "Ignore Unpriced Usage in USD Quotas",
+    description:
+      "Count usage of models that have no price as $0 in per-key USD usage quotas instead of treating the quota as exceeded. Off by default: an unpriced model or routing alias can hide real spend, so the quota fails closed.",
+    descriptionI18nKey: "featureFlagUsageLimitIgnoreUnpricedDescription",
     category: "policies",
     defaultValue: "false",
     type: "boolean",
@@ -962,6 +974,18 @@ export const FEATURE_FLAG_DEFINITIONS: FeatureFlagDefinition[] = [
       "Run the startup DB integrity/health check after the server starts accepting requests (via setImmediate) instead of blocking startup until it completes. Off by default: startup blocks on the check exactly like before #13717, so a corrupt database is still caught before the first request is served. On: startup returns immediately and the check (now bounded/paged and, for a real file-backed DB, isolated in a cancellable child process) runs right after.",
     descriptionI18nKey: "featureFlagDbHealthcheckStartupDeferredEnabledDescription",
     category: "health",
+    defaultValue: "false",
+    type: "boolean",
+    requiresRestart: false,
+    warningLevel: "caution",
+  },
+  {
+    key: "AGENT_SESSION_MESSAGES_ENABLED",
+    label: "Agent Session Messages Capture",
+    description:
+      "Capture simplified conversation turns (user prompt, assistant response, called tools) for coding-agent sessions and expose them through GET /v1/me/sessions/{id}/messages to the session owner. Off by default: turns are not captured unless this flag is enabled. Never captured for noLog API keys.",
+    descriptionI18nKey: "featureFlagAgentSessionMessagesEnabledDescription",
+    category: "policies",
     defaultValue: "false",
     type: "boolean",
     requiresRestart: false,

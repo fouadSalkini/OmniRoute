@@ -3,6 +3,7 @@ import { isVerifiedNativeCodexRequest } from "../../config/codexIdentity.ts";
 import { isClaudeCodeCompatibleProvider } from "../../services/claudeCodeCompatible.ts";
 import { isResponsesEndpointPath } from "../../utils/responsesEndpoint.ts";
 import { mergeClientAnthropicBeta } from "../../config/anthropicHeaders.ts";
+import { DEFAULT_THINKING_CLAUDE_SIGNATURE } from "../../config/defaultThinkingSignature.ts";
 import { getHeaderValueCaseInsensitive } from "./headers.ts";
 
 export { isResponsesEndpointPath };
@@ -105,7 +106,7 @@ function isResponsesShapedBody(body: unknown): boolean {
 export function shouldUseNativeOpenAICompatibleResponsesPassthrough({
   provider,
   sourceFormat,
-  endpointPath,
+  endpointPath: _endpointPath,
   providerSpecificData,
   body,
 }: {
@@ -159,7 +160,7 @@ export function shouldUseNativeOpenAICompatibleResponsesPassthrough({
  */
 export function redactPassthroughThinkingSignatures(
   messages: unknown,
-  _signature: string
+  _defaultSignature: string = DEFAULT_THINKING_CLAUDE_SIGNATURE
 ): unknown {
   // Signed blocks stay verbatim; only blocks Anthropic never issued are dropped (#12917).
   return dropUnsignedPassthroughThinkingBlocks(messages);
@@ -276,13 +277,20 @@ export function isAnthropicThinkingSignatureError({
  * retain their thinking history, cache shape, and current-model semantics.
  * Returns the original body reference when no safe recovery change is possible.
  */
-export function stripHistoricalThinkingForSignatureRecovery<T>(body: T): T {
+export function stripHistoricalThinkingForSignatureRecovery<T>(
+  body: T,
+  errorMessage?: string | null
+): T {
   if (!body || typeof body !== "object" || Array.isArray(body)) return body;
 
   const record = body as Record<string, unknown>;
   if (!Array.isArray(record.messages)) return body;
 
   const messages = record.messages as MessageLike[];
+  const targetedMatch =
+    typeof errorMessage === "string" ? /messages\.(\d+)\.content\.(\d+)/i.exec(errorMessage) : null;
+  const targetedMsgIndex = targetedMatch ? parseInt(targetedMatch[1], 10) : null;
+
   const protectedAssistantIndexes = new Set<number>();
   let cursor = messages.length - 1;
 
@@ -311,6 +319,13 @@ export function stripHistoricalThinkingForSignatureRecovery<T>(body: T): T {
     cursor -= 1;
   }
 
+  // If Anthropic explicitly rejected a thinking signature at a specific message index
+  // (e.g. "messages.3.content.0: Invalid signature in thinking block"), that index CANNOT
+  // remain protected: keeping its signature guarantees the recovery retry fails identically.
+  if (targetedMsgIndex !== null) {
+    protectedAssistantIndexes.delete(targetedMsgIndex);
+  }
+
   let changed = false;
   const recoveredMessages = messages.map((message, index) => {
     if (
@@ -322,9 +337,30 @@ export function stripHistoricalThinkingForSignatureRecovery<T>(body: T): T {
       return message;
     }
 
-    const content = message.content.filter((block) => !isThinkingBlock(block));
-    if (content.length === message.content.length) return message;
-    changed = true;
+    const isLatestTurn = index === messages.length - 1;
+    if (isLatestTurn && targetedMsgIndex !== index) {
+      return message;
+    }
+
+    const hasToolUse = hasBlock(message, "tool_use");
+    const content = message.content.flatMap((block) => {
+      if (!isThinkingBlock(block)) return [block];
+      changed = true;
+      // If this assistant message contains tool_use, Anthropic requires a precursor
+      // thinking or redacted_thinking block when thinking is active on the request.
+      // Converting to redacted_thinking satisfies that schema requirement without signature validation.
+      if (hasToolUse) {
+        return [
+          {
+            type: "redacted_thinking",
+            data: DEFAULT_THINKING_CLAUDE_SIGNATURE,
+          },
+        ];
+      }
+      // If no tool_use is present, the historical thinking block can be omitted cleanly.
+      return [];
+    });
+
     return { ...message, content };
   });
 
@@ -363,7 +399,7 @@ export async function executeWithAnthropicThinkingSignatureRecovery<T>(args: {
     return { result: first, retried: false, recoveryBody: null };
   }
 
-  const recoveryBody = stripHistoricalThinkingForSignatureRecovery(args.body);
+  const recoveryBody = stripHistoricalThinkingForSignatureRecovery(args.body, failure.message);
   if (recoveryBody === args.body) {
     return { result: first, retried: false, recoveryBody: null };
   }

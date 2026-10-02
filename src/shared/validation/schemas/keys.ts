@@ -49,6 +49,15 @@ const requireConsistentModelAccess = (
   }
 };
 
+// Per-key self-service settings (migration 194). null = share every provider the
+// key reaches; [] = share none.
+const sharedQuotaProvidersField = z
+  .array(z.string().trim().min(1).max(64))
+  .max(100)
+  .nullable()
+  .optional();
+const anthropicRateLimitHeadersField = z.enum(["auto", "forward", "strip"]).optional();
+
 export const createKeySchema = z
   .object({
     name: z.string().min(1, "Name is required").max(200),
@@ -169,6 +178,8 @@ export const updateKeyPermissionsSchema = z
     dailyUsageLimitUsd: z.coerce.number().min(0).optional().nullable(),
     weeklyUsageLimitUsd: z.coerce.number().min(0).optional().nullable(),
     chaosModeEnabled: z.boolean().optional(),
+    sharedQuotaProviders: sharedQuotaProvidersField,
+    anthropicRateLimitHeaders: anthropicRateLimitHeadersField,
   })
   .superRefine((value, ctx) => {
     if (value.modelAccessMode === "all" && value.allowedModels && value.allowedModels.length > 0) {
@@ -228,7 +239,9 @@ export const updateKeyPermissionsSchema = z
       value.usageLimitEnabled === undefined &&
       value.dailyUsageLimitUsd === undefined &&
       value.weeklyUsageLimitUsd === undefined &&
-      value.chaosModeEnabled === undefined
+      value.chaosModeEnabled === undefined &&
+      value.sharedQuotaProviders === undefined &&
+      value.anthropicRateLimitHeaders === undefined
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -240,3 +253,53 @@ export const updateKeyPermissionsSchema = z
       requireExclusiveLeaseConnections(value, ctx);
     }
   });
+
+export const updateApiKeySelfServiceSchema = z
+  .object({
+    sharedQuotaProviders: sharedQuotaProvidersField,
+    anthropicRateLimitHeaders: anthropicRateLimitHeadersField,
+  })
+  .superRefine((value, ctx) => {
+    if (value.sharedQuotaProviders === undefined && value.anthropicRateLimitHeaders === undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "No valid fields to update",
+        path: [],
+      });
+    }
+  });
+
+const accessListSchema = z.object({
+  models: z.array(z.string().trim().min(1)).max(1000).optional(),
+  combos: z.array(z.string().trim().min(1).max(200)).max(500).optional(),
+});
+
+type AccessList = z.infer<typeof accessListSchema>;
+
+const isNonEmptyList = (list: string[] | undefined) => (list?.length ?? 0) > 0;
+
+const hasAccessListEntries = (list: AccessList | undefined) =>
+  isNonEmptyList(list?.models) || isNonEmptyList(list?.combos);
+
+const requireAccessAssignEntries = (
+  data: { add?: AccessList; remove?: AccessList },
+  ctx: z.RefinementCtx
+) => {
+  if (!hasAccessListEntries(data.add) && !hasAccessListEntries(data.remove)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "At least one non-empty list of models or combos must be provided to add or remove",
+      path: ["add"],
+    });
+  }
+};
+
+export const apiKeyAccessAssignSchema = z
+  .object({
+    add: accessListSchema.optional(),
+    remove: accessListSchema.optional(),
+    switchToRestricted: z.boolean().optional(),
+  })
+  .superRefine(requireAccessAssignEntries);
+
+export type ApiKeyAccessAssignInput = z.infer<typeof apiKeyAccessAssignSchema>;
