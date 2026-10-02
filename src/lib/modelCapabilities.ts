@@ -17,10 +17,7 @@ import {
 } from "@/shared/constants/modelSpecs";
 import { getSyncedCapability } from "@/lib/modelsDevSync";
 import { MODELS_DEV_PROVIDER_MAP } from "@/lib/modelsDevSync/transform";
-import {
-  getModelContextOverride,
-  getModelContextOverrideRecord,
-} from "@/lib/db/modelContextOverrides";
+import { getModelContextOverride } from "@/lib/db/modelContextOverrides";
 import {
   getModelCapabilityOverride,
   getReasoningEffortsOverride,
@@ -29,6 +26,16 @@ import { getModelCompatVisionOverride } from "@/lib/db/models/compat";
 import { getCustomModelVisionOverride, getSyncedAvailableModelVision } from "@/lib/db/models";
 import type { ModelCapabilityResolutionSnapshot } from "@/lib/modelCapabilityResolutionSnapshot";
 import { resolveAudioCapability, resolveVideoCapability } from "@/lib/modelCapabilityModalities";
+import {
+  getContextOverrideSource,
+  getDiscoveryProtectedContextWindow,
+} from "@/lib/modelContextOverridePolicy";
+import {
+  heuristicMaxTokens,
+  heuristicReasoning,
+  heuristicToolCalling,
+} from "@/lib/modelCapabilityHeuristics";
+export { isNonChatCatalogSurface } from "@/lib/modelCapabilityHeuristics";
 import { getNoAuthHydrationProviderIds } from "@/sse/services/noAuthProviderSiblings";
 
 export type { ModelCapabilityResolutionSnapshot } from "@/lib/modelCapabilityResolutionSnapshot";
@@ -40,70 +47,6 @@ import {
   getLearnedThinkingCap,
   GEMINI_FALLBACK_THINKING_CAP,
 } from "@omniroute/open-sse/services/learnedThinkingCaps.ts";
-
-const TOOL_CALLING_UNSUPPORTED_PATTERNS: string[] = [
-  // Specialty / non-chat surfaces must never inherit optimistic tool defaults (#8016)
-  "whisper",
-  "tts-1",
-  "gpt-4o-mini-tts",
-  "omni-moderation",
-  "moderation",
-  "eleven_multilingual",
-  "eleven_turbo",
-  "seedance",
-  "/veo",
-  "veo-",
-  "rerank",
-  "embedding",
-  "dall-e",
-  "flux-",
-  "stable-diffusion",
-];
-const REASONING_UNSUPPORTED_PATTERNS = [
-  "antigravity/tab_",
-  // Specialty / non-chat surfaces (#8016)
-  "whisper",
-  "tts-1",
-  "gpt-4o-mini-tts",
-  "omni-moderation",
-  "moderation",
-  "eleven_multilingual",
-  "eleven_turbo",
-  "seedance",
-  "/veo",
-  "veo-",
-  "rerank",
-  "embedding",
-  "dall-e",
-  "flux-",
-  "stable-diffusion",
-];
-
-/** Catalog/API surface types that are not chat completions. */
-const NON_CHAT_SURFACE_TYPES = new Set([
-  "audio",
-  "video",
-  "image",
-  "moderation",
-  "rerank",
-  "embedding",
-  "music",
-]);
-
-export function isNonChatCatalogSurface(type: unknown): boolean {
-  return typeof type === "string" && NON_CHAT_SURFACE_TYPES.has(type);
-}
-
-const MAX_TOKENS_UNSUPPORTED_PATTERNS = [
-  "o1-preview",
-  "o1-mini",
-  "o1",
-  "o3-mini",
-  "o3",
-  "gpt-5.4",
-  "gpt-5.5",
-  "gpt-6",
-];
 
 type CapabilityInput =
   | string
@@ -256,37 +199,6 @@ function resolveCapabilityInput(input: CapabilityInput) {
   };
 }
 
-function heuristicToolCalling(modelStr: string): boolean {
-  const normalized = String(modelStr || "").toLowerCase();
-  if (!normalized) return false;
-  const blocked = TOOL_CALLING_UNSUPPORTED_PATTERNS.some((pattern) => {
-    if (normalized === pattern) return true;
-    if (normalized.endsWith(`/${pattern}`)) return true;
-    return normalized.includes(pattern);
-  });
-  return !blocked;
-}
-
-function heuristicReasoning(modelStr: string): boolean {
-  const normalized = String(modelStr || "").toLowerCase();
-  if (!normalized) return true;
-  const blocked = REASONING_UNSUPPORTED_PATTERNS.some(
-    (pattern) =>
-      normalized === pattern || normalized.endsWith(`/${pattern}`) || normalized.includes(pattern)
-  );
-  return !blocked;
-}
-
-function heuristicMaxTokens(modelStr: string): boolean {
-  const normalized = String(modelStr || "").toLowerCase();
-  if (!normalized) return true;
-  const blocked = MAX_TOKENS_UNSUPPORTED_PATTERNS.some(
-    (pattern) =>
-      normalized === pattern || normalized.endsWith(`/${pattern}`) || normalized.includes(pattern)
-  );
-  return !blocked;
-}
-
 /** Last path segment of a path-shaped model id (`cline-pass/kimi-k3` → `kimi-k3`). */
 function leafModelId(modelId: string | null | undefined): string | null {
   if (!modelId || !modelId.includes("/")) return null;
@@ -370,19 +282,6 @@ function getAuthoritativeStaticContextWindow(
     const providerContextWindow = getAuthoritativeProviderContextWindow(provider, candidate);
     if (typeof providerContextWindow === "number") return providerContextWindow;
   }
-  for (const candidate of [modelId, rawModel]) {
-    const contextWindow = getAuthoritativeContextWindow(candidate);
-    if (typeof contextWindow === "number") return contextWindow;
-  }
-  return null;
-}
-
-// Windows an `auto:discovery` override may not undercut: model-id entries only (native
-// Claude/GLM). Hosted-provider entries stay overridable because hosts can cap lower.
-function getDiscoveryProtectedContextWindow(
-  modelId: string | null,
-  rawModel: string | null
-): number | null {
   for (const candidate of [modelId, rawModel]) {
     const contextWindow = getAuthoritativeContextWindow(candidate);
     if (typeof contextWindow === "number") return contextWindow;
@@ -679,31 +578,6 @@ function getContextOverride(
   return resolved.rawModel && resolved.rawModel !== resolved.model
     ? getModelContextOverride(resolved.provider, resolved.rawModel, bulk)
     : null;
-}
-
-function getContextOverrideSource(
-  resolved: {
-    provider: string | null;
-    model: string | null;
-    rawModel: string | null;
-  },
-  snapshot?: ModelCapabilityResolutionSnapshot | null
-): "manual" | "auto:discovery" | null {
-  if (snapshot?.contextOverrideSources && resolved.provider && resolved.model) {
-    const src = snapshot.contextOverrideSources.get(resolved.provider)?.get(resolved.model);
-    if (src) return src;
-    if (resolved.rawModel && resolved.rawModel !== resolved.model) {
-      const rawSrc = snapshot.contextOverrideSources.get(resolved.provider)?.get(resolved.rawModel);
-      if (rawSrc) return rawSrc;
-    }
-  }
-  const rec = getModelContextOverrideRecord(resolved.provider, resolved.model);
-  if (rec) return rec.source;
-  if (resolved.rawModel && resolved.rawModel !== resolved.model) {
-    const rawRec = getModelContextOverrideRecord(resolved.provider, resolved.rawModel);
-    if (rawRec) return rawRec.source;
-  }
-  return null;
 }
 
 /**

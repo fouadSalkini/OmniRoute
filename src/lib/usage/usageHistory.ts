@@ -1140,8 +1140,6 @@ export async function getModelLatencyStats(
   return stats;
 }
 
-// ──────────────── Request Log Compatibility Shim ────────────────
-
 /**
  * Legacy compatibility shim.
  * Request summary lines are no longer written to data/log.txt.
