@@ -79,8 +79,17 @@ test("the committed inventory covers current scripts without command drift", () 
   const full = resolveProfile(manifest, scripts, "quality-scan");
   const fast = resolveProfile(manifest, scripts, "quality-scan-fast");
   assert.ok(full.length > fast.length);
-  assert.ok(fast.every((gate) => full.some((other) => other.name === gate.name)));
+  assert.ok(
+    fast.every(
+      (gate) =>
+        full.some((other) => other.name === gate.name) ||
+        (gate.name === "check:cycles:ratchet" &&
+          full.some((other) => other.name === "check:cycles"))
+    )
+  );
   assert.ok(full.some((gate) => gate.name === "check:gate-manifest"));
+  assert.ok(fast.some((gate) => gate.name === "check:cycles:ratchet"));
+  assert.ok(!fast.some((gate) => gate.name === "check:cycles"));
 });
 
 test("real aggregator list mode uses the manifest without running any gate", () => {

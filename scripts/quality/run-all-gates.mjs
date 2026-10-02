@@ -7,7 +7,7 @@
 //
 // Usage:
 //   node scripts/quality/run-all-gates.mjs           # run all gates
-//   node scripts/quality/run-all-gates.mjs --fast    # skip slow gates (duplication)
+//   node scripts/quality/run-all-gates.mjs --fast    # skip slow gates (duplication), keep cycle ratchet
 //
 // Via npm: npm run quality:scan
 

@@ -30,17 +30,27 @@ import { WebSocket } from "ws";
  * advancing a fake clock — keeps the test fast and avoids interleaving
  * bugs between fake timers and the executor's real async/await chain.
  */
-function interceptWsTimeout(): { fire: () => void; restore: () => void } {
+function interceptWsTimeout(): {
+  registered: Promise<void>;
+  fire: () => void;
+  restore: () => void;
+} {
   const original = globalThis.setTimeout;
   let captured: (() => void) | null = null;
+  let resolveRegistered!: () => void;
+  const registered = new Promise<void>((resolve) => {
+    resolveRegistered = resolve;
+  });
   globalThis.setTimeout = ((cb: (...a: unknown[]) => void, ms?: number, ...args: unknown[]) => {
     if (ms === 30000 && captured === null) {
       captured = cb as () => void;
+      resolveRegistered();
       return 0 as unknown as ReturnType<typeof setTimeout>;
     }
     return original(cb as () => void, ms, ...args);
   }) as typeof setTimeout;
   return {
+    registered,
     fire: () => {
       assert.ok(captured, "the 30000ms wsChat timeout was never registered");
       captured?.();
@@ -74,11 +84,19 @@ class OpensThenSilentWebSocket {
   onerror: ((evt: Error) => void) | null = null;
   readyState = WebSocket.CONNECTING;
   url: string;
+  static opened: Promise<void>;
+  static resolveOpened!: () => void;
+  static {
+    this.opened = new Promise<void>((resolve) => {
+      this.resolveOpened = resolve;
+    });
+  }
   constructor(url: string) {
     this.url = url;
     setTimeout(() => {
       this.readyState = WebSocket.OPEN;
       this.onopen?.();
+      OpensThenSilentWebSocket.resolveOpened();
     }, 0);
   }
   send(_data: Uint8Array | string) {}
@@ -112,9 +130,9 @@ test("#10727: WS timeout while still CONNECTING reports readyState=0 (never open
   const timeoutHook = interceptWsTimeout();
   try {
     const resultPromise = executor.execute(baseInput("conn-10727-never-opens"));
-    // Let the GraphQL warmup/mode-switch awaits and the WS constructor run
-    // before the 30s timeout is registered.
-    await new Promise((r) => setTimeout(r, 20));
+    // Wait for the executor to register its WS timeout instead of assuming the
+    // GraphQL warmup/mode-switch awaits complete within an arbitrary delay.
+    await timeoutHook.registered;
     timeoutHook.fire();
 
     const result = await resultPromise;
@@ -143,9 +161,10 @@ test("#10727: WS timeout after a successful open reports readyState=1 (opened, t
   const timeoutHook = interceptWsTimeout();
   try {
     const resultPromise = executor.execute(baseInput("conn-10727-opens-silent"));
-    // Let the GraphQL awaits run, the WS open (its own real setTimeout(...,0)),
-    // and the intro/prompt frames send before the 30s timeout is registered.
-    await new Promise((r) => setTimeout(r, 20));
+    // Wait for actual WS-open completion before firing the timeout, rather than
+    // relying on the warmup and open callback fitting inside an arbitrary delay.
+    await timeoutHook.registered;
+    await OpensThenSilentWebSocket.opened;
     timeoutHook.fire();
 
     const result = await resultPromise;
