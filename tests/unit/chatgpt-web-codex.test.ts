@@ -174,7 +174,11 @@ test("preserves browser-verified ChatGPT auth cookies across runtime rotation", 
 });
 
 test("loads the TypeScript MCP entrypoint through the Node 26-compatible tsx import hook", async () => {
-  const entry = resolveChatGptWebCodexMcpEntry(process.cwd());
+  const root = process.cwd();
+  const entry = resolveChatGptWebCodexMcpEntry(
+    root,
+    (candidate) => candidate.endsWith(".ts") && existsSync(candidate)
+  );
   assert.ok(entry?.endsWith(".ts"));
   const module = await loadChatGptWebCodexMcpModule(entry, process.cwd());
   assert.equal(typeof module.runChatGptMcpServer, "function");
