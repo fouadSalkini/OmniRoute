@@ -1797,7 +1797,11 @@ async function handleSingleModelChat(
           }
         }
 
-        const breakerFailureStatus = Number(lastStatus ?? credentials?.lastErrorCode);
+        // Only a status this request got from the provider counts. The pool's stored
+        // lastErrorCode is the failure that started the cooldown, already counted when
+        // it happened — re-counting it on every refused request during the cooldown
+        // opened the whole-provider breaker after a single upstream 503.
+        const breakerFailureStatus = Number(lastStatus);
         // lastError is a string here — check for the proxy_unreachable tag embedded by
         // tagProxyUnreachable (proxyFetch.ts) and OmniRoute's own queue timeouts. Both mean
         // we never reached the provider, so they must not trip the provider breaker.
