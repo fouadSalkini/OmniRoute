@@ -156,12 +156,8 @@ function KpiCards({ totals }: { totals: ReportTotals }) {
   );
 }
 
-export default function ReportsPageClient() {
-  const t = useTranslations("reports");
-  const [preset, setPreset] = useState<TimePreset | "custom">("7d");
-  const [filters, setFilters] = useState<ReportFilterState>(() => emptyFilters("7d"));
-  const [tab, setTab] = useState<ReportTab>("members");
-  const [refreshToken, setRefreshToken] = useState(0);
+/** The report for the current filters, plus dropdown options for the whole time window. */
+function useReportData(filters: ReportFilterState, refreshToken: number) {
   const [result, setResult] = useState<{ key: string; report?: AgentSessionReport } | null>(null);
   const [windowOptions, setWindowOptions] = useState<AgentSessionReport["breakdowns"] | null>(null);
 
@@ -198,7 +194,16 @@ export default function ReportsPageClient() {
 
   const loading = result?.key !== requestKey;
   const report = result?.report;
-  const failed = !loading && !report;
+  return { query, loading, report, failed: !loading && !report, windowOptions };
+}
+
+export default function ReportsPageClient() {
+  const t = useTranslations("reports");
+  const [preset, setPreset] = useState<TimePreset | "custom">("7d");
+  const [filters, setFilters] = useState<ReportFilterState>(() => emptyFilters("7d"));
+  const [tab, setTab] = useState<ReportTab>("members");
+  const [refreshToken, setRefreshToken] = useState(0);
+  const { query, loading, report, failed, windowOptions } = useReportData(filters, refreshToken);
 
   const applyPreset = (next: TimePreset) => {
     setPreset(next);
