@@ -171,56 +171,66 @@ export function parseClaudeLimitResetClaim(body: unknown): ClaudeLimitResetClaim
  * - Banked usage grants from `cedar_ember.grants`
  * - Weekly session limit reset from `juniper_tide`
  */
-export function parseAllClaudeResetCredits(usageBody: unknown): ClaudeResetCreditList {
-  const credits: PublicClaudeResetCredit[] = [];
-  const body = asRecord(usageBody);
+function describeGrant(clears: string[], resetsLeft: number): string {
+  const plural = resetsLeft > 1 ? "s" : "";
+  return clears.length > 0
+    ? `Clears: ${clears.join(", ")} (${resetsLeft} reset${plural} left)`
+    : `${resetsLeft} reset${plural} available`;
+}
 
-  const cedar = asRecord(body.cedar_ember);
-  if (Array.isArray(cedar.grants)) {
-    for (const item of cedar.grants) {
-      const g = asRecord(item);
-      const id = stringOrNull(g.id);
-      if (!id) continue;
-      const resetsLeft =
-        typeof g.resets_left === "number" && Number.isFinite(g.resets_left) ? g.resets_left : 0;
-      if (resetsLeft <= 0 && g.usable_now !== true) continue;
-      const label = stringOrNull(g.label) || "Banked Reset Credit";
-      const clears = Array.isArray(g.clears)
-        ? g.clears.filter((c): c is string => typeof c === "string")
-        : [];
-      const description =
-        clears.length > 0
-          ? `Clears: ${clears.join(", ")} (${resetsLeft} reset${resetsLeft > 1 ? "s" : ""} left)`
-          : `${resetsLeft} reset${resetsLeft > 1 ? "s" : ""} available`;
-      credits.push({
-        id,
-        selectionToken: `grant:${id}`,
-        resetType: "GRANT",
-        status: g.usable_now ? "available" : "pending",
-        ...(g.starts_at ? { grantedAt: stringOrNull(g.starts_at) ?? undefined } : {}),
-        expiresAt: stringOrNull(g.ends_at),
-        title: label,
-        description,
-        resetsLeft,
-        usableNow: g.usable_now === true,
-      });
-    }
-  }
+/** One `cedar_ember.grants[]` entry as a credit; null when it has no id or nothing to redeem. */
+function parseGrantCredit(item: unknown): PublicClaudeResetCredit | null {
+  const g = asRecord(item);
+  const id = stringOrNull(g.id);
+  if (!id) return null;
+  const resetsLeft =
+    typeof g.resets_left === "number" && Number.isFinite(g.resets_left) ? g.resets_left : 0;
+  if (resetsLeft <= 0 && g.usable_now !== true) return null;
+  const clears = Array.isArray(g.clears)
+    ? g.clears.filter((c): c is string => typeof c === "string")
+    : [];
+  return {
+    id,
+    selectionToken: `grant:${id}`,
+    resetType: "GRANT",
+    status: g.usable_now ? "available" : "pending",
+    ...(g.starts_at ? { grantedAt: stringOrNull(g.starts_at) ?? undefined } : {}),
+    expiresAt: stringOrNull(g.ends_at),
+    title: stringOrNull(g.label) || "Banked Reset Credit",
+    description: describeGrant(clears, resetsLeft),
+    resetsLeft,
+    usableNow: g.usable_now === true,
+  };
+}
 
+/** The weekly `juniper_tide` session reset as a credit; null when it is not on offer. */
+function parseSessionResetCredit(usageBody: unknown): PublicClaudeResetCredit | null {
   const juniper = parseClaudeLimitResetStatus(usageBody);
-  if (juniper && (juniper.available || (juniper.eligible && juniper.arm === "reset"))) {
-    credits.push({
-      id: "session_reset",
-      selectionToken: "session_reset",
-      resetType: "SESSION",
-      status: juniper.available ? "available" : "cooling_down",
-      expiresAt: juniper.weeklyResetsAt,
-      title: "Weekly Session Reset",
-      description: "5-hour session wall reset (once per week)",
-      resetsLeft: juniper.available ? 1 : 0,
-      usableNow: juniper.available,
-    });
+  if (!juniper || !(juniper.available || (juniper.eligible && juniper.arm === "reset"))) {
+    return null;
   }
+  return {
+    id: "session_reset",
+    selectionToken: "session_reset",
+    resetType: "SESSION",
+    status: juniper.available ? "available" : "cooling_down",
+    expiresAt: juniper.weeklyResetsAt,
+    title: "Weekly Session Reset",
+    description: "5-hour session wall reset (once per week)",
+    resetsLeft: juniper.available ? 1 : 0,
+    usableNow: juniper.available,
+  };
+}
+
+export function parseAllClaudeResetCredits(usageBody: unknown): ClaudeResetCreditList {
+  const cedar = asRecord(asRecord(usageBody).cedar_ember);
+  const grants = Array.isArray(cedar.grants) ? cedar.grants : [];
+  const credits = grants
+    .map(parseGrantCredit)
+    .filter((credit): credit is PublicClaudeResetCredit => credit !== null);
+
+  const sessionReset = parseSessionResetCredit(usageBody);
+  if (sessionReset) credits.push(sessionReset);
 
   const availableCount = credits.reduce((sum, c) => {
     return sum + (c.usableNow !== false ? (c.resetsLeft ?? 1) : 0);
@@ -256,6 +266,26 @@ export async function claimClaudeLimitReset(
   return claimClaudeResetCredit(accessToken, organizationUuid, { fetchImpl });
 }
 
+function newClaimRequestId(): string {
+  return typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+/** Body for a grant claim (`grant:<id>` or a bare id) or, by default, the weekly session reset. */
+function buildResetClaimPayload(
+  creditId: string | null | undefined,
+  requestId: string | null | undefined
+): Record<string, string> {
+  const id = creditId?.trim();
+  if (!id || id === "session_reset") return { program: CLAUDE_LIMIT_RESET_PROGRAM };
+  return {
+    program: CLAUDE_GRANT_RESET_PROGRAM,
+    grant_id: id.startsWith("grant:") ? id.slice(6) : id,
+    request_id: requestId || newClaimRequestId(),
+  };
+}
+
 /**
  * Claim either a specific cedar_ember grant or the weekly juniper_tide session reset.
  * `profile` picks the request shape: the opt-in auto-reset (default) keeps base's
@@ -272,23 +302,7 @@ export async function claimClaudeResetCredit(
   } = {}
 ): Promise<ClaudeLimitResetClaim> {
   const fetchImpl = options.fetchImpl ?? fetch;
-  const creditId = options.creditId?.trim();
-  const isGrant = Boolean(creditId && creditId !== "session_reset");
-  const grantId = isGrant && creditId!.startsWith("grant:") ? creditId!.slice(6) : creditId;
-
-  const payload: Record<string, string> = isGrant
-    ? {
-        program: CLAUDE_GRANT_RESET_PROGRAM,
-        grant_id: grantId!,
-        request_id:
-          options.requestId ||
-          (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-            ? crypto.randomUUID()
-            : `${Date.now()}-${Math.random().toString(16).slice(2)}`),
-      }
-    : {
-        program: CLAUDE_LIMIT_RESET_PROGRAM,
-      };
+  const payload = buildResetClaimPayload(options.creditId, options.requestId);
 
   try {
     const res = await fetchJsonWithTimeout(

@@ -9,7 +9,6 @@ import {
   claimClaudeResetCredit,
   parseAllClaudeResetCredits,
   resolveClaudeOrganizationUuid,
-  type PublicClaudeResetCredit,
   type ClaudeResetCreditList,
 } from "@omniroute/open-sse/services/claudeLimitReset.ts";
 import {
@@ -19,7 +18,7 @@ import {
 import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/error.ts";
 import { runWithProxyContext } from "@omniroute/open-sse/utils/proxyFetch.ts";
 
-export { PublicClaudeResetCredit, ClaudeResetCreditList };
+export { ClaudeResetCreditList };
 
 type JsonRecord = Record<string, unknown>;
 
