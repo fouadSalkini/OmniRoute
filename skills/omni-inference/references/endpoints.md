@@ -1020,6 +1020,8 @@ curl https://localhost:20128/api/v1/management/proxies/health \
 
 GET me › status
 
+Self-service usage status for the calling API key (also served at /v1/me/status). Authenticate with `Authorization: Bearer <key>` or `x-api-key: <key>`. Requires scope `self:usage`. `accountQuotas` / `accountQuota` are included only with scope `self:account-quota` and are filtered by the key's `sharedQuotaProviders` setting.
+
 ```bash
 curl https://localhost:20128/api/v1/me/status \
   -H "Authorization: Bearer $OMNIROUTE_TOKEN"
