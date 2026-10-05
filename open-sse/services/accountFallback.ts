@@ -1261,9 +1261,10 @@ export function recordProviderFailure(
   );
   if (!breaker) return;
 
-  // Not canExecute(): a HALF_OPEN breaker whose only probe slot is held by the
-  // request being reported here must still see the probe fail.
-  if (breaker.getStatus().state === "OPEN") return;
+  // Skip while the breaker refuses traffic (OPEN, or HALF_OPEN with its probe in flight):
+  // the failures reported then include the gate's own "circuit breaker is open"
+  // rejections, and counting those reopens the breaker while the probe is still running.
+  if (!breaker.canExecute()) return;
 
   breaker._onFailure();
 

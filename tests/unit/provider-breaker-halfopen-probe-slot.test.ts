@@ -5,9 +5,11 @@
  * takes the only HALF_OPEN slot and records nothing (combo results are
  * "ignore"). combo.ts then credits the outcome through
  * recordProviderSuccess(provider, connectionId) / recordProviderFailure(), but
- * both gated the provider breaker on `canExecute()` — false while that slot is
- * taken. Successful probes were never counted, so the provider breaker stayed
- * HALF_OPEN for hours, admitting one request per resetTimeout.
+ * recordProviderSuccess gated the provider breaker on `canExecute()` — false
+ * while that slot is taken. Successful probes were never counted, so the provider
+ * breaker stayed HALF_OPEN for hours, admitting one request per resetTimeout.
+ * Failures keep that gate: while the probe is in flight, the failures reported
+ * include the gate's own rejections of concurrent requests.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -54,13 +56,16 @@ test("a successful combo probe holding the HALF_OPEN slot closes the provider br
   resetAllCircuitBreakers();
 });
 
-test("a failed combo probe holding the HALF_OPEN slot reopens the provider breaker", async () => {
-  const provider = uniqueProvider("failure");
+test("gate rejections while the probe is in flight do not reopen the provider breaker", async () => {
+  const provider = uniqueProvider("gate-rejection");
   const breaker = await consumeHalfOpenProbe(provider);
 
+  // A concurrent combo request is refused by the gate (canExecute() is false) and the
+  // combo target loop reports that 503 like any provider failure.
   recordProviderFailure(provider, undefined, undefined, profile);
+  assert.equal(breaker.state, "HALF_OPEN", "a gate rejection is not a probe failure");
 
-  assert.equal(breaker.state, "OPEN", "probe failure must reopen the provider breaker");
-  assert.equal(breaker.openCycleCount, 1, "a failed probe escalates the open cycle");
+  recordProviderSuccess(provider, "conn-1");
+  assert.equal(breaker.state, "CLOSED", "the probe's success still closes the breaker");
   resetAllCircuitBreakers();
 });
