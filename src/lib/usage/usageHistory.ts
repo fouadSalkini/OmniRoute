@@ -8,7 +8,6 @@
  */
 
 import { getDbInstance } from "../db/core";
-import { isSyntheticApiKeyId } from "@/shared/constants/apiKeyIdentities";
 import { resolveProviderId } from "@/shared/constants/providers";
 import { normalizePayloadForLog, protectPayloadForLog } from "../logPayloads";
 import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/errorSanitization.ts";
@@ -41,15 +40,13 @@ import {
   type AgentContext,
 } from "@omniroute/open-sse/handlers/chatCore/agentContext.ts";
 import type { AgentSessionTurn } from "@omniroute/open-sse/handlers/chatCore/agentSessionTurn.ts";
-import { isNoLog } from "../compliance/noLog";
-import { redactSessionTurn } from "./agentSessionTurnRedaction";
-import { saveAgentSessionMessage } from "../db/agentSessionMessages";
 import {
   recordAgentSessionUsage,
   type AgentSessionTokens,
   type AgentSessionUsage,
 } from "../db/agentSessions";
 import { calculateCostDetailed } from "./costCalculator";
+import { loggableSessionTurn, saveSessionTurn } from "./usageHistory/sessionTurn";
 import { shouldPersistToDisk } from "./migrations";
 import { emitUsageRecorded } from "./usageEvents";
 import {
@@ -768,6 +765,14 @@ export interface UsageEntry {
   sessionTurn?: AgentSessionTurn | null;
 }
 
+/** Upsert the request's agent session inside the caller's transaction; null when it has none. */
+function recordAgentSession(
+  db: Parameters<typeof recordAgentSessionUsage>[0],
+  usage: AgentSessionUsage | null
+): string | null {
+  return usage ? recordAgentSessionUsage(db, usage) : null;
+}
+
 /** Session counters for this request, priced now so reports keep the price at request time. */
 async function buildAgentSessionUsage(
   entry: UsageEntry,
@@ -819,11 +824,7 @@ export async function saveRequestUsage(entry: UsageEntry) {
       reasoning: getReasoningTokens(entry.tokens),
     };
     const agentSessionUsage = await buildAgentSessionUsage(entry, tokens, timestamp, serviceTier);
-    // Only /v1/me key holders read turns: no keyless or env-key rows, and the call-log noLog source.
-    const apiKeyId = entry.apiKeyId;
-    const turnReadable = apiKeyId && !isSyntheticApiKeyId(apiKeyId);
-    const sessionTurn =
-      turnReadable && !isNoLog(apiKeyId) ? await redactSessionTurn(entry.sessionTurn) : null;
+    const sessionTurn = await loggableSessionTurn(entry);
     const connection = entry.connectionId
       ? (db.prepare("SELECT * FROM provider_connections WHERE id = ?").get(entry.connectionId) as
           Record<string, unknown> | undefined)
@@ -882,30 +883,9 @@ export async function saveRequestUsage(entry: UsageEntry) {
         return; // duplicate — do not insert
       }
 
-      const agentSessionId = agentSessionUsage
-        ? recordAgentSessionUsage(db, agentSessionUsage)
-        : null;
+      const agentSessionId = recordAgentSession(db, agentSessionUsage);
 
-      if (agentSessionId && sessionTurn) {
-        try {
-          saveAgentSessionMessage(db, {
-            sessionId: agentSessionId,
-            apiKeyId: entry.apiKeyId,
-            timestamp,
-            provider: entry.provider ? resolveProviderId(entry.provider) : null,
-            model: entry.model || null,
-            success: entry.success !== false,
-            userText: sessionTurn.userText,
-            assistantText: sessionTurn.assistantText,
-            toolNames: sessionTurn.toolNames,
-            truncated: sessionTurn.truncated,
-            requestKey: sessionTurn.requestKey,
-            attemptSeq: sessionTurn.attemptSeq,
-          });
-        } catch (turnErr) {
-          console.error("Failed to save agent session message:", turnErr);
-        }
-      }
+      saveSessionTurn(db, agentSessionId, sessionTurn, entry, timestamp);
 
       db.prepare(
         `

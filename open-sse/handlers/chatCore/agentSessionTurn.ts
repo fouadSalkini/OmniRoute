@@ -113,6 +113,44 @@ function collectToolName(toolNames: string[], name: unknown): void {
   if (typeof name === "string" && name.trim()) toolNames.push(name.trim());
 }
 
+// Anthropic Messages: content: [{ type: "text" }, { type: "tool_use", name }]
+function collectAnthropicContent(r: JsonRecord, textParts: string[], toolNames: string[]): void {
+  if (!Array.isArray(r.content)) return;
+  for (const block of r.content) {
+    const blk = asRecord(block);
+    if (blk?.type === "text" && typeof blk.text === "string") textParts.push(blk.text);
+    else if (blk?.type === "tool_use") collectToolName(toolNames, blk.name);
+  }
+}
+
+// OpenAI Chat Completions: choices: [{ message: { content, tool_calls } }]
+function collectChatCompletionMessage(
+  r: JsonRecord,
+  textParts: string[],
+  toolNames: string[]
+): void {
+  const message = Array.isArray(r.choices) ? asRecord(asRecord(r.choices[0])?.message) : null;
+  if (!message) return;
+  textParts.push(contentText(message.content, ASSISTANT_TEXT_PARTS));
+  const toolCalls = Array.isArray(message.tool_calls) ? message.tool_calls : [];
+  for (const tc of toolCalls) collectToolName(toolNames, asRecord(asRecord(tc)?.function)?.name);
+  // Claude passthrough streams hand their tool_use names over off the serialized body.
+  const sideChannelNames = message[TOOL_USE_NAMES_FIELD];
+  if (Array.isArray(sideChannelNames)) {
+    for (const name of sideChannelNames) collectToolName(toolNames, name);
+  }
+}
+
+// OpenAI Responses: output: [{ type: "message", content: [output_text] }, { type: "function_call" }]
+function collectResponsesOutput(r: JsonRecord, textParts: string[], toolNames: string[]): void {
+  if (!Array.isArray(r.output)) return;
+  for (const item of r.output) {
+    const it = asRecord(item);
+    if (it?.type === "message") textParts.push(contentText(it.content, ASSISTANT_TEXT_PARTS));
+    else if (RESPONSES_TOOL_CALL_TYPES.has(String(it?.type))) collectToolName(toolNames, it?.name);
+  }
+}
+
 /**
  * Extract assistant response text and tool call names from response body.
  */
@@ -125,40 +163,9 @@ export function extractAssistantTurnText(responseBody: unknown): {
   if (!r) return { text: null, toolNames: [], truncated: false };
   const toolNames: string[] = [];
   const textParts: string[] = [];
-
-  // Anthropic Messages: content: [{ type: "text" }, { type: "tool_use", name }]
-  if (Array.isArray(r.content)) {
-    for (const block of r.content) {
-      const blk = asRecord(block);
-      if (blk?.type === "text" && typeof blk.text === "string") textParts.push(blk.text);
-      else if (blk?.type === "tool_use") collectToolName(toolNames, blk.name);
-    }
-  }
-
-  // OpenAI Chat Completions: choices: [{ message: { content, tool_calls } }]
-  const message = Array.isArray(r.choices) ? asRecord(asRecord(r.choices[0])?.message) : null;
-  if (message) {
-    textParts.push(contentText(message.content, ASSISTANT_TEXT_PARTS));
-    if (Array.isArray(message.tool_calls)) {
-      for (const tc of message.tool_calls)
-        collectToolName(toolNames, asRecord(asRecord(tc)?.function)?.name);
-    }
-    // Claude passthrough streams hand their tool_use names over off the serialized body.
-    const sideChannelNames = message[TOOL_USE_NAMES_FIELD];
-    if (Array.isArray(sideChannelNames)) {
-      for (const name of sideChannelNames) collectToolName(toolNames, name);
-    }
-  }
-
-  // OpenAI Responses: output: [{ type: "message", content: [output_text] }, { type: "function_call" }]
-  if (Array.isArray(r.output)) {
-    for (const item of r.output) {
-      const it = asRecord(item);
-      if (it?.type === "message") textParts.push(contentText(it.content, ASSISTANT_TEXT_PARTS));
-      else if (RESPONSES_TOOL_CALL_TYPES.has(String(it?.type)))
-        collectToolName(toolNames, it?.name);
-    }
-  }
+  collectAnthropicContent(r, textParts, toolNames);
+  collectChatCompletionMessage(r, textParts, toolNames);
+  collectResponsesOutput(r, textParts, toolNames);
 
   const { text, truncated } = capTurnText(cleanTurnText(textParts.filter(Boolean).join("\n\n")));
   return { text, toolNames: [...new Set(toolNames)].slice(0, MAX_TURN_TOOL_NAMES), truncated };

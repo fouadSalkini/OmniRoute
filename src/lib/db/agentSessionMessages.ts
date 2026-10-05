@@ -106,15 +106,13 @@ function writeTurnState(requestKey: string, state: Omit<RequestTurnState, "touch
   turnStateByRequestKey.set(requestKey, { ...state, touchedAt: Date.now() });
 }
 
-export function saveAgentSessionMessage(
-  db: SqliteAdapter,
-  input: SaveAgentSessionMessageInput
-): number {
+/** Column values shared by the INSERT and the in-place UPDATE of a turn row. */
+function messageRowValues(input: SaveAgentSessionMessageInput): unknown[] {
   const toolsJson =
     input.toolNames && input.toolNames.length > 0
       ? JSON.stringify(input.toolNames.slice(0, 20))
       : null;
-  const values = [
+  return [
     input.apiKeyId || null,
     input.timestamp,
     input.provider || null,
@@ -125,6 +123,13 @@ export function saveAgentSessionMessage(
     toolsJson,
     input.truncated ? 1 : 0,
   ];
+}
+
+export function saveAgentSessionMessage(
+  db: SqliteAdapter,
+  input: SaveAgentSessionMessageInput
+): number {
+  const values = messageRowValues(input);
   const requestKey = input.requestKey || null;
   const attemptSeq = input.attemptSeq ?? 0;
   const state = requestKey ? readTurnState(requestKey, Date.now()) : undefined;

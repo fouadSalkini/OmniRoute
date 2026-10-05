@@ -48,16 +48,9 @@ export async function GET(request: Request) {
   if (!hasSelfUsageScope(metadata.scopes)) return authError(403);
 
   const { searchParams } = new URL(request.url);
-  const rawParams = {
-    project: searchParams.get("project") ?? undefined,
-    client: searchParams.get("client") ?? undefined,
-    from: searchParams.get("from") ?? undefined,
-    to: searchParams.get("to") ?? undefined,
-    sort: searchParams.get("sort") ?? undefined,
-    order: searchParams.get("order") ?? undefined,
-    limit: searchParams.get("limit") ?? undefined,
-    offset: searchParams.get("offset") ?? undefined,
-  };
+  const rawParams = Object.fromEntries(
+    Object.keys(sessionsQuerySchema.shape).map((key) => [key, searchParams.get(key) ?? undefined])
+  );
 
   const parsed = sessionsQuerySchema.safeParse(rawParams);
   if (!parsed.success) {

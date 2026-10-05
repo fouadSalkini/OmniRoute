@@ -222,42 +222,49 @@ function uncachedInput(input: number, cacheRead: number, cacheCreation: number):
   return Math.max(0, input - cacheRead - cacheCreation);
 }
 
+function textOrNull(value: unknown): string | null {
+  return typeof value === "string" ? value : null;
+}
+
+function countOf(value: unknown): number {
+  return Number(value ?? 0);
+}
+
 function rowToAgentSessionRecord(row: Record<string, unknown>): AgentSessionRecord {
-  const input = Number(row.tokens_input ?? 0);
-  const output = Number(row.tokens_output ?? 0);
-  const cacheRead = Number(row.tokens_cache_read ?? 0);
-  const cacheCreation = Number(row.tokens_cache_creation ?? 0);
-  const reasoning = Number(row.tokens_reasoning ?? 0);
+  const input = countOf(row.tokens_input);
+  const output = countOf(row.tokens_output);
+  const cacheRead = countOf(row.tokens_cache_read);
+  const cacheCreation = countOf(row.tokens_cache_creation);
   return {
     id: String(row.id),
-    apiKeyId: typeof row.api_key_id === "string" ? row.api_key_id : null,
-    apiKeyName: typeof row.api_key_name === "string" ? row.api_key_name : null,
-    client: typeof row.client === "string" ? row.client : null,
-    clientSessionId: typeof row.client_session_id === "string" ? row.client_session_id : null,
-    projectName: typeof row.project_name === "string" ? row.project_name : null,
-    projectRepo: typeof row.project_repo === "string" ? row.project_repo : null,
-    projectPath: typeof row.project_path === "string" ? row.project_path : null,
-    projectSource: typeof row.project_source === "string" ? row.project_source : null,
-    gitBranch: typeof row.git_branch === "string" ? row.git_branch : null,
+    apiKeyId: textOrNull(row.api_key_id),
+    apiKeyName: textOrNull(row.api_key_name),
+    client: textOrNull(row.client),
+    clientSessionId: textOrNull(row.client_session_id),
+    projectName: textOrNull(row.project_name),
+    projectRepo: textOrNull(row.project_repo),
+    projectPath: textOrNull(row.project_path),
+    projectSource: textOrNull(row.project_source),
+    gitBranch: textOrNull(row.git_branch),
     firstSeenAt: String(row.first_seen_at),
     lastSeenAt: String(row.last_seen_at),
-    requestCount: Number(row.request_count ?? 0),
-    errorCount: Number(row.error_count ?? 0),
+    requestCount: countOf(row.request_count),
+    errorCount: countOf(row.error_count),
     tokens: {
       input,
       output,
       cacheRead,
       cacheCreation,
-      reasoning,
+      reasoning: countOf(row.tokens_reasoning),
       uncachedInput: uncachedInput(input, cacheRead, cacheCreation),
       // Input already includes cache reads and writes; adding them again double counts.
       total: input + output,
     },
-    costUsd: Number(row.cost_usd ?? 0),
-    unpricedCount: Number(row.unpriced_count ?? 0),
-    lastProvider: typeof row.last_provider === "string" ? row.last_provider : null,
-    lastModel: typeof row.last_model === "string" ? row.last_model : null,
-    lastConnectionId: typeof row.last_connection_id === "string" ? row.last_connection_id : null,
+    costUsd: countOf(row.cost_usd),
+    unpricedCount: countOf(row.unpriced_count),
+    lastProvider: textOrNull(row.last_provider),
+    lastModel: textOrNull(row.last_model),
+    lastConnectionId: textOrNull(row.last_connection_id),
   };
 }
 
@@ -269,56 +276,46 @@ const SORT_COLUMNS: Record<string, string> = {
   cost: "cost_usd",
 };
 
-export function listAgentSessions(
-  db: SqliteAdapter,
-  filter: ListAgentSessionsFilter = {}
-): { sessions: AgentSessionRecord[]; total: number } {
+/** WHERE clause and bound params for the list filter (absent fields do not filter). */
+function buildSessionFilterSql(filter: ListAgentSessionsFilter): {
+  whereClause: string;
+  params: unknown[];
+} {
   const conditions: string[] = [];
   const params: unknown[] = [];
+  const add = (condition: string, value: unknown) => {
+    conditions.push(condition);
+    params.push(value);
+  };
 
-  if (filter.apiKeyId !== undefined) {
-    if (filter.apiKeyId === null) {
-      conditions.push("api_key_id IS NULL");
-    } else {
-      conditions.push("api_key_id = ?");
-      params.push(filter.apiKeyId);
-    }
-  }
-
-  if (filter.projectName) {
-    conditions.push("project_name = ?");
-    params.push(filter.projectName);
-  }
-
-  if (filter.client) {
-    conditions.push("client = ?");
-    params.push(filter.client);
-  }
-
+  if (filter.apiKeyId === null) conditions.push("api_key_id IS NULL");
+  else if (filter.apiKeyId !== undefined) add("api_key_id = ?", filter.apiKeyId);
+  if (filter.projectName) add("project_name = ?", filter.projectName);
+  if (filter.client) add("client = ?", filter.client);
   const requestFilters: Array<[string, string | null | undefined]> = [
     ["provider", filter.provider],
     ["connection_id", filter.connectionId],
   ];
   for (const [column, value] of requestFilters) {
     if (!value) continue;
-    conditions.push(
+    add(
       `EXISTS (SELECT 1 FROM usage_history uh
-               WHERE uh.agent_session_id = agent_sessions.id AND uh.${column} = ?)`
+               WHERE uh.agent_session_id = agent_sessions.id AND uh.${column} = ?)`,
+      value
     );
-    params.push(value);
   }
-
-  if (filter.from) {
-    conditions.push("last_seen_at >= ?");
-    params.push(filter.from);
-  }
-
-  if (filter.to) {
-    conditions.push("last_seen_at <= ?");
-    params.push(filter.to);
-  }
+  if (filter.from) add("last_seen_at >= ?", filter.from);
+  if (filter.to) add("last_seen_at <= ?", filter.to);
 
   const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+  return { whereClause, params };
+}
+
+export function listAgentSessions(
+  db: SqliteAdapter,
+  filter: ListAgentSessionsFilter = {}
+): { sessions: AgentSessionRecord[]; total: number } {
+  const { whereClause, params } = buildSessionFilterSql(filter);
   const sortCol = SORT_COLUMNS[filter.sort || "lastSeen"] || "last_seen_at";
   const sortOrder = filter.order?.toLowerCase() === "asc" ? "ASC" : "DESC";
 
