@@ -1261,7 +1261,9 @@ export function recordProviderFailure(
   );
   if (!breaker) return;
 
-  if (!breaker.canExecute()) return;
+  // Not canExecute(): a HALF_OPEN breaker whose only probe slot is held by the
+  // request being reported here must still see the probe fail.
+  if (breaker.getStatus().state === "OPEN") return;
 
   breaker._onFailure();
 
@@ -1306,7 +1308,13 @@ export function recordProviderSuccess(
   if (connectionId) {
     lastConnectionFailure.delete(`${provider}:${connectionId}`);
     const providerBreaker = getProviderBreaker(provider);
-    if (providerBreaker && providerBreaker !== breaker && providerBreaker.canExecute()) {
+    // Not canExecute(): it is false while this very request holds the HALF_OPEN
+    // probe slot, so a successful probe was never credited and the breaker stuck.
+    if (
+      providerBreaker &&
+      providerBreaker !== breaker &&
+      providerBreaker.getStatus().state !== "OPEN"
+    ) {
       providerBreaker._onSuccess();
     }
   }
