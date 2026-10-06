@@ -74,6 +74,34 @@ test("a continuation reconnects after 20+ other agents touched the shared bucket
   assert.equal(next.conversationId, opened.conversationId);
 });
 
+test("parallel agents of one client session do not crowd each other out", async () => {
+  // Subagents share their parent's session id, so a busy session's own bucket can hold
+  // more than 20 conversations too.
+  const first = history("busy-parent", 6);
+  const opened = await resolve(first, "session-busy");
+  for (let agent = 0; agent < 25; agent++) {
+    await resolve(history(`subagent-${agent}`, 4), "session-busy");
+  }
+
+  const next = await resolve(
+    [...first, { role: "assistant", content: "reply" }, { role: "user", content: "next" }],
+    "session-busy"
+  );
+  assert.equal(next.conversationId, opened.conversationId);
+});
+
+test("without a session id a continuation also survives 20+ busier conversations", async () => {
+  const first = history("no-session-client", 6);
+  const opened = await resolve(first, null);
+  await crowdTheBucket(false);
+
+  const next = await resolve(
+    [...first, { role: "assistant", content: "reply" }, { role: "user", content: "next" }],
+    null
+  );
+  assert.equal(next.conversationId, opened.conversationId);
+});
+
 test("a tool list that grows mid-session does not split the conversation", async () => {
   const first = history("tool-growth", 4);
   const opened = await resolve(first, "session-tools");

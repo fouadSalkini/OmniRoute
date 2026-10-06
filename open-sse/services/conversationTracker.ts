@@ -34,6 +34,7 @@
 import { createHmac, randomUUID } from "node:crypto";
 import {
   createAgenticConversation,
+  findAgenticConversationsByContent,
   findAgenticConversationsByFingerprint,
   getConversationTurnIndex,
   insertConversationTurnNodes,
@@ -500,6 +501,25 @@ export function resolveClientSessionId(
   return claudeMetadataSessionId(body)?.slice(0, MAX_STORED_ID_LENGTH) ?? null;
 }
 
+/**
+ * A few of this request's turns that a continued conversation already holds: the first,
+ * the middle and the third-to-last (the newest turns are usually new). A sliding-window
+ * client may have dropped the first, so the later probes still find the conversation.
+ */
+function probeTurnHashes(turnHashes: string[]): string[] {
+  const n = turnHashes.length;
+  if (n === 0) return [];
+  const indexes = [0, Math.floor((n - 1) / 2), Math.max(0, n - 3)];
+  return [...new Set(indexes.map((i) => turnHashes[i]))];
+}
+
+/** Bucket candidates holding some of this request's turns; recency only when there are none. */
+function findCandidates(fingerprintHash: string, probes: string[]) {
+  return probes.length > 0
+    ? findAgenticConversationsByContent(fingerprintHash, probes)
+    : findAgenticConversationsByFingerprint(fingerprintHash);
+}
+
 interface ReconnectContext {
   chainTurns: CanonicalTurn[];
   turnHashes: string[];
@@ -632,10 +652,11 @@ export async function resolveConversationId(
   };
   // The apiKeyId + model + toolNames bucket keeps conversations recorded before session
   // bucketing, or before this client started sending a session id, reachable.
+  const probes = probeTurnHashes(turnHashes);
   const reconnected =
-    reconnectToCandidates(findAgenticConversationsByFingerprint(fingerprintHash), context) ??
+    reconnectToCandidates(findCandidates(fingerprintHash, probes), context) ??
     (fingerprintHash !== legacyFingerprintHash
-      ? reconnectToCandidates(findAgenticConversationsByFingerprint(legacyFingerprintHash), context)
+      ? reconnectToCandidates(findCandidates(legacyFingerprintHash, probes), context)
       : null);
   if (reconnected) return reconnected;
 

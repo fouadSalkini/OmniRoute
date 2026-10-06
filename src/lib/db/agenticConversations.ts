@@ -88,6 +88,40 @@ export function findAgenticConversationsByFingerprint(
   return rows.map(toRow);
 }
 
+/**
+ * Conversations in a fingerprint bucket that already hold some of the given turns, best
+ * first: most matching turns, then most recently seen. Only the bucket's `scanLimit` most
+ * recently seen conversations are probed, through the (conversation_id, content_hash)
+ * index. Unlike the plain recency window above, a busy bucket (many parallel agents on
+ * one key or session) cannot push a conversation out of the candidates as long as it is
+ * among the bucket's recent `scanLimit`.
+ */
+export function findAgenticConversationsByContent(
+  fingerprintHash: string,
+  contentHashes: string[],
+  { scanLimit = 500, limit = 20 }: { scanLimit?: number; limit?: number } = {}
+): AgenticConversationRow[] {
+  if (contentHashes.length === 0) return [];
+  const db = getDbInstance();
+  const placeholders = contentHashes.map(() => "?").join(", ");
+  const rows = db
+    .prepare(
+      `SELECT c.*, (
+         SELECT COUNT(DISTINCT n.content_hash) FROM conversation_turn_nodes n
+         WHERE n.conversation_id = c.id AND n.content_hash IN (${placeholders})
+       ) AS hits
+       FROM (
+         SELECT * FROM agentic_conversations WHERE fingerprint_hash = ?
+         ORDER BY last_seen_at DESC LIMIT ?
+       ) c
+       WHERE hits > 0
+       ORDER BY hits DESC, c.last_seen_at DESC
+       LIMIT ?`
+    )
+    .all(...contentHashes, fingerprintHash, scanLimit, limit);
+  return rows.map(toRow);
+}
+
 export function updateAgenticConversation(id: string, patch: { turnCount: number }): void {
   const db = getDbInstance();
   db.prepare(`UPDATE agentic_conversations SET turn_count = ?, last_seen_at = ? WHERE id = ?`).run(
