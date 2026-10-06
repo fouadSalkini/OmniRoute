@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Podgląd na żywo wszystkiego, co jest uruchomione",
     "resilienceConnections": "Odporność Połączenia",
     "resilienceConnectionsSubtitle": "Cooldown, wyłącznik, stan blokady",
+    "resilienceCooldowns": "Menedżer cooldownów",
+    "resilienceCooldownsSubtitle": "Wyczyść cooldowny masowo",
     "settingsModalityBridge": "Mostek Modalności",
     "settingsModalityBridgeSubtitle": "Fallback obrazu/audio → tekst dla modeli tylko tekstowych",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Blokady Modelu",
         "count": "Liczba Połączeń"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Menedżer cooldownów",
+    "description": "Zobacz wszystkie połączenia odpoczywające po awariach, zdejmuj cooldowny masowo i konfiguruj czas ich trwania.",
+    "loading": "Ładowanie cooldownów…",
+    "loadFailed": "Nie udało się załadować cooldownów",
+    "loadFailedDetail": "Sprawdź połączenie i odśwież stronę.",
+    "rules": {
+      "title": "Reguły cooldownu",
+      "subtitle": "Dotyczy każdego połączenia od jego następnego błędu.",
+      "stallLabel": "Nałóż cooldown na konto, gdy strumień się zawiesi",
+      "stallDescription": "Domyślnie wyłączone: zawieszenie oznacza zazwyczaj pojedynczą długą turę rozumowania, a nie uszkodzone konto.",
+      "oauth": "Konta OAuth",
+      "apikey": "Klucze API",
+      "baseCooldown": "Podstawowy cooldown (sekundy)",
+      "baseCooldownHint": "Pierwszy cooldown po błędzie. Kolejne błędy go podwajają.",
+      "maxBackoffSteps": "Maksymalna liczba kroków backoffu",
+      "maxBackoffStepsHint": "Ile razy cooldown może się podwoić.",
+      "save": "Zapisz reguły",
+      "saved": "Zapisano reguły cooldownu",
+      "saveFailed": "Nie udało się zapisać reguł cooldownu"
+    },
+    "list": {
+      "title": "Połączenia wyłączone z routingu",
+      "subtitle": "Cooldowny i blokady modeli kończą się same. Wyczyść je, aby natychmiast przywrócić połączenie do routingu.",
+      "provider": "Dostawca",
+      "allProviders": "Wszyscy dostawcy",
+      "showHealthy": "Pokaż sprawne połączenia",
+      "refresh": "Odśwież",
+      "clearSelected": "Wyczyść zaznaczone ({count})",
+      "clearAll": "Wyczyść wszystko",
+      "clear": "Wyczyść",
+      "select": "Wybierz połączenie",
+      "none": "Brak",
+      "empty": "Żadne połączenie nie jest wyłączone z routingu.",
+      "cleared": "Wyczyszczono {cleared} połączeń i {lockouts} blokad modeli. Pominięto {skipped} zablokowanych lub wygasłych.",
+      "clearFailed": "Nie udało się wyczyścić cooldownów",
+      "columns": {
+        "connection": "Połączenie",
+        "provider": "Dostawca",
+        "status": "Status",
+        "remaining": "Pozostały czas",
+        "lockouts": "Blokady modeli",
+        "lastError": "Ostatni błąd"
+      }
+    },
+    "status": {
+      "cooling_down": "Schładzanie",
+      "model_locked": "Model zablokowany",
+      "unavailable": "Niedostępny",
+      "terminal": "Wymaga uwagi",
+      "healthy": "Sprawny"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Odrzuć żądania przed wysyłką, gdy docelowy model nie ma wymaganych możliwości (wizja, narzędzia, strukturalne wyjście, okno kontekstowe). Chroni bezpośrednie żądania od pojedynczego dostawcy, które omijają filtr zgodności warstwy kombinacyjnej.",

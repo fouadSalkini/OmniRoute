@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Amharc beo ar gach rud atá ag rith",
     "resilienceConnections": "Athléimneacht ceangail",
     "resilienceConnectionsSubtitle": "Staid na tréimhse fuaraithe, an scoradáin agus an fhrithdhúnta",
+    "resilienceCooldowns": "Bainisteoir Fuaraithe",
+    "resilienceCooldownsSubtitle": "Glan tréimhsí fuaraithe ina mórchóir",
     "settingsModalityBridge": "Droichead Módúlachta",
     "settingsModalityBridgeSubtitle": "Cúltaca ó íomhá/fhuaim go téacs do shamhlacha téacs amháin",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Glasálacha Múnlaí",
         "count": "Líon na gCeangal"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Bainisteoir Fuaraithe",
+    "description": "Féach ar gach nasc atá ag scíth i ndiaidh teipeanna, bain tréimhsí fuaraithe ina mórchóir, agus coigeartaigh cá fhad a mhaireann siad.",
+    "loading": "Tréimhsí fuaraithe á lódáil…",
+    "loadFailed": "Níorbh fhéidir tréimhsí fuaraithe a lódáil",
+    "loadFailedDetail": "Seiceáil do nasc agus athnuaigh an leathanach.",
+    "rules": {
+      "title": "Rialacha fuaraithe",
+      "subtitle": "Cuir i bhfeidhm ar gach nasc ón gcéad teip eile.",
+      "stallLabel": "Cuir cuntas faoi fhuarú nuair a stallaíonn sruth",
+      "stallDescription": "Múchta de réir réamhshocraithe: is iondúil go gciallaíonn stall seal fada réasúnaíochta, seachas cuntas briste.",
+      "oauth": "Cuntais OAuth",
+      "apikey": "Eochracha API",
+      "baseCooldown": "Buntréimhse fhuaraithe (soicindí)",
+      "baseCooldownHint": "An chéad tréimhse fhuaraithe tar éis teipe. Déanann teipeanna leanúnacha é a dhúbailt.",
+      "maxBackoffSteps": "Uasmhéid céimeanna cúlaithe",
+      "maxBackoffStepsHint": "Cé mhéad uair is féidir leis an tréimhse fhuaraithe dúbailt.",
+      "save": "Sábháil na rialacha",
+      "saved": "Rialacha fuaraithe sábháilte",
+      "saveFailed": "Níorbh fhéidir na rialacha fuaraithe a shábháil"
+    },
+    "list": {
+      "title": "Naisc as ródú",
+      "subtitle": "Tagann deireadh le tréimhsí fuaraithe agus frithdhúnta samhlacha leo féin. Glan iad chun nasc a chur ar ais sa ródú anois.",
+      "provider": "Soláthraí",
+      "allProviders": "Gach soláthraí",
+      "showHealthy": "Taispeáin naisc shláintiúla",
+      "refresh": "Athnuaigh",
+      "clearSelected": "Glan an méid roghnaithe ({count})",
+      "clearAll": "Glan uile",
+      "clear": "Glan",
+      "select": "Roghnaigh nasc",
+      "none": "Ceann ar bith",
+      "empty": "Níl aon nasc as ródú.",
+      "cleared": "Glanadh {cleared} nasc agus {lockouts} frithdhúnadh samhla. Scipeáladh {skipped} cinn toirmiscthe nó as feidhm.",
+      "clearFailed": "Níorbh fhéidir na tréimhsí fuaraithe a ghlanadh",
+      "columns": {
+        "connection": "Nasc",
+        "provider": "Soláthraí",
+        "status": "Stádas",
+        "remaining": "Am fágtha",
+        "lockouts": "Frithdhúnta samhlacha",
+        "lastError": "Earráid dheireanach"
+      }
+    },
+    "status": {
+      "cooling_down": "Ag fuarú",
+      "model_locked": "Samhail faoi ghlas",
+      "unavailable": "Níl ar fáil",
+      "terminal": "Aird de dhíth",
+      "healthy": "Sláintiúil"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Diúltaigh d’iarratais sula seoltar iad nuair nach bhfuil na cumais riachtanacha ag an spriocmhúnla (fís, uirlisí, aschur struchtúrtha, fuinneog chomhthéacsúil). Cosnaíonn sé iarratais dhíreacha ar sholáthraí aonair a sheachnaíonn scagaire comhoiriúnachta na sraithe teaglamaí.",

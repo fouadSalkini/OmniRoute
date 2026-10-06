@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Muonekano wa moja kwa moja wa kila kitu kinachoendesha",
     "resilienceConnections": "Uimara wa Muunganisho",
     "resilienceConnectionsSubtitle": "Kupoa, kivunja mzunguko, hali ya kufuli",
+    "resilienceCooldowns": "Kidhibiti cha Muda wa Kupumzika",
+    "resilienceCooldownsSubtitle": "Ondoa vipindi vya kupumzika kwa mkupuo",
     "settingsModalityBridge": "Daraja la Modality",
     "settingsModalityBridgeSubtitle": "Picha/sauti → maandiko ya akiba kwa mifano ya maandiko pekee",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Kufuli za Mfano",
         "count": "Idadi ya Miunganisho"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Kidhibiti cha Muda wa Kupumzika",
+    "description": "Tazama kila muunganisho unaopumzika baada ya hitilafu, ondoa vipindi vya kupumzika kwa mkupuo, na urekebishe muda unaochukua.",
+    "loading": "Inapakia vipindi vya kupumzika…",
+    "loadFailed": "Haikuweza kupakia vipindi vya kupumzika",
+    "loadFailedDetail": "Angalia muunganisho wako kisha upakie upya ukurasa.",
+    "rules": {
+      "title": "Sheria za muda wa kupumzika",
+      "subtitle": "Tumia kwa kila muunganisho kuanzia hitilafu yake inayofuata.",
+      "stallLabel": "Pumzisha akaunti mtiririko unapokwama",
+      "stallDescription": "Imezimwa kwa chaguomsingi: kukwama kwa kawaida humaanisha zamu ndefu ya ufikiriaji, si akaunti iliyoharibika.",
+      "oauth": "Akaunti za OAuth",
+      "apikey": "Funguo za API",
+      "baseCooldown": "Muda wa msingi wa kupumzika (sekunde)",
+      "baseCooldownHint": "Kipindi cha kwanza cha kupumzika baada ya hitilafu. Hitilafu zinazorudiwa hukiongeza maradufu.",
+      "maxBackoffSteps": "Hatua za juu zaidi za kurudi nyuma",
+      "maxBackoffStepsHint": "Idadi ya mara ambazo muda wa kupumzika unaweza kuwa maradufu.",
+      "save": "Hifadhi sheria",
+      "saved": "Sheria za muda wa kupumzika zimehifadhiwa",
+      "saveFailed": "Haikuweza kuhifadhi sheria za muda wa kupumzika"
+    },
+    "list": {
+      "title": "Miunganisho iliyo nje ya uelekezaji",
+      "subtitle": "Vipindi vya kupumzika na uzuiaji wa modeli humalizika vyenyewe. Viondoe ili kurudisha muunganisho kwenye uelekezaji sasa.",
+      "provider": "Mtoa huduma",
+      "allProviders": "Watoa huduma wote",
+      "showHealthy": "Onyesha miunganisho yenye afya",
+      "refresh": "Onyesha upya",
+      "clearSelected": "Ondoa zilizochaguliwa ({count})",
+      "clearAll": "Ondoa zote",
+      "clear": "Ondoa",
+      "select": "Chagua muunganisho",
+      "none": "Hakuna",
+      "empty": "Hakuna muunganisho ulio nje ya uelekezaji.",
+      "cleared": "Imeondoa miunganisho {cleared} na uzuiaji wa modeli {lockouts}. Imeruka {skipped} zilizopigwa marufuku au zilizoisha muda wake.",
+      "clearFailed": "Haikuweza kuondoa vipindi vya kupumzika",
+      "columns": {
+        "connection": "Muunganisho",
+        "provider": "Mtoa huduma",
+        "status": "Hali",
+        "remaining": "Muda uliobaki",
+        "lockouts": "Uzuiaji wa modeli",
+        "lastError": "Hitilafu ya mwisho"
+      }
+    },
+    "status": {
+      "cooling_down": "Inapoa",
+      "model_locked": "Muundo umefungwa",
+      "unavailable": "Haipatikani",
+      "terminal": "Inahitaji uangalifu",
+      "healthy": "Hali nzuri"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "kataa maombi kabla ya kutuma wakati mfano wa lengo hauna uwezo unaohitajika (maono, zana, matokeo yaliyoandikwa, dirisha la muktadha). Inalinda maombi ya moja kwa moja kutoka kwa mtoa huduma mmoja ambayo yanapita chujio cha ulinganifu wa safu ya mchanganyiko.",

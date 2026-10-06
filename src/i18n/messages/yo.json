@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Ìwòye gbogbo ohun tó ń ṣiṣẹ́ ní àsìkò gidi",
     "resilienceConnections": "Ìfaradà Asopọ̀",
     "resilienceConnectionsSubtitle": "Ipò ìsinmi, olùdáwọ́dúró, àti ìdènà",
+    "resilienceCooldowns": "Olùṣàkóso Ìdádúró",
+    "resilienceCooldownsSubtitle": "Pa àwọn ìdádúró rẹ́ ní àpapọ̀",
     "settingsModalityBridge": "Afárá Irú Ìbánisọ̀rọ̀",
     "settingsModalityBridgeSubtitle": "Àwòrán/ohùn → àyọkà àfidípò fún àwọn módẹ́lì àyọkà-nìkan",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Àwọn Ìdènà Àwòṣe",
         "count": "Iye Àsopọ̀"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Olùṣàkóso Ìdádúró",
+    "description": "Wo gbogbo ìsopọ̀ tí ó ń sinmi lẹ́yìn àwọn ìkùnà, mú àwọn ìdádúró kúrò ní àpapọ̀, kí o sì ṣètò bí wọ́n ṣe pẹ́ tó.",
+    "loading": "Ń gba àwọn ìdádúró wọlé…",
+    "loadFailed": "Kò lè gba àwọn ìdádúró wọlé",
+    "loadFailedDetail": "Yẹ ìsopọ̀ rẹ wò kí o sì tún ojú-ewé náà gbé yọ.",
+    "rules": {
+      "title": "Àwọn òfin ìdádúró",
+      "subtitle": "Wúlò fún gbogbo ìsopọ̀ láti orí ìkùnà rẹ̀ tí ń bọ̀.",
+      "stallLabel": "Dá àkántì dúró nígbà tí ìṣàn bá dánudúró",
+      "stallDescription": "Kò ṣiṣẹ́ ní àkọ́kọ́: dídánudúró sábà máa ń túmọ̀ sí àkókò ìrònú gígùn kan, kì í ṣe àkántì tí ó bàjẹ́.",
+      "oauth": "Àwọn àkántì OAuth",
+      "apikey": "Àwọn kọ́kọ́rọ́ API",
+      "baseCooldown": "Ìdádúró ìpìlẹ̀ (ìṣẹ́jú àáyá)",
+      "baseCooldownHint": "Ìdádúró àkọ́kọ́ lẹ́yìn ìkùnà kan. Àwọn ìkùnà léraléra yóò sọ ọ́ di ìlọ́po méjì.",
+      "maxBackoffSteps": "Àwọn ìgbésẹ̀ ìpadàsẹ́yìn tí ó pọ̀ jùlọ",
+      "maxBackoffStepsHint": "Iye ìgbà tí ìdádúró lè di ìlọ́po méjì.",
+      "save": "Fi àwọn òfin pamọ́",
+      "saved": "A ti fi àwọn òfin ìdádúró pamọ́",
+      "saveFailed": "Kò lè fi àwọn òfin ìdádúró pamọ́"
+    },
+    "list": {
+      "title": "Àwọn ìsopọ̀ tí kò sí nínú ìtọ́sọ́nà",
+      "subtitle": "Àwọn ìdádúró àti títìpa àwòṣe máa ń parí fúnra wọn. Pa wọ́n rẹ́ láti mú ìsopọ̀ padà sí ìtọ́sọ́nà ní báyìí.",
+      "provider": "Olùpèsè",
+      "allProviders": "Gbogbo àwọn olùpèsè",
+      "showHealthy": "Fi àwọn ìsopọ̀ tí ó dára hàn",
+      "refresh": "Tún gbé yọ",
+      "clearSelected": "Pa èyí tí a yàn rẹ́ ({count})",
+      "clearAll": "Pa gbogbo rẹ̀ rẹ́",
+      "clear": "Pa rẹ́",
+      "select": "Yan ìsopọ̀",
+      "none": "Kò sí",
+      "empty": "Kò sí ìsopọ̀ kankan tí ó wà lẹ́yìn ìtọ́sọ́nà.",
+      "cleared": "A ti pa {cleared} ìsopọ̀ àti {lockouts} títìpa àwòṣe rẹ́. A fo {skipped} tí a fòfin dè tàbí tí ó ti parí dá.",
+      "clearFailed": "Kò lè pa àwọn ìdádúró rẹ́",
+      "columns": {
+        "connection": "Ìsopọ̀",
+        "provider": "Olùpèsè",
+        "status": "Ipò",
+        "remaining": "Àkókò tí ó kù",
+        "lockouts": "Àwọn títìpa àwòṣe",
+        "lastError": "Àṣìṣe ìkẹyìn"
+      }
+    },
+    "status": {
+      "cooling_down": "Ń tutù",
+      "model_locked": "Àwòṣe ti tì",
+      "unavailable": "Kò sí lárọ̀ọ́wọ́tó",
+      "terminal": "Nílò àfiyèsí",
+      "healthy": "Ní ìlera"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Kọ àwọn ìbéèrè kí a tó fi wọ́n ránṣẹ́ nígbà tí àwòṣe àfojúsùn kò bá ní àwọn agbára tí a nílò (ìríran, irinṣẹ́, àbájáde tó ní ìṣètò, fèrèsé àyíká-ọ̀rọ̀). Èyí ń dáàbò bo àwọn ìbéèrè olùpèsè-kan tààrà tí ó ré àlẹ̀mọ́ ìbámu combo-layer kọjá.",

@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Vista em direto de tudo o que está em execução",
     "resilienceConnections": "Resiliência de Ligação",
     "resilienceConnectionsSubtitle": "Cooldown, disjuntor, estado de bloqueio",
+    "resilienceCooldowns": "Gestor de Cooldowns",
+    "resilienceCooldownsSubtitle": "Limpar cooldowns em massa",
     "settingsModalityBridge": "Ponte de Modalidade",
     "settingsModalityBridgeSubtitle": "Fallback de imagem/áudio → texto para modelos apenas de texto",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Bloqueios de Modelo",
         "count": "Contagem de Ligações"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Gestor de Cooldowns",
+    "description": "Veja todas as ligações em pausa após falhas, remova cooldowns em massa e ajuste a sua duração.",
+    "loading": "A carregar cooldowns…",
+    "loadFailed": "Não foi possível carregar os cooldowns",
+    "loadFailedDetail": "Verifique a sua ligação e atualize a página.",
+    "rules": {
+      "title": "Regras de cooldown",
+      "subtitle": "Aplicar a todas as ligações a partir da próxima falha.",
+      "stallLabel": "Aplicar cooldown a uma conta quando um stream bloquear",
+      "stallDescription": "Desativado por predefinição: um bloqueio geralmente significa um turno de raciocínio longo, não uma conta com problemas.",
+      "oauth": "Contas OAuth",
+      "apikey": "Chaves de API",
+      "baseCooldown": "Cooldown base (segundos)",
+      "baseCooldownHint": "Primeiro cooldown após uma falha. Falhas repetidas duplicam-no.",
+      "maxBackoffSteps": "Passos máximos de backoff",
+      "maxBackoffStepsHint": "Quantas vezes o cooldown pode duplicar.",
+      "save": "Guardar regras",
+      "saved": "Regras de cooldown guardadas",
+      "saveFailed": "Não foi possível guardar as regras de cooldown"
+    },
+    "list": {
+      "title": "Ligações fora do encaminhamento",
+      "subtitle": "Os cooldowns e os bloqueios de modelo terminam por si próprios. Limpe-os para repor uma ligação no encaminhamento agora.",
+      "provider": "Fornecedor",
+      "allProviders": "Todos os fornecedores",
+      "showHealthy": "Mostrar ligações saudáveis",
+      "refresh": "Atualizar",
+      "clearSelected": "Limpar selecionadas ({count})",
+      "clearAll": "Limpar tudo",
+      "clear": "Limpar",
+      "select": "Selecionar ligação",
+      "none": "Nenhum",
+      "empty": "Nenhuma ligação está fora do encaminhamento.",
+      "cleared": "Foram limpas {cleared} ligações e {lockouts} bloqueios de modelo. Ignoradas {skipped} banidas ou expiradas.",
+      "clearFailed": "Não foi possível limpar os cooldowns",
+      "columns": {
+        "connection": "Ligação",
+        "provider": "Fornecedor",
+        "status": "Estado",
+        "remaining": "Tempo restante",
+        "lockouts": "Bloqueios de modelo",
+        "lastError": "Último erro"
+      }
+    },
+    "status": {
+      "cooling_down": "Em arrefecimento",
+      "model_locked": "Modelo bloqueado",
+      "unavailable": "Indisponível",
+      "terminal": "Requer atenção",
+      "healthy": "Saudável"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Rejeitar pedidos antes do envio quando o modelo de destino não tiver as capacidades necessárias (visão, ferramentas, saída estruturada, janela de contexto). Protege pedidos diretos de um único fornecedor que contornam o filtro de compatibilidade da camada combinada.",

@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Reaalajavaade kõigest käimasolevast",
     "resilienceConnections": "Ühenduse tõrkekindlus",
     "resilienceConnectionsSubtitle": "Ooteaja, kaitselüliti ja lukustuse olek",
+    "resilienceCooldowns": "Jahtumisaja haldur",
+    "resilienceCooldownsSubtitle": "Tühjenda jahtumisajad hulgakaupa",
     "settingsModalityBridge": "Modaalsuste sild",
     "settingsModalityBridgeSubtitle": "Pildi/heli → teksti varulahendus ainult tekstipõhistele mudelitele",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Mudelite blokeeringud",
         "count": "Ühenduste arv"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Jahtumisaja haldur",
+    "description": "Vaata kõiki ühendusi, mis puhkavad pärast tõrkeid, eemalda jahtumisajad hulgakaupa ja kohanda nende kestust.",
+    "loading": "Jahtumisaegade laadimine…",
+    "loadFailed": "Jahtumisaegu ei õnnestunud laadida",
+    "loadFailedDetail": "Kontrolli ühendust ja värskenda lehte.",
+    "rules": {
+      "title": "Jahtumisreeglid",
+      "subtitle": "Rakendatakse igale ühendusele alates järgmisest tõrkest.",
+      "stallLabel": "Vii konto jahtuma, kui voog seiskub",
+      "stallDescription": "Vaikimisi väljas: seiskumine tähendab tavaliselt pikka arutluskäiku, mitte vigast kontot.",
+      "oauth": "OAuth-kontod",
+      "apikey": "API-võtmed",
+      "baseCooldown": "Baasjahtumisaeg (sekundit)",
+      "baseCooldownHint": "Esimene jahtumisaeg pärast tõrget. Korduvad tõrked kahekordistavad seda.",
+      "maxBackoffSteps": "Maksimaalsed tagasitõmbumise sammud",
+      "maxBackoffStepsHint": "Mitu korda saab jahtumisaeg kahekordistuda.",
+      "save": "Salvesta reeglid",
+      "saved": "Jahtumisreeglid salvestatud",
+      "saveFailed": "Jahtumisreegleid ei õnnestunud salvestada"
+    },
+    "list": {
+      "title": "Marsruutimisest väljas olevad ühendused",
+      "subtitle": "Jahtumisajad ja mudeliblokeeringud lõppevad iseenesest. Tühjenda need, et viia ühendus kohe tagasi marsruutimisse.",
+      "provider": "Pakkuja",
+      "allProviders": "Kõik pakkujad",
+      "showHealthy": "Kuva korras ühendused",
+      "refresh": "Värskenda",
+      "clearSelected": "Tühjenda valitud ({count})",
+      "clearAll": "Tühjenda kõik",
+      "clear": "Tühjenda",
+      "select": "Vali ühendus",
+      "none": "Puudub",
+      "empty": "Ükski ühendus pole marsruutimisest väljas.",
+      "cleared": "Tühjendati {cleared} ühendust ja {lockouts} mudeliblokeeringut. Vahele jäeti {skipped} blokeeritud või aegunud.",
+      "clearFailed": "Jahtumisaegu ei õnnestunud tühjendada",
+      "columns": {
+        "connection": "Ühendus",
+        "provider": "Pakkuja",
+        "status": "Olek",
+        "remaining": "Aega jäänud",
+        "lockouts": "Mudeliblokeeringud",
+        "lastError": "Viimane viga"
+      }
+    },
+    "status": {
+      "cooling_down": "Jahtumas",
+      "model_locked": "Mudel lukustatud",
+      "unavailable": "Pole saadaval",
+      "terminal": "Vajab tähelepanu",
+      "healthy": "Töökorras"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Lükka päringud enne edastamist tagasi, kui sihtmudelil puuduvad nõutavad võimalused (nägemine, tööriistad, struktureeritud väljund, kontekstiaken). See kaitseb ühe teenusepakkuja otsepäringuid, mis mööduvad kombokihi ühilduvusfiltrist.",

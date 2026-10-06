@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Vue en direct de tout ce qui s'exécute",
     "resilienceConnections": "Résilience de Connexion",
     "resilienceConnectionsSubtitle": "Cooldown, disjoncteur, état de blocage",
+    "resilienceCooldowns": "Gestionnaire de cooldowns",
+    "resilienceCooldownsSubtitle": "Réinitialiser les cooldowns en masse",
     "settingsModalityBridge": "Pont de Modalité",
     "settingsModalityBridgeSubtitle": "Fallback image/audio → texte pour les modèles uniquement textuels",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Blocages de Modèle",
         "count": "Nombre de Connexions"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Gestionnaire de cooldowns",
+    "description": "Consultez toutes les connexions au repos après des échecs, levez les cooldowns en masse et ajustez leur durée.",
+    "loading": "Chargement des cooldowns…",
+    "loadFailed": "Impossible de charger les cooldowns",
+    "loadFailedDetail": "Vérifiez votre connexion et actualisez la page.",
+    "rules": {
+      "title": "Règles de cooldown",
+      "subtitle": "S'applique à chaque connexion dès son prochain échec.",
+      "stallLabel": "Mettre un compte en cooldown lorsqu'un flux se bloque",
+      "stallDescription": "Désactivé par défaut : un blocage indique généralement un long tour de raisonnement, pas un compte défaillant.",
+      "oauth": "Comptes OAuth",
+      "apikey": "Clés API",
+      "baseCooldown": "Cooldown de base (secondes)",
+      "baseCooldownHint": "Premier cooldown après un échec. Les échecs répétés le doublent.",
+      "maxBackoffSteps": "Nombre maximal d'étapes de backoff",
+      "maxBackoffStepsHint": "Nombre de fois où le cooldown peut être doublé.",
+      "save": "Enregistrer les règles",
+      "saved": "Règles de cooldown enregistrées",
+      "saveFailed": "Impossible d'enregistrer les règles de cooldown"
+    },
+    "list": {
+      "title": "Connexions hors routage",
+      "subtitle": "Les cooldowns et les verrouillages de modèles se terminent d'eux-mêmes. Réinitialisez-les pour réintégrer immédiatement une connexion au routage.",
+      "provider": "Fournisseur",
+      "allProviders": "Tous les fournisseurs",
+      "showHealthy": "Afficher les connexions saines",
+      "refresh": "Actualiser",
+      "clearSelected": "Réinitialiser la sélection ({count})",
+      "clearAll": "Tout réinitialiser",
+      "clear": "Réinitialiser",
+      "select": "Sélectionner la connexion",
+      "none": "Aucun",
+      "empty": "Aucune connexion n'est hors routage.",
+      "cleared": "{cleared} connexions et {lockouts} verrouillages de modèles réinitialisés. {skipped} bannis ou expirés ignorés.",
+      "clearFailed": "Impossible de réinitialiser les cooldowns",
+      "columns": {
+        "connection": "Connexion",
+        "provider": "Fournisseur",
+        "status": "Statut",
+        "remaining": "Temps restant",
+        "lockouts": "Verrouillages de modèle",
+        "lastError": "Dernière erreur"
+      }
+    },
+    "status": {
+      "cooling_down": "Refroidissement",
+      "model_locked": "Modèle verrouillé",
+      "unavailable": "Indisponible",
+      "terminal": "Attention requise",
+      "healthy": "Sain"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Rejeter les demandes avant l'expédition lorsque le modèle cible manque des capacités requises (vision, outils, sortie structurée, fenêtre de contexte). Protège les demandes directes à un seul fournisseur qui contournent le filtre de compatibilité de la couche combo.",

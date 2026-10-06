@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "ක්රියාත්මක වන සියල්ලේ සජීවී දසුන",
     "resilienceConnections": "සම්බන්ධතා ප්රත්යස්ථතාව",
     "resilienceConnectionsSubtitle": "සිසිලන කාලය, පරිපථ බිඳිනය සහ අගුලු දැමීමේ තත්ත්වය",
+    "resilienceCooldowns": "Cooldown කළමනාකරු",
+    "resilienceCooldownsSubtitle": "Cooldown එකවර ඉවත් කරන්න",
     "settingsModalityBridge": "මාධ්ය ආකාර සම්බන්ධකය",
     "settingsModalityBridgeSubtitle": "පෙළ-පමණක් ආකෘති සඳහා රූප/ශ්රව්ය → පෙළ විකල්පය",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "මාදිලි අගුලු දැමීම්",
         "count": "සම්බන්ධතා ගණන"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Cooldown කළමනාකරු",
+    "description": "අසාර්ථක වීම් හේතුවෙන් විවේක ගන්වා ඇති සෑම සම්බන්ධතාවක්ම බලන්න, cooldown එකවර ඉවත් කරන්න, සහ ඒවා පවතින කාලය සකසන්න.",
+    "loading": "Cooldown පූරණය වෙමින් පවතී…",
+    "loadFailed": "Cooldown පූරණය කිරීමට නොහැකි විය",
+    "loadFailedDetail": "ඔබගේ සම්බන්ධතාව පරීක්ෂා කර පිටුව නැවුම් කරන්න.",
+    "rules": {
+      "title": "Cooldown නීති",
+      "subtitle": "එහි මීළඟ අසාර්ථක වීමේ සිට සෑම සම්බන්ධතාවකටම අදාළ වේ.",
+      "stallLabel": "ප්‍රවාහයක් ඇනහිටි විට ගිණුමකට cooldown යොදන්න",
+      "stallDescription": "පෙරනිමියෙන් අක්‍රියයි: ඇනහිටීමක් සාමාන්‍යයෙන් අදහස් කරන්නේ එක් දිගු reasoning වාරයක් මිස බිඳවැටුණු ගිණුමක් නොවේ.",
+      "oauth": "OAuth ගිණුම්",
+      "apikey": "API යතුරු",
+      "baseCooldown": "මූලික cooldown (තත්පර)",
+      "baseCooldownHint": "අසාර්ථක වීමකින් පසු පළමු cooldown. නැවත නැවත සිදුවන අසාර්ථක වීම් එය දෙගුණ කරයි.",
+      "maxBackoffSteps": "උපරිම backoff පියවර",
+      "maxBackoffStepsHint": "Cooldown දෙගුණ විය හැකි වාර ගණන.",
+      "save": "නීති සුරකින්න",
+      "saved": "Cooldown නීති සුරකින ලදි",
+      "saveFailed": "Cooldown නීති සුරැකීමට නොහැකි විය"
+    },
+    "list": {
+      "title": "Routing වෙතින් බැහැර වූ සම්බන්ධතා",
+      "subtitle": "Cooldown සහ model lockout ස්වයංක්‍රීයව අවසන් වේ. සම්බන්ධතාවක් නැවත දැන්ම routing වෙත යොමු කිරීමට ඒවා ඉවත් කරන්න.",
+      "provider": "සැපයුම්කරු",
+      "allProviders": "සියලුම සැපයුම්කරුවන්",
+      "showHealthy": "නිරෝගී සම්බන්ධතා පෙන්වන්න",
+      "refresh": "නැවුම් කරන්න",
+      "clearSelected": "තෝරාගත් ඒවා ඉවත් කරන්න ({count})",
+      "clearAll": "සියල්ල ඉවත් කරන්න",
+      "clear": "ඉවත් කරන්න",
+      "select": "සම්බන්ධතාව තෝරන්න",
+      "none": "කිසිවක් නැත",
+      "empty": "Routing වෙතින් බැහැර වූ කිසිදු සම්බන්ධතාවක් නොමැත.",
+      "cleared": "සම්බන්ධතා {cleared} ක් සහ model lockout {lockouts} ක් ඉවත් කරන ලදි. තහනම් කළ හෝ කල් ඉකුත් වූ {skipped} ක් මඟ හරින ලදි.",
+      "clearFailed": "Cooldown ඉවත් කිරීමට නොහැකි විය",
+      "columns": {
+        "connection": "සම්බන්ධතාව",
+        "provider": "සැපයුම්කරු",
+        "status": "තත්ත්වය",
+        "remaining": "ඉතිරි කාලය",
+        "lockouts": "Model lockout",
+        "lastError": "අවසන් දෝෂය"
+      }
+    },
+    "status": {
+      "cooling_down": "සිසිල් වෙමින් පවතී",
+      "model_locked": "මාදිලිය අගුලු දමා ඇත",
+      "unavailable": "ලබාගත නොහැක",
+      "terminal": "අවධානය අවශ්‍යයි",
+      "healthy": "යහපත් තත්ත්වයේ"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "ඉලක්ක මාදිලියට අවශ්ය හැකියාවන් (දෘශ්ය, මෙවලම්, ව්යුහගත ප්රතිදානය, සන්දර්භ කවුළුව) නොමැති විට යැවීමට පෙර ඉල්ලීම් ප්රතික්ෂේප කරන්න. මෙය සංයෝජන-ස්තර අනුකූලතා පෙරහන මඟහරින සෘජු තනි-සැපයුම්කරු ඉල්ලීම් ආරක්ෂා කරයි.",

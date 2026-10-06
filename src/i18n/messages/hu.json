@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Élő nézet mindenről, ami fut",
     "resilienceConnections": "Kapcsolat Ellenálló Képesség",
     "resilienceConnectionsSubtitle": "Cooldown, megszakító, zárolási állapot",
+    "resilienceCooldowns": "Cooldown-kezelő",
+    "resilienceCooldownsSubtitle": "Cooldownok tömeges törlése",
     "settingsModalityBridge": "Modalitás Híd",
     "settingsModalityBridgeSubtitle": "Kép/hang → szöveg visszaesés csak szöveges modellekhez",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Modell Zárolások",
         "count": "Kapcsolatok Száma"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Cooldown-kezelő",
+    "description": "Tekintse meg a hibák után pihenő kapcsolatokat, oldja fel a cooldownokat tömegesen, és módosítsa azok időtartamát.",
+    "loading": "Cooldownok betöltése…",
+    "loadFailed": "Nem sikerült betölteni a cooldownokat",
+    "loadFailedDetail": "Ellenőrizze a kapcsolatot, és frissítse az oldalt.",
+    "rules": {
+      "title": "Cooldown-szabályok",
+      "subtitle": "Minden kapcsolatra érvényes a következő hibától kezdve.",
+      "stallLabel": "Fiók cooldownra állítása, ha egy stream elakad",
+      "stallDescription": "Alapértelmezés szerint kikapcsolva: az elakadás általában egy hosszú gondolkodási kört jelent, nem hibás fiókot.",
+      "oauth": "OAuth-fiókok",
+      "apikey": "API-kulcsok",
+      "baseCooldown": "Alap cooldown (másodperc)",
+      "baseCooldownHint": "Az első cooldown hiba után. Ismételt hibák esetén megduplázódik.",
+      "maxBackoffSteps": "Maximális backoff-lépések",
+      "maxBackoffStepsHint": "Hányszor duplázódhat meg a cooldown.",
+      "save": "Szabályok mentése",
+      "saved": "Cooldown-szabályok mentve",
+      "saveFailed": "Nem sikerült menteni a cooldown-szabályokat"
+    },
+    "list": {
+      "title": "Útválasztásból kiesett kapcsolatok",
+      "subtitle": "A cooldownok és modellzárolások maguktól lejárnak. Törölje őket, ha azonnal vissza szeretné állítani a kapcsolatot az útválasztásba.",
+      "provider": "Szolgáltató",
+      "allProviders": "Minden szolgáltató",
+      "showHealthy": "Működő kapcsolatok megjelenítése",
+      "refresh": "Frissítés",
+      "clearSelected": "Kijelöltek törlése ({count})",
+      "clearAll": "Összes törlése",
+      "clear": "Törlés",
+      "select": "Kapcsolat kiválasztása",
+      "none": "Nincs",
+      "empty": "Egyetlen kapcsolat sem esett ki az útválasztásból.",
+      "cleared": "{cleared} kapcsolat és {lockouts} modellzárolás törölve. {skipped} letiltott vagy lejárt kihagyva.",
+      "clearFailed": "Nem sikerült törölni a cooldownokat",
+      "columns": {
+        "connection": "Kapcsolat",
+        "provider": "Szolgáltató",
+        "status": "Állapot",
+        "remaining": "Hátralévő idő",
+        "lockouts": "Modellzárolások",
+        "lastError": "Utolsó hiba"
+      }
+    },
+    "status": {
+      "cooling_down": "Lehűlés alatt",
+      "model_locked": "Modell zárolva",
+      "unavailable": "Nem érhető el",
+      "terminal": "Figyelmet igényel",
+      "healthy": "Egészséges"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Elutasítja a kéréseket a kiszállítás előtt, amikor a célmodell hiányzik a szükséges képességekből (látás, eszközök, strukturált kimenet, kontextusablak). Védi a közvetlen, egy szolgáltatótól érkező kéréseket, amelyek megkerülik a kombinált réteg kompatibilitási szűrőt.",

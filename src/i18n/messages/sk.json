@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Živý prehľad všetkého, čo beží",
     "resilienceConnections": "Odolnosť Pripojenia",
     "resilienceConnectionsSubtitle": "Cooldown, istič, stav uzamknutia",
+    "resilienceCooldowns": "Správca cooldownov",
+    "resilienceCooldownsSubtitle": "Hromadne vymazať cooldowny",
     "settingsModalityBridge": "Modálny Most",
     "settingsModalityBridgeSubtitle": "Obrázok/audio → textová náhrada pre modely iba s textom",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Uzamknutia Modelu",
         "count": "Počet Pripojení"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Správca cooldownov",
+    "description": "Zobrazte každé pripojenie, ktoré po zlyhaniach odpočíva, zrušte cooldowny hromadne a upravte, ako dlho trvajú.",
+    "loading": "Načítavajú sa cooldowny…",
+    "loadFailed": "Nepodarilo sa načítať cooldowny",
+    "loadFailedDetail": "Skontrolujte svoje pripojenie a obnovte stránku.",
+    "rules": {
+      "title": "Pravidlá cooldownu",
+      "subtitle": "Použiť na každé pripojenie od jeho ďalšieho zlyhania.",
+      "stallLabel": "Uviesť účet do cooldownu pri zaseknutí streamu",
+      "stallDescription": "V predvolenom nastavení vypnuté: zaseknutie zvyčajne znamená jeden dlhý krok uvažovania, nie nefunkčný účet.",
+      "oauth": "Účty OAuth",
+      "apikey": "API kľúče",
+      "baseCooldown": "Základný cooldown (sekundy)",
+      "baseCooldownHint": "Prvý cooldown po zlyhaní. Opakované zlyhania ho zdvojnásobia.",
+      "maxBackoffSteps": "Maximálny počet krokov backoffu",
+      "maxBackoffStepsHint": "Koľkokrát sa môže cooldown zdvojnásobiť.",
+      "save": "Uložiť pravidlá",
+      "saved": "Pravidlá cooldownu boli uložené",
+      "saveFailed": "Nepodarilo sa uložiť pravidlá cooldownu"
+    },
+    "list": {
+      "title": "Pripojenia mimo smerovania",
+      "subtitle": "Cooldowny a uzamknutia modelov vypršia samy. Vymažte ich, ak chcete vrátiť pripojenie späť do smerovania hneď.",
+      "provider": "Poskytovateľ",
+      "allProviders": "Všetci poskytovatelia",
+      "showHealthy": "Zobraziť funkčné pripojenia",
+      "refresh": "Obnoviť",
+      "clearSelected": "Vymazať vybrané ({count})",
+      "clearAll": "Vymazať všetko",
+      "clear": "Vymazať",
+      "select": "Vybrať pripojenie",
+      "none": "Žiadne",
+      "empty": "Žiadne pripojenie nie je mimo smerovania.",
+      "cleared": "Vymazaných {cleared} pripojení a {lockouts} uzamknutí modelov. Preskočených {skipped} zablokovaných alebo expirovaných.",
+      "clearFailed": "Nepodarilo sa vymazať cooldowny",
+      "columns": {
+        "connection": "Pripojenie",
+        "provider": "Poskytovateľ",
+        "status": "Stav",
+        "remaining": "Zostávajúci čas",
+        "lockouts": "Uzamknutia modelov",
+        "lastError": "Posledná chyba"
+      }
+    },
+    "status": {
+      "cooling_down": "Ochladzovanie",
+      "model_locked": "Model uzamknutý",
+      "unavailable": "Nedostupné",
+      "terminal": "Vyžaduje pozornosť",
+      "healthy": "V poriadku"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Zamietnuť požiadavky pred odoslaním, keď cieľový model postráda požadované schopnosti (vízia, nástroje, štruktúrovaný výstup, kontextové okno). Chráni priamu požiadavku od jedného poskytovateľa, ktorá obchádza filter kompatibility kombinovanej vrstvy.",

@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "ទិដ្ឋភាពផ្ទាល់នៃអ្វីៗទាំងអស់ដែលកំពុងដំណើរការ",
     "resilienceConnections": "ភាពធន់នៃការតភ្ជាប់",
     "resilienceConnectionsSubtitle": "ស្ថានភាពពេលរង់ចាំ ឧបករណ៍ផ្តាច់សៀគ្វី និងការចាក់សោ",
+    "resilienceCooldowns": "កម្មវិធីគ្រប់គ្រង Cooldown",
+    "resilienceCooldownsSubtitle": "សម្អាត cooldowns ច្រើនក្នុងពេលតែមួយ",
     "settingsModalityBridge": "ស្ពានទម្រង់ទិន្នន័យ",
     "settingsModalityBridgeSubtitle": "រូបភាព/សំឡេង → អត្ថបទជាជម្រើសបម្រុងសម្រាប់ម៉ូដែលដែលគាំទ្រតែអត្ថបទ",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "ការចាក់សោម៉ូដែល",
         "count": "ចំនួនការតភ្ជាប់"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "កម្មវិធីគ្រប់គ្រង Cooldown",
+    "description": "មើលរាល់ការតភ្ជាប់ដែលកំពុងសម្រាកបន្ទាប់ពីបរាជ័យ ដក cooldowns ច្រើនក្នុងពេលតែមួយ និងកំណត់រយៈពេលដែលត្រូវរង់ចាំ។",
+    "loading": "កំពុងផ្ទុក cooldowns…",
+    "loadFailed": "មិនអាចផ្ទុក cooldowns បានទេ",
+    "loadFailedDetail": "សូមពិនិត្យមើលការតភ្ជាប់របស់អ្នក ហើយផ្ទុកទំព័រឡើងវិញ។",
+    "rules": {
+      "title": "វិធាន Cooldown",
+      "subtitle": "អនុវត្តចំពោះរាល់ការតភ្ជាប់ចាប់ពីការបរាជ័យបន្ទាប់របស់វា។",
+      "stallLabel": "ដាក់គណនីឱ្យ Cooldown នៅពេលស្ទ្រីមគាំង",
+      "stallDescription": "បិទតាមលំនាំដើម៖ ការគាំងជាទូទៅមានន័យថាជាវេននៃការគិតពិចារណាយូរ មិនមែនគណនីខូចនោះទេ។",
+      "oauth": "គណនី OAuth",
+      "apikey": "API keys",
+      "baseCooldown": "Cooldown មូលដ្ឋាន (វិនាទី)",
+      "baseCooldownHint": "Cooldown ដំបូងបន្ទាប់ពីការបរាជ័យ។ ការបរាជ័យផ្ទួនៗនឹងកើនឡើងទ្វេដង។",
+      "maxBackoffSteps": "ជំហាន backoff អតិបរមា",
+      "maxBackoffStepsHint": "ចំនួនដងដែល cooldown អាចកើនឡើងទ្វេដង។",
+      "save": "រក្សាទុកវិធាន",
+      "saved": "បានរក្សាទុកវិធាន cooldown",
+      "saveFailed": "មិនអាចរក្សាទុកវិធាន cooldown បានទេ"
+    },
+    "list": {
+      "title": "ការតភ្ជាប់នៅក្រៅ routing",
+      "subtitle": "Cooldowns និងការចាក់សោ model នឹងបញ្ចប់ដោយស្វ័យប្រវត្តិ។ សម្អាតពួកវាដើម្បីដាក់ការតភ្ជាប់ចូលទៅក្នុង routing វិញឥឡូវនេះ។",
+      "provider": "អ្នកផ្តល់សេវា",
+      "allProviders": "អ្នកផ្តល់សេវាទាំងអស់",
+      "showHealthy": "បង្ហាញការតភ្ជាប់ដែលមានសុខភាពល្អ",
+      "refresh": "ផ្ទុកឡើងវិញ",
+      "clearSelected": "សម្អាតអ្វីដែលបានជ្រើសរើស ({count})",
+      "clearAll": "សម្អាតទាំងអស់",
+      "clear": "សម្អាត",
+      "select": "ជ្រើសរើសការតភ្ជាប់",
+      "none": "គ្មាន",
+      "empty": "គ្មានការតភ្ជាប់ណាមួយនៅក្រៅ routing ទេ។",
+      "cleared": "បានសម្អាតការតភ្ជាប់ចំនួន {cleared} និងការចាក់សោ model ចំនួន {lockouts}។ បានរំលងចំនួន {skipped} ដែលត្រូវបានហាមឃាត់ ឬផុតកំណត់។",
+      "clearFailed": "មិនអាចសម្អាត cooldowns បានទេ",
+      "columns": {
+        "connection": "ការតភ្ជាប់",
+        "provider": "អ្នកផ្តល់សេវា",
+        "status": "ស្ថានភាព",
+        "remaining": "ពេលវេលានៅសល់",
+        "lockouts": "ការចាក់សោ Model",
+        "lastError": "កំហុសចុងក្រោយ"
+      }
+    },
+    "status": {
+      "cooling_down": "កំពុងចុះត្រជាក់",
+      "model_locked": "ម៉ូដែលត្រូវបានចាក់សោ",
+      "unavailable": "មិនអាចប្រើប្រាស់បាន",
+      "terminal": "ត្រូវការការយកចិត្តទុកដាក់",
+      "healthy": "មានសុខភាពល្អ"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "បដិសេធសំណើមុនពេលបញ្ជូន នៅពេលម៉ូដែលគោលដៅខ្វះសមត្ថភាពដែលត្រូវការ (ចក្ខុវិស័យ ឧបករណ៍ លទ្ធផលមានរចនាសម្ព័ន្ធ បង្អួចបរិបទ)។ វាការពារសំណើទៅកាន់អ្នកផ្តល់សេវាតែមួយដោយផ្ទាល់ ដែលរំលងតម្រងភាពត្រូវគ្នានៃស្រទាប់បន្សំ។",

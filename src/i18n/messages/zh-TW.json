@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "即時檢視所有正在執行的內容",
     "resilienceConnections": "連線韌性",
     "resilienceConnectionsSubtitle": "冷卻、斷路器、鎖定狀態",
+    "resilienceCooldowns": "冷卻管理器",
+    "resilienceCooldownsSubtitle": "批次清除冷卻",
     "settingsModalityBridge": "模態橋接",
     "settingsModalityBridgeSubtitle": "圖像/音頻 → 僅限文本模型的文本回退",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "模型鎖定",
         "count": "連線數"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "冷卻管理器",
+    "description": "檢視因失敗而處於休止狀態的所有連線、批次解除冷卻，並調整其持續時間。",
+    "loading": "正在載入冷卻狀態…",
+    "loadFailed": "無法載入冷卻狀態",
+    "loadFailedDetail": "請檢查您的網路連線並重新整理頁面。",
+    "rules": {
+      "title": "冷卻規則",
+      "subtitle": "自下次失敗起套用至每個連線。",
+      "stallLabel": "當串流停滯時冷卻帳號",
+      "stallDescription": "預設關閉：停滯通常代表單次耗時較長的推理輪次，而非帳號故障。",
+      "oauth": "OAuth 帳號",
+      "apikey": "API 金鑰",
+      "baseCooldown": "基礎冷卻時間 (秒)",
+      "baseCooldownHint": "失敗後的首次冷卻時間。重複失敗會使其加倍。",
+      "maxBackoffSteps": "最大退避次數",
+      "maxBackoffStepsHint": "冷卻時間可加倍的次數。",
+      "save": "儲存規則",
+      "saved": "已儲存冷卻規則",
+      "saveFailed": "無法儲存冷卻規則"
+    },
+    "list": {
+      "title": "退出路由的連線",
+      "subtitle": "冷卻與模型鎖定會自動結束。立即清除它們可讓連線重新加入路由。",
+      "provider": "提供者",
+      "allProviders": "所有提供者",
+      "showHealthy": "顯示狀況良好的連線",
+      "refresh": "重新整理",
+      "clearSelected": "清除所選 ({count})",
+      "clearAll": "全部清除",
+      "clear": "清除",
+      "select": "選取連線",
+      "none": "無",
+      "empty": "沒有退出路由的連線。",
+      "cleared": "已清除 {cleared} 個連線與 {lockouts} 個模型鎖定。已略過 {skipped} 個被封鎖或過期的項目。",
+      "clearFailed": "無法清除冷卻狀態",
+      "columns": {
+        "connection": "連線",
+        "provider": "提供者",
+        "status": "狀態",
+        "remaining": "剩餘時間",
+        "lockouts": "模型鎖定",
+        "lastError": "上次錯誤"
+      }
+    },
+    "status": {
+      "cooling_down": "冷卻中",
+      "model_locked": "模型已鎖定",
+      "unavailable": "無法使用",
+      "terminal": "需要注意",
+      "healthy": "良好"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "在目標模型缺乏所需功能（視覺、工具、結構化輸出、上下文窗口）時，拒絕發送前的請求。保護繞過組合層兼容性過濾器的直接單一提供者請求。",

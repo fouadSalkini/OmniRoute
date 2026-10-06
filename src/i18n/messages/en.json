@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Live view of everything running",
     "resilienceConnections": "Connection Resilience",
     "resilienceConnectionsSubtitle": "Cooldown, breaker, lockout state",
+    "resilienceCooldowns": "Cooldown Manager",
+    "resilienceCooldownsSubtitle": "Clear cooldowns in bulk",
     "settingsModalityBridge": "Modality Bridge",
     "settingsModalityBridgeSubtitle": "Image/audio → text fallback for text-only models",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Model Lockouts",
         "count": "Connection Count"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Cooldown Manager",
+    "description": "See every connection that is resting after failures, lift cooldowns in bulk, and tune how long they last.",
+    "loading": "Loading cooldowns…",
+    "loadFailed": "Couldn't load cooldowns",
+    "loadFailedDetail": "Check your connection and refresh the page.",
+    "rules": {
+      "title": "Cooldown rules",
+      "subtitle": "Apply to every connection from its next failure.",
+      "stallLabel": "Cool down an account when a stream stalls",
+      "stallDescription": "Off by default: a stall usually means one long reasoning turn, not a broken account.",
+      "oauth": "OAuth accounts",
+      "apikey": "API keys",
+      "baseCooldown": "Base cooldown (seconds)",
+      "baseCooldownHint": "First cooldown after a failure. Repeated failures double it.",
+      "maxBackoffSteps": "Maximum backoff steps",
+      "maxBackoffStepsHint": "How many times the cooldown can double.",
+      "save": "Save rules",
+      "saved": "Cooldown rules saved",
+      "saveFailed": "Couldn't save the cooldown rules"
+    },
+    "list": {
+      "title": "Connections out of routing",
+      "subtitle": "Cooldowns and model lockouts end on their own. Clear them to put a connection back into routing now.",
+      "provider": "Provider",
+      "allProviders": "All providers",
+      "showHealthy": "Show healthy connections",
+      "refresh": "Refresh",
+      "clearSelected": "Clear selected ({count})",
+      "clearAll": "Clear all",
+      "clear": "Clear",
+      "select": "Select connection",
+      "none": "None",
+      "empty": "No connection is out of routing.",
+      "cleared": "Cleared {cleared} connections and {lockouts} model lockouts. Skipped {skipped} banned or expired.",
+      "clearFailed": "Couldn't clear the cooldowns",
+      "columns": {
+        "connection": "Connection",
+        "provider": "Provider",
+        "status": "Status",
+        "remaining": "Time left",
+        "lockouts": "Model lockouts",
+        "lastError": "Last error"
+      }
+    },
+    "status": {
+      "cooling_down": "Cooling down",
+      "model_locked": "Model locked",
+      "unavailable": "Unavailable",
+      "terminal": "Needs attention",
+      "healthy": "Healthy"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Reject requests before dispatch when the target model lacks required capabilities (vision, tools, structured output, context window). Protects direct single-provider requests that bypass the combo-layer compatibility filter.",

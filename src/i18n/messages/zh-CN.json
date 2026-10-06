@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "实时查看所有正在运行的内容",
     "resilienceConnections": "连接韧性",
     "resilienceConnectionsSubtitle": "冷却、断路器、锁定状态",
+    "resilienceCooldowns": "冷却管理器",
+    "resilienceCooldownsSubtitle": "批量清除冷却",
     "settingsModalityBridge": "模态桥",
     "settingsModalityBridgeSubtitle": "图像/音频 → 仅限文本模型的文本回退",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "模型锁定",
         "count": "连接数"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "冷却管理器",
+    "description": "查看因失败而处于休眠状态的所有连接，批量解除冷却，并调整冷却持续时间。",
+    "loading": "正在加载冷却状态…",
+    "loadFailed": "无法加载冷却状态",
+    "loadFailedDetail": "请检查网络连接并刷新页面。",
+    "rules": {
+      "title": "冷却规则",
+      "subtitle": "自下次失败起应用于每个连接。",
+      "stallLabel": "流传输卡顿时对账号进行冷却",
+      "stallDescription": "默认关闭：卡顿通常意味着单次推理耗时较长，而非账号失效。",
+      "oauth": "OAuth 账号",
+      "apikey": "API 密钥",
+      "baseCooldown": "基础冷却时间（秒）",
+      "baseCooldownHint": "失败后的首次冷却时间。多次连续失败将翻倍。",
+      "maxBackoffSteps": "最大退避次数",
+      "maxBackoffStepsHint": "冷却时间允许翻倍的最大次数。",
+      "save": "保存规则",
+      "saved": "冷却规则已保存",
+      "saveFailed": "无法保存冷却规则"
+    },
+    "list": {
+      "title": "脱离路由的连接",
+      "subtitle": "冷却和模型锁定会自动结束。清除它们可立即将连接重新加入路由调度。",
+      "provider": "提供者",
+      "allProviders": "所有提供者",
+      "showHealthy": "显示健康连接",
+      "refresh": "刷新",
+      "clearSelected": "清除所选 ({count})",
+      "clearAll": "清除全部",
+      "clear": "清除",
+      "select": "选择连接",
+      "none": "无",
+      "empty": "没有脱离路由的连接。",
+      "cleared": "已清除 {cleared} 个连接和 {lockouts} 个模型锁定。已跳过 {skipped} 个已封禁或已过期的项。",
+      "clearFailed": "无法清除冷却",
+      "columns": {
+        "connection": "连接",
+        "provider": "提供者",
+        "status": "状态",
+        "remaining": "剩余时间",
+        "lockouts": "模型锁定",
+        "lastError": "最近错误"
+      }
+    },
+    "status": {
+      "cooling_down": "冷却中",
+      "model_locked": "模型已锁定",
+      "unavailable": "不可用",
+      "terminal": "需要关注",
+      "healthy": "健康"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "在目标模型缺少所需能力（视觉、工具、结构化输出、上下文窗口）时，拒绝调度前的请求。保护绕过组合层兼容性过滤器的直接单一提供者请求。",

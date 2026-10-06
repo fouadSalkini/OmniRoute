@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Xem trực tiếp mọi thứ đang chạy",
     "resilienceConnections": "Khả Năng Phục Hồi Kết Nối",
     "resilienceConnectionsSubtitle": "Cooldown, cầu dao, trạng thái khóa",
+    "resilienceCooldowns": "Quản lý thời gian chờ",
+    "resilienceCooldownsSubtitle": "Xóa thời gian chờ hàng loạt",
     "settingsModalityBridge": "Cầu Kết Nối Modality",
     "settingsModalityBridgeSubtitle": "Chuyển đổi hình ảnh/âm thanh → văn bản cho các mô hình chỉ văn bản",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Khóa Mô Hình",
         "count": "Số Lượng Kết Nối"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Quản lý thời gian chờ",
+    "description": "Xem mọi kết nối đang tạm dừng sau lỗi, xóa thời gian chờ hàng loạt và tùy chỉnh thời lượng của chúng.",
+    "loading": "Đang tải thời gian chờ…",
+    "loadFailed": "Không thể tải thời gian chờ",
+    "loadFailedDetail": "Kiểm tra kết nối của bạn và làm mới trang.",
+    "rules": {
+      "title": "Quy tắc thời gian chờ",
+      "subtitle": "Áp dụng cho mọi kết nối kể từ lần lỗi tiếp theo.",
+      "stallLabel": "Đưa tài khoản vào thời gian chờ khi luồng stream bị đình trệ",
+      "stallDescription": "Mặc định tắt: việc đình trệ thường chỉ do một lượt suy luận kéo dài, không phải do tài khoản bị lỗi.",
+      "oauth": "Tài khoản OAuth",
+      "apikey": "Khóa API",
+      "baseCooldown": "Thời gian chờ cơ bản (giây)",
+      "baseCooldownHint": "Thời gian chờ đầu tiên sau một lỗi. Các lỗi lặp lại sẽ nhân đôi thời gian này.",
+      "maxBackoffSteps": "Số bước backoff tối đa",
+      "maxBackoffStepsHint": "Số lần thời gian chờ có thể nhân đôi.",
+      "save": "Lưu quy tắc",
+      "saved": "Đã lưu quy tắc thời gian chờ",
+      "saveFailed": "Không thể lưu quy tắc thời gian chờ"
+    },
+    "list": {
+      "title": "Kết nối nằm ngoài định tuyến",
+      "subtitle": "Thời gian chờ và khóa mô hình sẽ tự động kết thúc. Hãy xóa chúng để đưa kết nối trở lại định tuyến ngay bây giờ.",
+      "provider": "Nhà cung cấp",
+      "allProviders": "Tất cả nhà cung cấp",
+      "showHealthy": "Hiển thị kết nối hoạt động tốt",
+      "refresh": "Làm mới",
+      "clearSelected": "Xóa mục đã chọn ({count})",
+      "clearAll": "Xóa tất cả",
+      "clear": "Xóa",
+      "select": "Chọn kết nối",
+      "none": "Không có",
+      "empty": "Không có kết nối nào nằm ngoài định tuyến.",
+      "cleared": "Đã xóa {cleared} kết nối và {lockouts} khóa mô hình. Đã bỏ qua {skipped} kết nối bị cấm hoặc hết hạn.",
+      "clearFailed": "Không thể xóa thời gian chờ",
+      "columns": {
+        "connection": "Kết nối",
+        "provider": "Nhà cung cấp",
+        "status": "Trạng thái",
+        "remaining": "Thời gian còn lại",
+        "lockouts": "Khóa mô hình",
+        "lastError": "Lỗi gần nhất"
+      }
+    },
+    "status": {
+      "cooling_down": "Đang hạ nhiệt",
+      "model_locked": "Mô hình bị khóa",
+      "unavailable": "Không khả dụng",
+      "terminal": "Cần chú ý",
+      "healthy": "Hoạt động tốt"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Từ chối yêu cầu trước khi gửi đi khi mô hình đích thiếu các khả năng bắt buộc (thị giác, công cụ, đầu ra có cấu trúc, cửa sổ ngữ cảnh). Bảo vệ các yêu cầu trực tiếp đến một nhà cung cấp khi chúng bỏ qua bộ lọc tương thích của combo.",

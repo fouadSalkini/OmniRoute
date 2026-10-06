@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Nlele ozugbo nke ihe niile na-arụ ọrụ",
     "resilienceConnections": "Nkwụsi ike Njikọ",
     "resilienceConnectionsSubtitle": "Ọnọdụ oge nchere, ihe nkwụsị, na mkpọchi",
+    "resilienceCooldowns": "Njikwa Oge Izumike",
+    "resilienceCooldownsSubtitle": "Kpochapụ oge izumike n'ọtụtụ",
     "settingsModalityBridge": "Àkwà Ụdị Data",
     "settingsModalityBridgeSubtitle": "Foto/ọdịyo → ederede dịka nhọrọ ndabere maka ụdị na-anabata naanị ederede",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Mgbochi Ụdị",
         "count": "Ọnụọgụ Njikọ"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Njikwa Oge Izumike",
+    "description": "Hụ njikọ ọ bụla na-ezu ike mgbe ọdịda gasịrị, wepụ oge izumike n'ọtụtụ, ma dozie ogologo oge ha na-adị.",
+    "loading": "Na-ebudata oge izumike…",
+    "loadFailed": "Enweghị ike ibudata oge izumike",
+    "loadFailedDetail": "Lelee njikọ gị ma mee ka ibe ahụ dị ọhụrụ.",
+    "rules": {
+      "title": "Iwu oge izumike",
+      "subtitle": "Tinye na njikọ ọ bụla site na ọdịda ya na-esonụ.",
+      "stallLabel": "Tinye akaụntụ n'oge izumike mgbe nnyefe kwụsịtụrụ",
+      "stallDescription": "Agbanwụrụ na ndabara: nkwụsị na-apụtakarị otu ntụgharị echiche dị ogologo, ọ bụghị akaụntụ mebiri emebi.",
+      "oauth": "Akaụntụ OAuth",
+      "apikey": "Igodo API",
+      "baseCooldown": "Oge izumike izizi (sekọnd)",
+      "baseCooldownHint": "Oge izumike mbụ mgbe ọdịda gasịrị. Ọdịda ugboro ugboro na-amụba ya okpukpu abụọ.",
+      "maxBackoffSteps": "Ọnụọgụ nzọụkwụ nkwụghachi kachasị",
+      "maxBackoffStepsHint": "Ugboro ole oge izumike nwere ike ịmụba okpukpu abụọ.",
+      "save": "Chekwaa iwu",
+      "saved": "Echekwala iwu oge izumike",
+      "saveFailed": "Enweghị ike ịchekwa iwu oge izumike"
+    },
+    "list": {
+      "title": "Njikọ ndị wepụtara na nzipu",
+      "subtitle": "Oge izumike na mkpọchi ụdị na-agwụ n'onwe ha. Kpochapụ ha iji weghachite njikọ na nzipu ugbu a.",
+      "provider": "Onye na-eweta",
+      "allProviders": "Ndị niile na-eweta",
+      "showHealthy": "Gosi njikọ ndị dị mma",
+      "refresh": "Mee ka ọ dị ọhụrụ",
+      "clearSelected": "Kpochapụ ndị ahọpụtara ({count})",
+      "clearAll": "Kpochapụ ha niile",
+      "clear": "Kpochapụ",
+      "select": "Họrọ njikọ",
+      "none": "Ọ dịghị",
+      "empty": "Ọ dịghị njikọ na-anọghị na nzipu.",
+      "cleared": "Kpochapụrụ njikọ {cleared} na mkpọchi ụdị {lockouts}. Mafere {skipped} nke amachibidoro ma ọ bụ kubiri.",
+      "clearFailed": "Enweghị ike ikpochapụ oge izumike",
+      "columns": {
+        "connection": "Njikọ",
+        "provider": "Onye na-eweta",
+        "status": "Ọnọdụ",
+        "remaining": "Oge fọdụrụ",
+        "lockouts": "Mkpọchi ụdị",
+        "lastError": "Mmehie ikpeazụ"
+      }
+    },
+    "status": {
+      "cooling_down": "Na-ajụ oyi",
+      "model_locked": "Model akpọchiri",
+      "unavailable": "Adịghị",
+      "terminal": "Chọrọ nlebara anya",
+      "healthy": "Dị mma"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Jụ arịrịọ tupu izipu ya mgbe ụdị e lekwasịrị anya enweghị ikike ndị achọrọ (ọhụụ, ngwaọrụ, nsonaazụ ahaziri, windo ọnọdụ). Nke a na-echebe arịrịọ kpọmkwem nke otu onye na-eweta ọrụ, nke na-agafeghị nzacha ndakọrịta nke combo-layer.",

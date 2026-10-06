@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "実行中のすべてのライブビュー",
     "resilienceConnections": "接続レジリエンス",
     "resilienceConnectionsSubtitle": "クールダウン、ブレーカー、ロックアウト状態",
+    "resilienceCooldowns": "クールダウンマネージャー",
+    "resilienceCooldownsSubtitle": "クールダウンを一括解除",
     "settingsModalityBridge": "モダリティブリッジ",
     "settingsModalityBridgeSubtitle": "テキストのみのモデル用の画像/音声 → テキストフォールバック",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "モデルロックアウト",
         "count": "接続数"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "クールダウンマネージャー",
+    "description": "失敗後に休止しているすべての接続を確認し、クールダウンを一括解除して、その継続時間を調整します。",
+    "loading": "クールダウンを読み込み中…",
+    "loadFailed": "クールダウンを読み込めませんでした",
+    "loadFailedDetail": "接続状況を確認し、ページを再読み込みしてください。",
+    "rules": {
+      "title": "クールダウンルール",
+      "subtitle": "次回以降の失敗からすべての接続に適用されます。",
+      "stallLabel": "ストリーム停止時にアカウントをクールダウン",
+      "stallDescription": "デフォルトはオフ: 停止は通常、アカウントの障害ではなく長時間の推論ターンを意味します。",
+      "oauth": "OAuthアカウント",
+      "apikey": "APIキー",
+      "baseCooldown": "基本クールダウン（秒）",
+      "baseCooldownHint": "失敗後の最初のクールダウン時間。連続して失敗すると倍増します。",
+      "maxBackoffSteps": "最大バックオフ回数",
+      "maxBackoffStepsHint": "クールダウンが倍増できる最大回数。",
+      "save": "ルールを保存",
+      "saved": "クールダウンルールを保存しました",
+      "saveFailed": "クールダウンルールを保存できませんでした"
+    },
+    "list": {
+      "title": "ルーティング対象外の接続",
+      "subtitle": "クールダウンやモデルのロックアウトは自動的に終了します。今すぐ接続をルーティングに復帰させるには解除してください。",
+      "provider": "プロバイダー",
+      "allProviders": "すべてのプロバイダー",
+      "showHealthy": "正常な接続を表示",
+      "refresh": "更新",
+      "clearSelected": "選択項目を解除 ({count})",
+      "clearAll": "すべて解除",
+      "clear": "解除",
+      "select": "接続を選択",
+      "none": "なし",
+      "empty": "ルーティング対象外の接続はありません。",
+      "cleared": "{cleared}件の接続と{lockouts}件のモデルロックアウトを解除しました。禁止または期限切れの{skipped}件をスキップしました。",
+      "clearFailed": "クールダウンを解除できませんでした",
+      "columns": {
+        "connection": "接続",
+        "provider": "プロバイダー",
+        "status": "ステータス",
+        "remaining": "残り時間",
+        "lockouts": "モデルロックアウト",
+        "lastError": "最後のエラー"
+      }
+    },
+    "status": {
+      "cooling_down": "クールダウン中",
+      "model_locked": "モデルロック中",
+      "unavailable": "利用不可",
+      "terminal": "要対応",
+      "healthy": "正常"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "ディスパッチ前にリクエストを拒否します。ターゲットモデルに必要な機能（ビジョン、ツール、構造化出力、コンテキストウィンドウ）が欠けている場合。コンボレイヤーの互換性フィルターをバイパスする直接の単一プロバイダーリクエストを保護します。",

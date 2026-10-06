@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Tampilan langsung dari semua yang sedang berjalan",
     "resilienceConnections": "Resiliensi Koneksi",
     "resilienceConnectionsSubtitle": "Cooldown, breaker, status penguncian",
+    "resilienceCooldowns": "Pengelola Cooldown",
+    "resilienceCooldownsSubtitle": "Hapus cooldown secara massal",
     "settingsModalityBridge": "Jembatan Modalitas",
     "settingsModalityBridgeSubtitle": "Fallback teks untuk model hanya teks dari gambar/audio",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Penguncian Model",
         "count": "Jumlah Koneksi"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Pengelola Cooldown",
+    "description": "Lihat setiap koneksi yang sedang beristirahat setelah mengalami kegagalan, cabut cooldown secara massal, dan atur durasinya.",
+    "loading": "Memuat cooldown…",
+    "loadFailed": "Gagal memuat cooldown",
+    "loadFailedDetail": "Periksa koneksi Anda dan segarkan halaman.",
+    "rules": {
+      "title": "Aturan cooldown",
+      "subtitle": "Terapkan ke setiap koneksi mulai dari kegagalan berikutnya.",
+      "stallLabel": "Berikan cooldown pada akun saat stream terhenti",
+      "stallDescription": "Nonaktif secara default: terhenti biasanya berarti satu putaran penalaran yang panjang, bukan akun yang bermasalah.",
+      "oauth": "Akun OAuth",
+      "apikey": "Kunci API",
+      "baseCooldown": "Cooldown dasar (detik)",
+      "baseCooldownHint": "Cooldown pertama setelah kegagalan. Kegagalan berulang akan melipatgandakannya.",
+      "maxBackoffSteps": "Langkah backoff maksimum",
+      "maxBackoffStepsHint": "Berapa kali cooldown dapat berlipat ganda.",
+      "save": "Simpan aturan",
+      "saved": "Aturan cooldown berhasil disimpan",
+      "saveFailed": "Gagal menyimpan aturan cooldown"
+    },
+    "list": {
+      "title": "Koneksi di luar routing",
+      "subtitle": "Cooldown dan penguncian model akan berakhir dengan sendirinya. Hapus untuk mengembalikan koneksi ke routing sekarang.",
+      "provider": "Penyedia",
+      "allProviders": "Semua penyedia",
+      "showHealthy": "Tampilkan koneksi yang sehat",
+      "refresh": "Segarkan",
+      "clearSelected": "Hapus yang dipilih ({count})",
+      "clearAll": "Hapus semua",
+      "clear": "Hapus",
+      "select": "Pilih koneksi",
+      "none": "Tidak ada",
+      "empty": "Tidak ada koneksi yang berada di luar routing.",
+      "cleared": "Berhasil menghapus {cleared} koneksi dan {lockouts} penguncian model. Melewati {skipped} yang diblokir atau kedaluwarsa.",
+      "clearFailed": "Gagal menghapus cooldown",
+      "columns": {
+        "connection": "Koneksi",
+        "provider": "Penyedia",
+        "status": "Status",
+        "remaining": "Sisa waktu",
+        "lockouts": "Penguncian model",
+        "lastError": "Kesalahan terakhir"
+      }
+    },
+    "status": {
+      "cooling_down": "Pendinginan",
+      "model_locked": "Model terkunci",
+      "unavailable": "Tidak tersedia",
+      "terminal": "Perlu perhatian",
+      "healthy": "Sehat"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Tolak permintaan sebelum pengiriman ketika model target tidak memiliki kemampuan yang diperlukan (visi, alat, output terstruktur, jendela konteks). Melindungi permintaan penyedia tunggal langsung yang melewati filter kompatibilitas lapisan kombinasi.",

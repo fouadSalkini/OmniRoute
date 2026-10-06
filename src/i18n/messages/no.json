@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Direktevisning av alt som kjører",
     "resilienceConnections": "Tilkoblingsresiliens",
     "resilienceConnectionsSubtitle": "Cooldown, bryter, lockout-status",
+    "resilienceCooldowns": "Nedkjølingshåndtering",
+    "resilienceCooldownsSubtitle": "Fjern nedkjølinger i bulk",
     "settingsModalityBridge": "Modalitetsbro",
     "settingsModalityBridgeSubtitle": "Bilde/lyd → tekst fallback for tekstbare modeller",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Modelllåsinger",
         "count": "Antall Tilkoblinger"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Nedkjølingshåndtering",
+    "description": "Se alle tilkoblinger som hviler etter feil, opphev nedkjølinger i bulk, og juster hvor lenge de varer.",
+    "loading": "Laster nedkjølinger…",
+    "loadFailed": "Kunne ikke laste nedkjølinger",
+    "loadFailedDetail": "Sjekk tilkoblingen din og oppdater siden.",
+    "rules": {
+      "title": "Regler for nedkjøling",
+      "subtitle": "Gjelder for hver tilkobling fra neste feil.",
+      "stallLabel": "Kjøl ned en konto når en strøm stopper opp",
+      "stallDescription": "Av som standard: en stopp betyr vanligvis én lang resonneringsrunde, ikke en ødelagt konto.",
+      "oauth": "OAuth-kontoer",
+      "apikey": "API-nøkler",
+      "baseCooldown": "Grunnleggende nedkjøling (sekunder)",
+      "baseCooldownHint": "Første nedkjøling etter en feil. Gjentatte feil dobler den.",
+      "maxBackoffSteps": "Maksimalt antall backoff-trinn",
+      "maxBackoffStepsHint": "Hvor mange ganger nedkjølingen kan dobles.",
+      "save": "Lagre regler",
+      "saved": "Regler for nedkjøling lagret",
+      "saveFailed": "Kunne ikke lagre reglene for nedkjøling"
+    },
+    "list": {
+      "title": "Tilkoblinger ute av ruting",
+      "subtitle": "Nedkjølinger og modellutestengelser utløper av seg selv. Fjern dem for å sette en tilkobling tilbake i ruting nå.",
+      "provider": "Tilbyder",
+      "allProviders": "Alle tilbydere",
+      "showHealthy": "Vis friske tilkoblinger",
+      "refresh": "Oppdater",
+      "clearSelected": "Fjern valgte ({count})",
+      "clearAll": "Fjern alle",
+      "clear": "Fjern",
+      "select": "Velg tilkobling",
+      "none": "Ingen",
+      "empty": "Ingen tilkoblinger er ute av ruting.",
+      "cleared": "Fjernet {cleared} tilkoblinger og {lockouts} modellutestengelser. Hoppet over {skipped} utestengte eller utløpte.",
+      "clearFailed": "Kunne ikke fjerne nedkjølingene",
+      "columns": {
+        "connection": "Tilkobling",
+        "provider": "Tilbyder",
+        "status": "Status",
+        "remaining": "Tid igjen",
+        "lockouts": "Modellutestengelser",
+        "lastError": "Siste feil"
+      }
+    },
+    "status": {
+      "cooling_down": "Kjøler ned",
+      "model_locked": "Modell låst",
+      "unavailable": "Utilgjengelig",
+      "terminal": "Krever oppmerksomhet",
+      "healthy": "Frisk"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Avvis forespørselene før utsendelse når målmodellen mangler nødvendige funksjoner (visjon, verktøy, strukturert utdata, kontekstvindu). Beskytter direkte forespørseler fra enkeltleverandører som omgår kombinasjonslagets kompatibilitetsfilter.",

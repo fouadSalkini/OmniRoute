@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "תצוגה חיה של כל מה שרץ",
     "resilienceConnections": "עמידות חיבור",
     "resilienceConnectionsSubtitle": "צינון, נתיק, מצב נעילה",
+    "resilienceCooldowns": "מנהל זמני השהיה",
+    "resilienceCooldownsSubtitle": "נקה זמני השהיה במרוכז",
     "settingsModalityBridge": "גשר מודליות",
     "settingsModalityBridgeSubtitle": "גיבוי תמונה/שמע → טקסט עבור מודלים רק טקסט",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "נעילות מודל",
         "count": "מספר חיבורים"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "מנהל זמני השהיה",
+    "description": "הצג כל חיבור שנמצא בהשהיה לאחר כשלים, בטל זמני השהיה במרוכז והתאם את משך הזמן שלהם.",
+    "loading": "טוען זמני השהיה…",
+    "loadFailed": "לא ניתן היה לטעון זמני השהיה",
+    "loadFailedDetail": "בדוק את החיבור לרשת ורענן את הדף.",
+    "rules": {
+      "title": "כללי השהיה",
+      "subtitle": "החל על כל חיבור החל מהכשל הבא שלו.",
+      "stallLabel": "הכנס חשבון להשהיה כאשר הזרמת הנתונים נתקעת",
+      "stallDescription": "כבוי כברירת מחדל: תקיעה בדרך כלל מעידה על מהלך חשיבה ארוך, ולא על חשבון תקול.",
+      "oauth": "חשבונות OAuth",
+      "apikey": "מפתחות API",
+      "baseCooldown": "זמן השהיה בסיסי (שניות)",
+      "baseCooldownHint": "השהיה ראשונה לאחר כשל. כשלים חוזרים מכפילים את הזמן.",
+      "maxBackoffSteps": "מספר שלבי backoff מרבי",
+      "maxBackoffStepsHint": "כמה פעמים זמן ההשהיה יכול להכפיל את עצמו.",
+      "save": "שמור כללים",
+      "saved": "כללי ההשהיה נשמרו",
+      "saveFailed": "לא ניתן היה לשמור את כללי ההשהיה"
+    },
+    "list": {
+      "title": "חיבורים מחוץ לניתוב",
+      "subtitle": "זמני השהיה ונעילות מודלים מסתיימים מעצמם. נקה אותם כדי להחזיר חיבור לניתוב כעת.",
+      "provider": "ספק",
+      "allProviders": "כל הספקים",
+      "showHealthy": "הצג חיבורים תקינים",
+      "refresh": "רענן",
+      "clearSelected": "נקה נבחרים ({count})",
+      "clearAll": "נקה הכל",
+      "clear": "נקה",
+      "select": "בחר חיבור",
+      "none": "ללא",
+      "empty": "אין חיבורים מחוץ לניתוב.",
+      "cleared": "נוקו {cleared} חיבורים ו-{lockouts} נעילות מודלים. דולגו {skipped} חסומים או שפג תוקפם.",
+      "clearFailed": "לא ניתן היה לנקות את זמני ההשהיה",
+      "columns": {
+        "connection": "חיבור",
+        "provider": "ספק",
+        "status": "סטטוס",
+        "remaining": "זמן שנותר",
+        "lockouts": "נעילות מודלים",
+        "lastError": "שגיאה אחרונה"
+      }
+    },
+    "status": {
+      "cooling_down": "בצינון",
+      "model_locked": "המודל נעול",
+      "unavailable": "לא זמין",
+      "terminal": "דורש טיפול",
+      "healthy": "תקין"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "דחה בקשות לפני שליחה כאשר המודל המטרה חסר יכולות נדרשות (חזון, כלים, פלט מובנה, חלון הקשר). מגן על בקשות ישירות מספק אחד שעוקפות את מסנן ההתאמה של שכבת הקומבו.",

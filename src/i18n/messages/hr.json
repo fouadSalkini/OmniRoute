@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Prikaz uživo svega što se izvodi",
     "resilienceConnections": "Otpornost povezivanja",
     "resilienceConnectionsSubtitle": "Stanje hlađenja, prekidača i blokade",
+    "resilienceCooldowns": "Upravitelj hlađenja",
+    "resilienceCooldownsSubtitle": "Skupno poništavanje hlađenja",
     "settingsModalityBridge": "Most modaliteta",
     "settingsModalityBridgeSubtitle": "Rezervna pretvorba slike/zvuka → tekst za modele koji podržavaju samo tekst",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Zaključavanja modela",
         "count": "Broj veza"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Upravitelj hlađenja",
+    "description": "Pregledajte svaku vezu koja miruje nakon neuspjeha, skupno uklonite periode hlađenja i podesite njihovo trajanje.",
+    "loading": "Učitavanje perioda hlađenja…",
+    "loadFailed": "Nije uspjelo učitavanje perioda hlađenja",
+    "loadFailedDetail": "Provjerite vezu i osvježite stranicu.",
+    "rules": {
+      "title": "Pravila hlađenja",
+      "subtitle": "Primjenjuje se na svaku vezu od njezina sljedećeg neuspjeha.",
+      "stallLabel": "Stavi račun na hlađenje kada tok podataka zapne",
+      "stallDescription": "Isključeno prema zadanim postavkama: zastoj obično označava jedan dugi korak zaključivanja, a ne neispravan račun.",
+      "oauth": "OAuth računi",
+      "apikey": "API ključevi",
+      "baseCooldown": "Osnovno hlađenje (sekunde)",
+      "baseCooldownHint": "Prvo hlađenje nakon neuspjeha. Uzastopni neuspjesi ga udvostručuju.",
+      "maxBackoffSteps": "Maksimalan broj koraka odgode",
+      "maxBackoffStepsHint": "Koliko se puta hlađenje može udvostručiti.",
+      "save": "Spremi pravila",
+      "saved": "Pravila hlađenja su spremljena",
+      "saveFailed": "Spremanje pravila hlađenja nije uspjelo"
+    },
+    "list": {
+      "title": "Veze izvan usmjeravanja",
+      "subtitle": "Periodi hlađenja i blokade modela prestaju automatski. Očistite ih kako biste vezu odmah vratili u usmjeravanje.",
+      "provider": "Pružatelj",
+      "allProviders": "Svi pružatelji",
+      "showHealthy": "Prikaži ispravne veze",
+      "refresh": "Osvježi",
+      "clearSelected": "Očisti odabrano ({count})",
+      "clearAll": "Očisti sve",
+      "clear": "Očisti",
+      "select": "Odaberi vezu",
+      "none": "Nema",
+      "empty": "Nijedna veza nije izvan usmjeravanja.",
+      "cleared": "Očišćeno {cleared} veza i {lockouts} blokada modela. Preskočeno {skipped} zabranjenih ili isteklih.",
+      "clearFailed": "Nije uspjelo čišćenje perioda hlađenja",
+      "columns": {
+        "connection": "Veza",
+        "provider": "Pružatelj",
+        "status": "Status",
+        "remaining": "Preostalo vrijeme",
+        "lockouts": "Blokade modela",
+        "lastError": "Zadnja pogreška"
+      }
+    },
+    "status": {
+      "cooling_down": "Hlađenje",
+      "model_locked": "Model zaključan",
+      "unavailable": "Nedostupno",
+      "terminal": "Zahtijeva pažnju",
+      "healthy": "Ispravno"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Odbija zahtjeve prije slanja kada ciljnom modelu nedostaju potrebne mogućnosti (vizija, alati, strukturirani izlaz, kontekstni prozor). Štiti izravne zahtjeve prema jednom pružatelju koji zaobilaze filtar kompatibilnosti sloja combo-layer.",

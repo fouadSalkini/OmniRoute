@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Live na tanawin ng lahat ng tumatakbo",
     "resilienceConnections": "Katatagan ng Koneksyon",
     "resilienceConnectionsSubtitle": "Cooldown, breaker, katayuan ng lockout",
+    "resilienceCooldowns": "Tagapamahala ng Cooldown",
+    "resilienceCooldownsSubtitle": "I-clear ang mga cooldown nang maramihan",
     "settingsModalityBridge": "Tulay ng Modalidad",
     "settingsModalityBridgeSubtitle": "Fallback ng imahe/audio → teksto para sa mga modelong teksto lamang",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Mga Lockout ng Modelo",
         "count": "Bilang ng Koneksyon"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Tagapamahala ng Cooldown",
+    "description": "Tingnan ang bawat koneksyon na nagpapahinga pagkatapos ng mga pagkabigo, alisin ang mga cooldown nang maramihan, at i-adjust kung gaano katagal ang mga ito.",
+    "loading": "Ikinakarga ang mga cooldown…",
+    "loadFailed": "Hindi maikarga ang mga cooldown",
+    "loadFailedDetail": "Suriin ang iyong koneksyon at i-refresh ang page.",
+    "rules": {
+      "title": "Mga panuntunan sa cooldown",
+      "subtitle": "Ilapat sa bawat koneksyon simula sa susunod nitong pagkabigo.",
+      "stallLabel": "I-cool down ang isang account kapag nag-stall ang stream",
+      "stallDescription": "Naka-off bilang default: ang pag-stall ay karaniwang nangangahulugan ng isang mahabang reasoning turn, hindi ng isang sirang account.",
+      "oauth": "Mga OAuth account",
+      "apikey": "Mga API key",
+      "baseCooldown": "Base cooldown (segundo)",
+      "baseCooldownHint": "Unang cooldown pagkatapos ng pagkabigo. Dinodoble ito ng mga paulit-ulit na pagkabigo.",
+      "maxBackoffSteps": "Maximum na mga hakbang ng backoff",
+      "maxBackoffStepsHint": "Ilang beses maaaring dumoble ang cooldown.",
+      "save": "I-save ang mga panuntunan",
+      "saved": "Nai-save ang mga panuntunan sa cooldown",
+      "saveFailed": "Hindi mai-save ang mga panuntunan sa cooldown"
+    },
+    "list": {
+      "title": "Mga koneksyong labas sa routing",
+      "subtitle": "Kusa ring natatapos ang mga cooldown at lockout ng modelo. I-clear ang mga ito upang maibalik agad ang isang koneksyon sa routing.",
+      "provider": "Provider",
+      "allProviders": "Lahat ng provider",
+      "showHealthy": "Ipakita ang mga maayos na koneksyon",
+      "refresh": "I-refresh",
+      "clearSelected": "I-clear ang napili ({count})",
+      "clearAll": "I-clear lahat",
+      "clear": "I-clear",
+      "select": "Pumili ng koneksyon",
+      "none": "Wala",
+      "empty": "Walang koneksyon na labas sa routing.",
+      "cleared": "Na-clear ang {cleared} koneksyon at {lockouts} lockout ng modelo. Nilaktawan ang {skipped} na na-ban o nag-expire.",
+      "clearFailed": "Hindi ma-clear ang mga cooldown",
+      "columns": {
+        "connection": "Koneksyon",
+        "provider": "Provider",
+        "status": "Katayuan",
+        "remaining": "Natitirang oras",
+        "lockouts": "Mga lockout ng modelo",
+        "lastError": "Huling error"
+      }
+    },
+    "status": {
+      "cooling_down": "Nagpapalamig",
+      "model_locked": "Naka-lock ang modelo",
+      "unavailable": "Hindi magagamit",
+      "terminal": "Nangangailangan ng atensyon",
+      "healthy": "Maayos"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Tanggihan ang mga kahilingan bago ang pagpapadala kapag ang target na modelo ay kulang sa mga kinakailangang kakayahan (paningin, mga tool, nakabalangkas na output, bintana ng konteksto). Pinoprotektahan ang mga direktang kahilingan mula sa isang tagapagbigay na lumalampas sa filter ng pagiging tugma ng combo-layer.",

@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "በሂደት ላይ ያለውን ሁሉ የቀጥታ እይታ",
     "resilienceConnections": "የግንኙነት ጽናት",
     "resilienceConnectionsSubtitle": "የማቀዝቀዣ ጊዜ፣ የወረዳ ሰባሪ እና የመቆለፍ ሁኔታ",
+    "resilienceCooldowns": "የማቆያ ጊዜ አስተዳዳሪ",
+    "resilienceCooldownsSubtitle": "የማቆያ ጊዜዎችን በጅምላ አጽዳ",
     "settingsModalityBridge": "የሞዳሊቲ ድልድይ",
     "settingsModalityBridgeSubtitle": "ለጽሑፍ-ብቻ ሞዴሎች የምስል/ድምፅ → ጽሑፍ አማራጭ",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "የሞዴል መቆለፎች",
         "count": "የግንኙነት ብዛት"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "የማቆያ ጊዜ አስተዳዳሪ",
+    "description": "ከስህተቶች በኋላ እረፍት ላይ ያሉ ግንኙነቶችን በሙሉ ይመልከቱ፣ የማቆያ ጊዜዎችን በጅምላ ያንሱ፣ እና ምን ያህል ጊዜ እንደሚቆዩ ያስተካክሉ።",
+    "loading": "የማቆያ ጊዜዎች በመጫን ላይ ናቸው…",
+    "loadFailed": "የማቆያ ጊዜዎችን መጫን አልተቻለም",
+    "loadFailedDetail": "ግንኙነትዎን ይፈትሹ እና ገጹን ያድሱ።",
+    "rules": {
+      "title": "የማቆያ ጊዜ ደንቦች",
+      "subtitle": "ከቀጣዩ ስህተት ጀምሮ ለእያንዳንዱ ግንኙነት ተፈጻሚ ይሁን።",
+      "stallLabel": "የዥረት ስርጭት ሲቋረጥ መለያን ወደ ማቆያ ጊዜ አስገባ",
+      "stallDescription": "በነባሪነት ጠፍቷል፦ መቆራረጥ አብዛኛውን ጊዜ ረጅም የማሰብ ዙር እንጂ የተበላሸ መለያ ማለት አይደለም።",
+      "oauth": "የOAuth መለያዎች",
+      "apikey": "የAPI ቁልፎች",
+      "baseCooldown": "መሰረታዊ የማቆያ ጊዜ (በሰከንዶች)",
+      "baseCooldownHint": "ከስህተት በኋላ የመጀመሪያው የማቆያ ጊዜ። ተደጋጋሚ ስህተቶች እጥፍ ያደርጉታል።",
+      "maxBackoffSteps": "ከፍተኛው የደረጃ ማፈግፈግ (backoff) ገደብ",
+      "maxBackoffStepsHint": "የማቆያ ጊዜው ስንት ጊዜ እጥፍ ሊሆን እንደሚችል የሚያሳይ።",
+      "save": "ደንቦችን አስቀምጥ",
+      "saved": "የማቆያ ጊዜ ደንቦች ተቀምጠዋል",
+      "saveFailed": "የማቆያ ጊዜ ደንቦችን ማስቀመጥ አልተቻለም"
+    },
+    "list": {
+      "title": "ከመስመር ውጭ የሆኑ ግንኙነቶች",
+      "subtitle": "የማቆያ ጊዜዎች እና የሞዴል መቆለፎች በራሳቸው ጊዜ ያበቃሉ። ግንኙነትን አሁን ወደ መስመር ለመመለስ ያጽዷቸው።",
+      "provider": "አቅራቢ",
+      "allProviders": "ሁሉም አቅራቢዎች",
+      "showHealthy": "ጤናማ ግንኙነቶችን አሳይ",
+      "refresh": "አድስ",
+      "clearSelected": "የተመረጡትን አጽዳ ({count})",
+      "clearAll": "ሁሉንም አጽዳ",
+      "clear": "አጽዳ",
+      "select": "ግንኙነት ይምረጡ",
+      "none": "ምንም",
+      "empty": "ከመስመር ውጭ የሆነ ምንም አይነት ግንኙነት የለም።",
+      "cleared": "{cleared} ግንኙነቶች እና {lockouts} የሞዴል መቆለፎች ጸድተዋል። {skipped} የታገዱ ወይም ጊዜያቸው ያለፈባቸው ታልፈዋል።",
+      "clearFailed": "የማቆያ ጊዜዎችን ማጽዳት አልተቻለም",
+      "columns": {
+        "connection": "ግንኙነት",
+        "provider": "አቅራቢ",
+        "status": "ሁኔታ",
+        "remaining": "የቀረው ጊዜ",
+        "lockouts": "የሞዴል መቆለፎች",
+        "lastError": "የመጨረሻው ስህተት"
+      }
+    },
+    "status": {
+      "cooling_down": "በማቀዝቀዝ ላይ",
+      "model_locked": "ሞዴል ተቆልፏል",
+      "unavailable": "አይገኝም",
+      "terminal": "ትኩረት ያስፈልገዋል",
+      "healthy": "ጤናማ"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "የታለመው ሞዴል አስፈላጊ ችሎታዎች (ምስል፣ መሣሪያዎች፣ የተዋቀረ ውጤት፣ የአውድ መስኮት) ከሌሉት፣ ጥያቄዎችን ከመላካቸው በፊት ውድቅ አድርግ። ይህ የጥምር-ንብርብር ተኳኋኝነት ማጣሪያን የሚያልፉ ቀጥተኛ የአንድ-አቅራቢ ጥያቄዎችን ይጠብቃል።",

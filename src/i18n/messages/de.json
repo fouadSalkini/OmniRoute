@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Live-Ansicht von allem, was gerade läuft",
     "resilienceConnections": "Verbindungsresilienz",
     "resilienceConnectionsSubtitle": "Cooldown, Schalter, Sperrstatus",
+    "resilienceCooldowns": "Cooldown-Manager",
+    "resilienceCooldownsSubtitle": "Cooldowns gesammelt aufheben",
     "settingsModalityBridge": "Modalitätsbrücke",
     "settingsModalityBridgeSubtitle": "Bild-/Audio-→Text-Fallback für textbasierte Modelle",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Modellsperren",
         "count": "Verbindungsanzahl"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Cooldown-Manager",
+    "description": "Sehen Sie alle Verbindungen, die nach Fehlern pausieren, heben Sie Cooldowns gesammelt auf und passen Sie deren Dauer an.",
+    "loading": "Cooldowns werden geladen…",
+    "loadFailed": "Cooldowns konnten nicht geladen werden",
+    "loadFailedDetail": "Überprüfen Sie Ihre Verbindung und laden Sie die Seite neu.",
+    "rules": {
+      "title": "Cooldown-Regeln",
+      "subtitle": "Gilt für jede Verbindung ab dem nächsten Fehler.",
+      "stallLabel": "Account pausieren, wenn ein Stream stockt",
+      "stallDescription": "Standardmäßig deaktiviert: Ein Stocken bedeutet meist einen langen Reasoning-Schritt, keinen fehlerhaften Account.",
+      "oauth": "OAuth-Accounts",
+      "apikey": "API-Schlüssel",
+      "baseCooldown": "Basis-Cooldown (Sekunden)",
+      "baseCooldownHint": "Erster Cooldown nach einem Fehler. Wiederholte Fehler verdoppeln ihn.",
+      "maxBackoffSteps": "Maximale Backoff-Schritte",
+      "maxBackoffStepsHint": "Wie oft der Cooldown verdoppelt werden kann.",
+      "save": "Regeln speichern",
+      "saved": "Cooldown-Regeln gespeichert",
+      "saveFailed": "Cooldown-Regeln konnten nicht gespeichert werden"
+    },
+    "list": {
+      "title": "Verbindungen außerhalb des Routings",
+      "subtitle": "Cooldowns und Modellsperren enden automatisch. Heben Sie sie auf, um eine Verbindung sofort wieder ins Routing aufzunehmen.",
+      "provider": "Provider",
+      "allProviders": "Alle Provider",
+      "showHealthy": "Fehlerfreie Verbindungen anzeigen",
+      "refresh": "Aktualisieren",
+      "clearSelected": "Ausgewählte aufheben ({count})",
+      "clearAll": "Alle aufheben",
+      "clear": "Aufheben",
+      "select": "Verbindung auswählen",
+      "none": "Keine",
+      "empty": "Keine Verbindung befindet sich außerhalb des Routings.",
+      "cleared": "{cleared} Verbindungen und {lockouts} Modellsperren aufgehoben. {skipped} gesperrte oder abgelaufene übersprungen.",
+      "clearFailed": "Cooldowns konnten nicht aufgehoben werden",
+      "columns": {
+        "connection": "Verbindung",
+        "provider": "Provider",
+        "status": "Status",
+        "remaining": "Verbleibende Zeit",
+        "lockouts": "Modellsperren",
+        "lastError": "Letzter Fehler"
+      }
+    },
+    "status": {
+      "cooling_down": "Kühlt ab",
+      "model_locked": "Modell gesperrt",
+      "unavailable": "Nicht verfügbar",
+      "terminal": "Erfordert Aufmerksamkeit",
+      "healthy": "Fehlerfrei"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Lehnen Sie Anfragen ab, bevor sie versendet werden, wenn das Zielmodell über die erforderlichen Funktionen (Vision, Werkzeuge, strukturierte Ausgabe, Kontextfenster) nicht verfügt. Schützt direkte Einzelanbieteranfragen, die den Kombo-Schicht-Kompatibilitätsfilter umgehen.",

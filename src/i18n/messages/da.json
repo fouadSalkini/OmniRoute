@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Live-visning af alt, der kører",
     "resilienceConnections": "Forbindelsesresiliens",
     "resilienceConnectionsSubtitle": "Cooldown, afbryder, lockout-status",
+    "resilienceCooldowns": "Cooldown Manager",
+    "resilienceCooldownsSubtitle": "Ryd cooldowns samlet",
     "settingsModalityBridge": "Modality Bro",
     "settingsModalityBridgeSubtitle": "Billede/lyd → tekst fallback for tekst-only modeller",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Modellåsninger",
         "count": "Antal Forbindelser"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Cooldown Manager",
+    "description": "Se alle forbindelser, der hviler efter fejl, fjern cooldowns samlet, og juster, hvor længe de varer.",
+    "loading": "Indlæser cooldowns…",
+    "loadFailed": "Kunne ikke indlæse cooldowns",
+    "loadFailedDetail": "Tjek din forbindelse, og genindlæs siden.",
+    "rules": {
+      "title": "Cooldown-regler",
+      "subtitle": "Gælder for alle forbindelser fra næste fejl.",
+      "stallLabel": "Sæt en konto på cooldown, når en stream går i stå",
+      "stallDescription": "Deaktiveret som standard: Et stop betyder normalt en lang ræsonneringsrunde, ikke en defekt konto.",
+      "oauth": "OAuth-konti",
+      "apikey": "API-nøgler",
+      "baseCooldown": "Basis-cooldown (sekunder)",
+      "baseCooldownHint": "Første cooldown efter en fejl. Gentagne fejl fordobler den.",
+      "maxBackoffSteps": "Maksimalt antal backoff-trin",
+      "maxBackoffStepsHint": "Hvor mange gange cooldownen kan fordobles.",
+      "save": "Gem regler",
+      "saved": "Cooldown-regler er gemt",
+      "saveFailed": "Kunne ikke gemme cooldown-reglerne"
+    },
+    "list": {
+      "title": "Forbindelser ude af routing",
+      "subtitle": "Cooldowns og modellåsninger udløber af sig selv. Ryd dem for at bringe en forbindelse tilbage i routing nu.",
+      "provider": "Udbyder",
+      "allProviders": "Alle udbydere",
+      "showHealthy": "Vis sunde forbindelser",
+      "refresh": "Opdater",
+      "clearSelected": "Ryd valgte ({count})",
+      "clearAll": "Ryd alle",
+      "clear": "Ryd",
+      "select": "Vælg forbindelse",
+      "none": "Ingen",
+      "empty": "Ingen forbindelser er ude af routing.",
+      "cleared": "Ryddede {cleared} forbindelser og {lockouts} modellåsninger. Sprang {skipped} blokerede eller udløbne over.",
+      "clearFailed": "Kunne ikke rydde cooldowns",
+      "columns": {
+        "connection": "Forbindelse",
+        "provider": "Udbyder",
+        "status": "Status",
+        "remaining": "Resterende tid",
+        "lockouts": "Modellåsninger",
+        "lastError": "Sidste fejl"
+      }
+    },
+    "status": {
+      "cooling_down": "Køler ned",
+      "model_locked": "Model låst",
+      "unavailable": "Utilgængelig",
+      "terminal": "Kræver opmærksomhed",
+      "healthy": "Sund"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Afvis anmodninger før afsendelse, når målmodellen mangler de nødvendige funktioner (vision, værktøjer, struktureret output, kontekstvindue). Beskytter direkte anmodninger fra en enkelt udbyder, der omgår kombinationslagets kompatibilitetsfilter.",

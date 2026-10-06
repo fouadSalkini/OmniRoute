@@ -11555,6 +11555,30 @@ paths:
       responses:
         "200":
           description: OK
+  /api/resilience/cooldowns:
+    get:
+      tags:
+        - Resilience
+      summary: "GET resilience › cooldowns"
+      description: >-
+        Every connection with its cooldown, model lockouts and terminal state, for the
+        Cooldown Manager page. Never includes credentials. Optional `provider` query filter.
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - Resilience
+      summary: "POST resilience › cooldowns"
+      description: >-
+        Clears connection cooldowns and model lockouts for `connectionIds`, or for every
+        connection when `all` is true (optionally within `provider`). Terminal states
+        (banned, expired, credits_exhausted) are skipped.
+      responses:
+        "200":
+          description: "`{ ok, cleared, unchanged, skippedTerminal, lockoutsCleared }`"
+        "400":
+          description: Neither connectionIds nor all was provided
   /api/routing/decisions/{requestId}:
     get:
       tags:

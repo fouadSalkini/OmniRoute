@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Paparan langsung semua yang sedang berjalan",
     "resilienceConnections": "Daya Tahan Sambungan",
     "resilienceConnectionsSubtitle": "Cooldown, breaker, status penguncian",
+    "resilienceCooldowns": "Pengurus Tempoh Bertenang",
+    "resilienceCooldownsSubtitle": "Kosongkan tempoh bertenang secara pukal",
     "settingsModalityBridge": "Jambatan Modality",
     "settingsModalityBridgeSubtitle": "Fallback imej/audio → teks untuk model hanya teks",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Penguncian Model",
         "count": "Bilangan Sambungan"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Pengurus Tempoh Bertenang",
+    "description": "Lihat setiap sambungan yang sedang berehat selepas kegagalan, batalkan tempoh bertenang secara pukal, dan laraskan tempoh ia berlangsung.",
+    "loading": "Memuatkan tempoh bertenang…",
+    "loadFailed": "Tidak dapat memuatkan tempoh bertenang",
+    "loadFailedDetail": "Semak sambungan anda dan muat semula halaman.",
+    "rules": {
+      "title": "Peraturan tempoh bertenang",
+      "subtitle": "Gunakan untuk setiap sambungan bermula daripada kegagalan seterusnya.",
+      "stallLabel": "Tetapkan tempoh bertenang pada akaun apabila penstriman terhenti",
+      "stallDescription": "Dimatikan secara lalai: terhenti biasanya bermakna satu giliran penaakulan yang panjang, bukan akaun yang rosak.",
+      "oauth": "Akaun OAuth",
+      "apikey": "Kunci API",
+      "baseCooldown": "Tempoh bertenang asas (saat)",
+      "baseCooldownHint": "Tempoh bertenang pertama selepas kegagalan. Kegagalan berulang akan menggandakannya.",
+      "maxBackoffSteps": "Langkah backoff maksimum",
+      "maxBackoffStepsHint": "Berapa kali tempoh bertenang boleh digandakan.",
+      "save": "Simpan peraturan",
+      "saved": "Peraturan tempoh bertenang disimpan",
+      "saveFailed": "Tidak dapat menyimpan peraturan tempoh bertenang"
+    },
+    "list": {
+      "title": "Sambungan di luar penghalaan",
+      "subtitle": "Tempoh bertenang dan sekatan model tamat dengan sendirinya. Kosongkannya untuk mengembalikan sambungan ke dalam penghalaan sekarang.",
+      "provider": "Penyedia",
+      "allProviders": "Semua penyedia",
+      "showHealthy": "Tunjukkan sambungan yang sihat",
+      "refresh": "Muat semula",
+      "clearSelected": "Kosongkan yang dipilih ({count})",
+      "clearAll": "Kosongkan semua",
+      "clear": "Kosongkan",
+      "select": "Pilih sambungan",
+      "none": "Tiada",
+      "empty": "Tiada sambungan yang berada di luar penghalaan.",
+      "cleared": "Mengosongkan {cleared} sambungan dan {lockouts} sekatan model. Melangkau {skipped} yang disekat atau tamat tempoh.",
+      "clearFailed": "Tidak dapat mengosongkan tempoh bertenang",
+      "columns": {
+        "connection": "Sambungan",
+        "provider": "Penyedia",
+        "status": "Status",
+        "remaining": "Masa berbaki",
+        "lockouts": "Sekatan model",
+        "lastError": "Ralat terakhir"
+      }
+    },
+    "status": {
+      "cooling_down": "Menyejuk",
+      "model_locked": "Model dikunci",
+      "unavailable": "Tidak tersedia",
+      "terminal": "Perlu perhatian",
+      "healthy": "Sihat"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Tolak permintaan sebelum penghantaran apabila model sasaran tidak mempunyai keupayaan yang diperlukan (penglihatan, alat, output terstruktur, tetingkap konteks). Melindungi permintaan penyedia tunggal secara langsung yang mengabaikan penapis keserasian lapisan gabungan.",

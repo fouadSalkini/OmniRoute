@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Vizualizare live a tot ce rulează",
     "resilienceConnections": "Reziliența Conexiunii",
     "resilienceConnectionsSubtitle": "Cooldown, întrerupător, stare de blocare",
+    "resilienceCooldowns": "Gestionar perioade de repaus",
+    "resilienceCooldownsSubtitle": "Elimină perioadele de repaus în masă",
     "settingsModalityBridge": "Podul de Modalitate",
     "settingsModalityBridgeSubtitle": "Fallback pentru text-only modele pentru imagine/audio → text",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Blocaje Model",
         "count": "Număr de Conexiuni"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Gestionar perioade de repaus",
+    "description": "Vezi fiecare conexiune aflată în repaus după eșecuri, elimină perioadele de repaus în masă și ajustează durata acestora.",
+    "loading": "Se încarcă perioadele de repaus…",
+    "loadFailed": "Nu s-au putut încărca perioadele de repaus",
+    "loadFailedDetail": "Verifică conexiunea și reîmprospătează pagina.",
+    "rules": {
+      "title": "Reguli pentru perioadele de repaus",
+      "subtitle": "Se aplică fiecărei conexiuni începând cu următorul său eșec.",
+      "stallLabel": "Trece un cont în repaus când un stream se blochează",
+      "stallDescription": "Dezactivat în mod prestabilit: o blocare indică de obicei o etapă lungă de raționament, nu un cont defect.",
+      "oauth": "Conturi OAuth",
+      "apikey": "Chei API",
+      "baseCooldown": "Perioadă de repaus de bază (secunde)",
+      "baseCooldownHint": "Prima perioadă de repaus după un eșec. Eșecurile repetate o dublează.",
+      "maxBackoffSteps": "Număr maxim de pași de backoff",
+      "maxBackoffStepsHint": "De câte ori se poate dubla perioada de repaus.",
+      "save": "Salvează regulile",
+      "saved": "Regulile pentru perioadele de repaus au fost salvate",
+      "saveFailed": "Nu s-au putut salva regulile pentru perioadele de repaus"
+    },
+    "list": {
+      "title": "Conexiuni scoase din rutare",
+      "subtitle": "Perioadele de repaus și blocările de model se încheie de la sine. Elimină-le pentru a reintroduce o conexiune în rutare acum.",
+      "provider": "Furnizor",
+      "allProviders": "Toți furnizorii",
+      "showHealthy": "Afișează conexiunile funcționale",
+      "refresh": "Reîmprospătează",
+      "clearSelected": "Elimină elementele selectate ({count})",
+      "clearAll": "Elimină tot",
+      "clear": "Elimină",
+      "select": "Selectează conexiunea",
+      "none": "Niciunul",
+      "empty": "Nicio conexiune nu este scoasă din rutare.",
+      "cleared": "S-au eliminat {cleared} conexiuni și {lockouts} blocări de model. S-au omis {skipped} interzise sau expirate.",
+      "clearFailed": "Nu s-au putut elimina perioadele de repaus",
+      "columns": {
+        "connection": "Conexiune",
+        "provider": "Furnizor",
+        "status": "Stare",
+        "remaining": "Timp rămas",
+        "lockouts": "Blocări de model",
+        "lastError": "Ultima eroare"
+      }
+    },
+    "status": {
+      "cooling_down": "În răcire",
+      "model_locked": "Model blocat",
+      "unavailable": "Indisponibil",
+      "terminal": "Necesită atenție",
+      "healthy": "Sănătos"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Respinge cererile înainte de expediere atunci când modelul țintă nu are capabilitățile necesare (viziune, instrumente, ieșire structurată, fereastră de context). Protejează cererile directe de un singur furnizor care ocolesc filtrul de compatibilitate al stratului combinat.",

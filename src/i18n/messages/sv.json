@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Livevy av allt som körs",
     "resilienceConnections": "Anslutningsresiliens",
     "resilienceConnectionsSubtitle": "Cooldown, brytare, låsstatus",
+    "resilienceCooldowns": "Cooldown-hanterare",
+    "resilienceCooldownsSubtitle": "Massrensa cooldowns",
     "settingsModalityBridge": "Modalitetsbro",
     "settingsModalityBridgeSubtitle": "Bild/ljud → textfallback för textendastmodeller",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Modellåsningar",
         "count": "Antal Anslutningar"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Cooldown-hanterare",
+    "description": "Se alla anslutningar som vilar efter fel, häv cooldowns i bulk och finjustera hur länge de varar.",
+    "loading": "Laddar cooldowns…",
+    "loadFailed": "Kunde inte ladda cooldowns",
+    "loadFailedDetail": "Kontrollera din anslutning och uppdatera sidan.",
+    "rules": {
+      "title": "Cooldown-regler",
+      "subtitle": "Tillämpas på varje anslutning från och med nästa fel.",
+      "stallLabel": "Sätt ett konto i cooldown när en ström stannar upp",
+      "stallDescription": "Inaktiverat som standard: ett stopp beror vanligtvis på en lång resonemangsrunda, inte ett trasigt konto.",
+      "oauth": "OAuth-konton",
+      "apikey": "API-nycklar",
+      "baseCooldown": "Bas-cooldown (sekunder)",
+      "baseCooldownHint": "Första cooldown efter ett fel. Upprepade fel fördubblar den.",
+      "maxBackoffSteps": "Maximalt antal backoff-steg",
+      "maxBackoffStepsHint": "Hur många gånger cooldown kan fördubblas.",
+      "save": "Spara regler",
+      "saved": "Cooldown-regler sparade",
+      "saveFailed": "Kunde inte spara cooldown-reglerna"
+    },
+    "list": {
+      "title": "Anslutningar utanför routing",
+      "subtitle": "Cooldowns och modellspärrar upphör automatiskt. Rensa dem för att återställa en anslutning till routing nu.",
+      "provider": "Leverantör",
+      "allProviders": "Alla leverantörer",
+      "showHealthy": "Visa felfria anslutningar",
+      "refresh": "Uppdatera",
+      "clearSelected": "Rensa markerade ({count})",
+      "clearAll": "Rensa alla",
+      "clear": "Rensa",
+      "select": "Välj anslutning",
+      "none": "Ingen",
+      "empty": "Ingen anslutning är utanför routing.",
+      "cleared": "Rensade {cleared} anslutningar och {lockouts} modellspärrar. Hoppade över {skipped} avstängda eller utgångna.",
+      "clearFailed": "Kunde inte rensa cooldowns",
+      "columns": {
+        "connection": "Anslutning",
+        "provider": "Leverantör",
+        "status": "Status",
+        "remaining": "Tid kvar",
+        "lockouts": "Modellspärrar",
+        "lastError": "Senaste fel"
+      }
+    },
+    "status": {
+      "cooling_down": "Kyler ned",
+      "model_locked": "Modell låst",
+      "unavailable": "Otillgänglig",
+      "terminal": "Kräver åtgärd",
+      "healthy": "Felfri"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Avvisa förfrågningar innan de skickas när målmodellen saknar nödvändiga funktioner (vision, verktyg, strukturerad utdata, kontextfönster). Skyddar direkta förfrågningar från en enda leverantör som kringgår kompatibilitetsfiltret för kombinationslager.",

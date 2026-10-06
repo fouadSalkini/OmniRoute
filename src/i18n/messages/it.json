@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Vista in tempo reale di tutto ciò che è in esecuzione",
     "resilienceConnections": "Resilienza della Connessione",
     "resilienceConnectionsSubtitle": "Cooldown, interruttore, stato di blocco",
+    "resilienceCooldowns": "Gestore cooldown",
+    "resilienceCooldownsSubtitle": "Azzera cooldown in blocco",
     "settingsModalityBridge": "Ponte di Modalità",
     "settingsModalityBridgeSubtitle": "Fallback immagine/audio → testo per modelli solo testo",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Blocchi Modello",
         "count": "Conteggio Connessioni"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Gestore cooldown",
+    "description": "Visualizza tutte le connessioni in pausa dopo errori, rimuovi i cooldown in blocco e regolane la durata.",
+    "loading": "Caricamento dei cooldown…",
+    "loadFailed": "Impossibile caricare i cooldown",
+    "loadFailedDetail": "Verifica la connessione e aggiorna la pagina.",
+    "rules": {
+      "title": "Regole di cooldown",
+      "subtitle": "Si applicano a ciascuna connessione a partire dal prossimo errore.",
+      "stallLabel": "Attiva il cooldown per un account quando uno stream si blocca",
+      "stallDescription": "Disattivato per impostazione predefinita: un blocco di solito indica un lungo turno di ragionamento, non un account non funzionante.",
+      "oauth": "Account OAuth",
+      "apikey": "Chiavi API",
+      "baseCooldown": "Cooldown di base (secondi)",
+      "baseCooldownHint": "Primo cooldown dopo un errore. Errori ripetuti lo raddoppiano.",
+      "maxBackoffSteps": "Numero massimo di passaggi di backoff",
+      "maxBackoffStepsHint": "Quante volte il cooldown può raddoppiare.",
+      "save": "Salva regole",
+      "saved": "Regole di cooldown salvate",
+      "saveFailed": "Impossibile salvare le regole di cooldown"
+    },
+    "list": {
+      "title": "Connessioni escluse dal routing",
+      "subtitle": "I cooldown e i blocchi modello terminano automaticamente. Azzerali per reinserire subito una connessione nel routing.",
+      "provider": "Provider",
+      "allProviders": "Tutti i provider",
+      "showHealthy": "Mostra connessioni integre",
+      "refresh": "Aggiorna",
+      "clearSelected": "Azzera selezionati ({count})",
+      "clearAll": "Azzera tutto",
+      "clear": "Azzera",
+      "select": "Seleziona connessione",
+      "none": "Nessuno",
+      "empty": "Nessuna connessione è esclusa dal routing.",
+      "cleared": "Azzerate {cleared} connessioni e {lockouts} blocchi modello. Ignorate {skipped} bannate o scadute.",
+      "clearFailed": "Impossibile azzerare i cooldown",
+      "columns": {
+        "connection": "Connessione",
+        "provider": "Provider",
+        "status": "Stato",
+        "remaining": "Tempo rimanente",
+        "lockouts": "Blocchi modello",
+        "lastError": "Ultimo errore"
+      }
+    },
+    "status": {
+      "cooling_down": "In raffreddamento",
+      "model_locked": "Modello bloccato",
+      "unavailable": "Non disponibile",
+      "terminal": "Richiede attenzione",
+      "healthy": "Operativo"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Rifiuta le richieste prima della spedizione quando il modello di destinazione manca delle capacità richieste (visione, strumenti, output strutturato, finestra di contesto). Protegge le richieste dirette a singolo fornitore che bypassano il filtro di compatibilità del livello combinato.",

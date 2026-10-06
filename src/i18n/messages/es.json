@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Vista en vivo de todo lo que se está ejecutando",
     "resilienceConnections": "Resiliencia de Conexión",
     "resilienceConnectionsSubtitle": "Cooldown, disyuntor, estado de bloqueo",
+    "resilienceCooldowns": "Gestor de enfriamiento",
+    "resilienceCooldownsSubtitle": "Restablecer enfriamientos en lote",
     "settingsModalityBridge": "Puente de Modalidad",
     "settingsModalityBridgeSubtitle": "Fallback de imagen/audio → texto para modelos solo de texto",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Bloqueos de Modelo",
         "count": "Cantidad de Conexiones"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Gestor de enfriamiento",
+    "description": "Consulta todas las conexiones en reposo tras fallos, restablece enfriamientos en lote y ajusta su duración.",
+    "loading": "Cargando enfriamientos…",
+    "loadFailed": "No se pudieron cargar los enfriamientos",
+    "loadFailedDetail": "Comprueba tu conexión y actualiza la página.",
+    "rules": {
+      "title": "Reglas de enfriamiento",
+      "subtitle": "Se aplican a cada conexión a partir de su próximo fallo.",
+      "stallLabel": "Poner en enfriamiento una cuenta cuando una transmisión se detenga",
+      "stallDescription": "Desactivado por defecto: una interrupción suele deberse a un turno de razonamiento largo, no a una cuenta dañada.",
+      "oauth": "Cuentas OAuth",
+      "apikey": "Claves de API",
+      "baseCooldown": "Enfriamiento base (segundos)",
+      "baseCooldownHint": "Primer enfriamiento tras un fallo. Los fallos reiterados lo duplican.",
+      "maxBackoffSteps": "Pasos máximos de backoff",
+      "maxBackoffStepsHint": "Cuántas veces puede duplicarse el enfriamiento.",
+      "save": "Guardar reglas",
+      "saved": "Reglas de enfriamiento guardadas",
+      "saveFailed": "No se pudieron guardar las reglas de enfriamiento"
+    },
+    "list": {
+      "title": "Conexiones fuera de enrutamiento",
+      "subtitle": "Los enfriamientos y bloqueos de modelos terminan por sí solos. Restablécelos para volver a incluir una conexión en el enrutamiento ahora.",
+      "provider": "Proveedor",
+      "allProviders": "Todos los proveedores",
+      "showHealthy": "Mostrar conexiones en buen estado",
+      "refresh": "Actualizar",
+      "clearSelected": "Restablecer seleccionados ({count})",
+      "clearAll": "Restablecer todo",
+      "clear": "Restablecer",
+      "select": "Seleccionar conexión",
+      "none": "Ninguno",
+      "empty": "Ninguna conexión está fuera de enrutamiento.",
+      "cleared": "Se restablecieron {cleared} conexiones y {lockouts} bloqueos de modelos. Se omitieron {skipped} suspendidas o caducadas.",
+      "clearFailed": "No se pudieron restablecer los enfriamientos",
+      "columns": {
+        "connection": "Conexión",
+        "provider": "Proveedor",
+        "status": "Estado",
+        "remaining": "Tiempo restante",
+        "lockouts": "Bloqueos de modelos",
+        "lastError": "Último error"
+      }
+    },
+    "status": {
+      "cooling_down": "En enfriamiento",
+      "model_locked": "Modelo bloqueado",
+      "unavailable": "No disponible",
+      "terminal": "Requiere atención",
+      "healthy": "Saludable"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Rechazar solicitudes antes del despacho cuando el modelo objetivo carece de capacidades requeridas (visión, herramientas, salida estructurada, ventana de contexto). Protege las solicitudes directas de un solo proveedor que eluden el filtro de compatibilidad de la capa combinada.",

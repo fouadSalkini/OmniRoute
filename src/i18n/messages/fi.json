@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Reaaliaikainen näkymä kaikkeen käynnissä olevaan",
     "resilienceConnections": "Yhteyden Kestävyys",
     "resilienceConnectionsSubtitle": "Jäähdytys, katkaisija, lukitustila",
+    "resilienceCooldowns": "Jäähyjen hallinta",
+    "resilienceCooldownsSubtitle": "Poista jäähyt massana",
     "settingsModalityBridge": "Modaalisilta",
     "settingsModalityBridgeSubtitle": "Kuva/ääni → tekstivaraus vain tekstimalleille",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Mallilukitukset",
         "count": "Yhteyksien Määrä"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Jäähyjen hallinta",
+    "description": "Näe kaikki virheiden vuoksi tauolla olevat yhteydet, poista jäähyt massana ja säädä niiden kestoa.",
+    "loading": "Ladataan jäähyjä…",
+    "loadFailed": "Jäähyjen lataaminen epäonnistui",
+    "loadFailedDetail": "Tarkista internetyhteytesi ja päivitä sivu.",
+    "rules": {
+      "title": "Jäähysäännöt",
+      "subtitle": "Koskee jokaista yhteyttä sen seuraavasta virheestä alkaen.",
+      "stallLabel": "Aseta tili jäähylle striimin jumiutuessa",
+      "stallDescription": "Oletuksena pois päältä: jumiutuminen tarkoittaa yleensä yhtä pitkää päättelyvuoroa, ei rikkinäistä tiliä.",
+      "oauth": "OAuth-tilit",
+      "apikey": "API-avaimet",
+      "baseCooldown": "Perusjäähy (sekuntia)",
+      "baseCooldownHint": "Ensimmäinen jäähy virheen jälkeen. Toistuvat virheet kaksinkertaistavat sen.",
+      "maxBackoffSteps": "Backoff-vaiheiden enimmäismäärä",
+      "maxBackoffStepsHint": "Kuinka monta kertaa jäähy voi kaksinkertaistua.",
+      "save": "Tallenna säännöt",
+      "saved": "Jäähysäännöt tallennettu",
+      "saveFailed": "Jäähysääntöjen tallentaminen epäonnistui"
+    },
+    "list": {
+      "title": "Reitityksen ulkopuolella olevat yhteydet",
+      "subtitle": "Jäähyt ja mallilukitukset päättyvät itsestään. Tyhjennä ne palauttaaksesi yhteyden heti reititykseen.",
+      "provider": "Palveluntarjoaja",
+      "allProviders": "Kaikki palveluntarjoajat",
+      "showHealthy": "Näytä toimivat yhteydet",
+      "refresh": "Päivitä",
+      "clearSelected": "Tyhjennä valitut ({count})",
+      "clearAll": "Tyhjennä kaikki",
+      "clear": "Tyhjennä",
+      "select": "Valitse yhteys",
+      "none": "Ei mitään",
+      "empty": "Yksikään yhteys ei ole reitityksen ulkopuolella.",
+      "cleared": "Tyhjennettiin {cleared} yhteyttä ja {lockouts} mallilukitusta. Ohitettiin {skipped} estettyä tai vanhentunutta.",
+      "clearFailed": "Jäähyjen tyhjentäminen epäonnistui",
+      "columns": {
+        "connection": "Yhteys",
+        "provider": "Palveluntarjoaja",
+        "status": "Tila",
+        "remaining": "Aikaa jäljellä",
+        "lockouts": "Mallilukitukset",
+        "lastError": "Viimeisin virhe"
+      }
+    },
+    "status": {
+      "cooling_down": "Jäähtymässä",
+      "model_locked": "Malli lukittu",
+      "unavailable": "Ei saatavilla",
+      "terminal": "Vaatii huomiota",
+      "healthy": "Kunnossa"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Hylkää pyynnöt ennen lähettämistä, kun kohdemallilta puuttuu vaadittuja ominaisuuksia (näkö, työkalut, jäsennelty ulostulo, kontekstikkelu). Suojaa suorat yhden tarjoajan pyynnöt, jotka ohittavat yhdistelmäkerroksen yhteensopivuussuodattimen.",

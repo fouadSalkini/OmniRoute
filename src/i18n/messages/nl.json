@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Live overzicht van alles wat actief is",
     "resilienceConnections": "Verbindingsveerkracht",
     "resilienceConnectionsSubtitle": "Cooldown, breaker, lockout-status",
+    "resilienceCooldowns": "Cooldown Manager",
+    "resilienceCooldownsSubtitle": "Cooldowns in bulk wissen",
     "settingsModalityBridge": "Modality Brug",
     "settingsModalityBridgeSubtitle": "Afbeelding/audio → tekst fallback voor alleen-tekstmodellen",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Modelvergrendelingen",
         "count": "Aantal Verbindingen"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Cooldown Manager",
+    "description": "Bekijk elke verbinding die rust na fouten, hef cooldowns in bulk op en stel in hoelang ze duren.",
+    "loading": "Cooldowns laden…",
+    "loadFailed": "Kon cooldowns niet laden",
+    "loadFailedDetail": "Controleer je verbinding en vernieuw de pagina.",
+    "rules": {
+      "title": "Cooldown-regels",
+      "subtitle": "Toepassen op elke verbinding vanaf de volgende fout.",
+      "stallLabel": "Account in cooldown plaatsen wanneer een stream vastloopt",
+      "stallDescription": "Standaard uitgeschakeld: een hapering duidt meestal op één lange redeneerbeurt, niet op een defect account.",
+      "oauth": "OAuth-accounts",
+      "apikey": "API-sleutels",
+      "baseCooldown": "Basis-cooldown (seconden)",
+      "baseCooldownHint": "Eerste cooldown na een fout. Herhaalde fouten verdubbelen dit.",
+      "maxBackoffSteps": "Maximaal aantal backoff-stappen",
+      "maxBackoffStepsHint": "Hoe vaak de cooldown kan verdubbelen.",
+      "save": "Regels opslaan",
+      "saved": "Cooldown-regels opgeslagen",
+      "saveFailed": "Kon de cooldown-regels niet opslaan"
+    },
+    "list": {
+      "title": "Verbindingen buiten routering",
+      "subtitle": "Cooldowns en modelblokkades verlopen vanzelf. Wis ze om een verbinding direct weer in de routering op te nemen.",
+      "provider": "Provider",
+      "allProviders": "Alle providers",
+      "showHealthy": "Gezonde verbindingen tonen",
+      "refresh": "Vernieuwen",
+      "clearSelected": "Geselecteerde wissen ({count})",
+      "clearAll": "Alles wissen",
+      "clear": "Wissen",
+      "select": "Verbinding selecteren",
+      "none": "Geen",
+      "empty": "Er bevindt zich geen verbinding buiten de routering.",
+      "cleared": "{cleared} verbindingen en {lockouts} modelblokkades gewist. {skipped} verbannen of verlopen overgeslagen.",
+      "clearFailed": "Kon de cooldowns niet wissen",
+      "columns": {
+        "connection": "Verbinding",
+        "provider": "Provider",
+        "status": "Status",
+        "remaining": "Resterende tijd",
+        "lockouts": "Modelblokkades",
+        "lastError": "Laatste fout"
+      }
+    },
+    "status": {
+      "cooling_down": "Koelt af",
+      "model_locked": "Model vergrendeld",
+      "unavailable": "Niet beschikbaar",
+      "terminal": "Aandacht vereist",
+      "healthy": "Gezond"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Weiger verzoeken vóór verzending wanneer het doellmodel ontbrekende vereiste mogelijkheden heeft (zicht, tools, gestructureerde output, contextvenster). Beschermt directe verzoeken van een enkele aanbieder die de compatibiliteitsfilter van de comb-laag omzeilen.",

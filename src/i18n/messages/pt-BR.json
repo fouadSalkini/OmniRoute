@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Visão ao vivo de tudo em execução",
     "resilienceConnections": "Resiliência de Conexão",
     "resilienceConnectionsSubtitle": "Cooldown, disjuntor, estado de bloqueio",
+    "resilienceCooldowns": "Gerenciador de Cooldown",
+    "resilienceCooldownsSubtitle": "Limpar cooldowns em massa",
     "settingsModalityBridge": "Ponte de Modalidade",
     "settingsModalityBridgeSubtitle": "Fallback de imagem/áudio → texto para modelos apenas de texto",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Bloqueios de Modelo",
         "count": "Contagem de Conexões"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Gerenciador de Cooldown",
+    "description": "Veja todas as conexões em repouso após falhas, remova cooldowns em massa e ajuste a duração deles.",
+    "loading": "Carregando cooldowns…",
+    "loadFailed": "Não foi possível carregar os cooldowns",
+    "loadFailedDetail": "Verifique sua conexão e atualize a página.",
+    "rules": {
+      "title": "Regras de cooldown",
+      "subtitle": "Aplicar a cada conexão a partir da sua próxima falha.",
+      "stallLabel": "Colocar uma conta em cooldown quando um stream travar",
+      "stallDescription": "Desativado por padrão: uma lentidão geralmente indica um turno de raciocínio longo, não uma conta com problemas.",
+      "oauth": "Contas OAuth",
+      "apikey": "Chaves de API",
+      "baseCooldown": "Cooldown base (segundos)",
+      "baseCooldownHint": "Primeiro cooldown após uma falha. Falhas repetidas dobram o tempo.",
+      "maxBackoffSteps": "Máximo de etapas de backoff",
+      "maxBackoffStepsHint": "Quantas vezes o cooldown pode dobrar.",
+      "save": "Salvar regras",
+      "saved": "Regras de cooldown salvas",
+      "saveFailed": "Não foi possível salvar as regras de cooldown"
+    },
+    "list": {
+      "title": "Conexões fora do roteamento",
+      "subtitle": "Cooldowns e bloqueios de modelo expiram sozinhos. Limpe-os para colocar uma conexão de volta no roteamento agora.",
+      "provider": "Provedor",
+      "allProviders": "Todos os provedores",
+      "showHealthy": "Mostrar conexões saudáveis",
+      "refresh": "Atualizar",
+      "clearSelected": "Limpar selecionadas ({count})",
+      "clearAll": "Limpar tudo",
+      "clear": "Limpar",
+      "select": "Selecionar conexão",
+      "none": "Nenhum",
+      "empty": "Nenhuma conexão está fora do roteamento.",
+      "cleared": "{cleared} conexões e {lockouts} bloqueios de modelo limpos. {skipped} banidos ou expirados foram ignorados.",
+      "clearFailed": "Não foi possível limpar os cooldowns",
+      "columns": {
+        "connection": "Conexão",
+        "provider": "Provedor",
+        "status": "Status",
+        "remaining": "Tempo restante",
+        "lockouts": "Bloqueios de modelo",
+        "lastError": "Último erro"
+      }
+    },
+    "status": {
+      "cooling_down": "Em resfriamento",
+      "model_locked": "Modelo bloqueado",
+      "unavailable": "Indisponível",
+      "terminal": "Requer atenção",
+      "healthy": "Saudável"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Rejeitar requisições antes do despacho quando o modelo alvo nao possui as capacidades necessarias (visao, ferramentas, saída estruturada, janela de contexto). Protege requisições diretas que ignoram o filtro de compatibilidade do combo.",

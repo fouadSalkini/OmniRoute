@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "실행 중인 모든 항목의 실시간 보기",
     "resilienceConnections": "연결 복원력",
     "resilienceConnectionsSubtitle": "쿨다운, 차단기, 잠금 상태",
+    "resilienceCooldowns": "Cooldown Manager",
+    "resilienceCooldownsSubtitle": "쿨다운 일괄 해제",
     "settingsModalityBridge": "모달리티 브리지",
     "settingsModalityBridgeSubtitle": "텍스트 전용 모델을 위한 이미지/오디오 → 텍스트 대체",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "모델 잠금",
         "count": "연결 수"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Cooldown Manager",
+    "description": "실패 후 대기 중인 모든 연결을 확인하고, 쿨다운을 일괄 해제하며, 지속 시간을 조정합니다.",
+    "loading": "쿨다운 불러오는 중…",
+    "loadFailed": "쿨다운을 불러올 수 없습니다",
+    "loadFailedDetail": "연결 상태를 확인하고 페이지를 새로고침하세요.",
+    "rules": {
+      "title": "쿨다운 규칙",
+      "subtitle": "다음 실패 시점부터 모든 연결에 적용됩니다.",
+      "stallLabel": "스트림이 지연될 때 계정에 쿨다운 적용",
+      "stallDescription": "기본값 꺼짐: 지연은 일반적으로 계정 오류가 아닌 긴 추론 턴을 의미합니다.",
+      "oauth": "OAuth 계정",
+      "apikey": "API 키",
+      "baseCooldown": "기본 쿨다운(초)",
+      "baseCooldownHint": "실패 후 첫 번째 쿨다운입니다. 반복 실패 시 2배로 증가합니다.",
+      "maxBackoffSteps": "최대 백오프 단계",
+      "maxBackoffStepsHint": "쿨다운이 2배로 증가할 수 있는 횟수입니다.",
+      "save": "규칙 저장",
+      "saved": "쿨다운 규칙이 저장되었습니다",
+      "saveFailed": "쿨다운 규칙을 저장할 수 없습니다"
+    },
+    "list": {
+      "title": "라우팅에서 제외된 연결",
+      "subtitle": "쿨다운 및 모델 잠금은 자동으로 종료됩니다. 지금 라우팅에 연결을 다시 포함하려면 해제하세요.",
+      "provider": "제공자",
+      "allProviders": "모든 제공자",
+      "showHealthy": "정상 연결 표시",
+      "refresh": "새로고침",
+      "clearSelected": "선택 항목 해제 ({count})",
+      "clearAll": "모두 해제",
+      "clear": "해제",
+      "select": "연결 선택",
+      "none": "없음",
+      "empty": "라우팅에서 제외된 연결이 없습니다.",
+      "cleared": "연결 {cleared}개 및 모델 잠금 {lockouts}개를 해제했습니다. 차단되었거나 만료된 {skipped}개는 건너뛰었습니다.",
+      "clearFailed": "쿨다운을 해제할 수 없습니다",
+      "columns": {
+        "connection": "연결",
+        "provider": "제공자",
+        "status": "상태",
+        "remaining": "남은 시간",
+        "lockouts": "모델 잠금",
+        "lastError": "최근 오류"
+      }
+    },
+    "status": {
+      "cooling_down": "쿨다운 중",
+      "model_locked": "모델 잠김",
+      "unavailable": "사용 불가",
+      "terminal": "확인 필요",
+      "healthy": "정상"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "대상 모델에 필수 기능(비전, 도구, 구조화된 출력, 컨텍스트 창)이 부족할 경우 요청을 발송 전에 거부합니다. 콤보 레이어 호환성 필터를 우회하는 직접 단일 공급자 요청을 보호합니다.",

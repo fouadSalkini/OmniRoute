@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Pogled v živo na vse, kar se izvaja",
     "resilienceConnections": "Odpornost povezave",
     "resilienceConnectionsSubtitle": "Stanje obdobja mirovanja, odklopnika in zaklepa",
+    "resilienceCooldowns": "Upravitelj ohlajanja",
+    "resilienceCooldownsSubtitle": "Množično počisti ohlajanja",
     "settingsModalityBridge": "Most med modalnostmi",
     "settingsModalityBridgeSubtitle": "Slika/zvok → nadomestna pretvorba v besedilo za modele, ki podpirajo samo besedilo",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Zaklepi modelov",
         "count": "Število povezav"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Upravitelj ohlajanja",
+    "description": "Oglejte si vse povezave, ki počivajo po napakah, množično odstranite ohlajanja in prilagodite njihovo trajanje.",
+    "loading": "Nalaganje ohlajanj …",
+    "loadFailed": "Ohlajanj ni bilo mogoče naložiti",
+    "loadFailedDetail": "Preverite povezavo in osvežite stran.",
+    "rules": {
+      "title": "Pravila ohlajanja",
+      "subtitle": "Uveljavi za vsako povezavo od njene naslednje napake naprej.",
+      "stallLabel": "Uveljavi ohlajanje računa ob zastoju pretakanja",
+      "stallDescription": "Privzeto izklopljeno: zastoj običajno pomeni le en dolg cikel razmišljanja in ne okvarjenega računa.",
+      "oauth": "Računi OAuth",
+      "apikey": "Ključi API",
+      "baseCooldown": "Osnovno ohlajanje (sekunde)",
+      "baseCooldownHint": "Prvo ohlajanje po napaki. Ponovljene napake ga podvojijo.",
+      "maxBackoffSteps": "Največje število korakov umika",
+      "maxBackoffStepsHint": "Kolikokrat se lahko čas ohlajanja podvoji.",
+      "save": "Shrani pravila",
+      "saved": "Pravila ohlajanja so shranjena",
+      "saveFailed": "Pravil ohlajanja ni bilo mogoče shraniti"
+    },
+    "list": {
+      "title": "Povezave izven usmerjanja",
+      "subtitle": "Ohlajanja in zapore modelov se zaključijo sami. Počistite jih, če želite povezavo takoj vrniti v usmerjanje.",
+      "provider": "Ponudnik",
+      "allProviders": "Vsi ponudniki",
+      "showHealthy": "Pokaži zdrave povezave",
+      "refresh": "Osveži",
+      "clearSelected": "Počisti izbrano ({count})",
+      "clearAll": "Počisti vse",
+      "clear": "Počisti",
+      "select": "Izberite povezavo",
+      "none": "Brez",
+      "empty": "Nobena povezava ni izven usmerjanja.",
+      "cleared": "Počiščenih {cleared} povezav in {lockouts} zapor modelov. Preskočenih {skipped} blokiranih ali poteklih.",
+      "clearFailed": "Ohlajanj ni bilo mogoče počistiti",
+      "columns": {
+        "connection": "Povezava",
+        "provider": "Ponudnik",
+        "status": "Stanje",
+        "remaining": "Preostali čas",
+        "lockouts": "Zapore modelov",
+        "lastError": "Zadnja napaka"
+      }
+    },
+    "status": {
+      "cooling_down": "Ohlajanje",
+      "model_locked": "Model zaklenjen",
+      "unavailable": "Ni na voljo",
+      "terminal": "Zahteva pozornost",
+      "healthy": "Brezhibno"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Zavrni zahteve pred posredovanjem, ko ciljni model nima zahtevanih zmogljivosti (slikovni vhod, orodja, strukturiran izhod, kontekstno okno). Ščiti neposredne zahteve za enega ponudnika, ki obidejo filter združljivosti kombinacijskega sloja.",

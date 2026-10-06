@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Tiesioginė visų vykdomų procesų apžvalga",
     "resilienceConnections": "Ryšio atsparumas",
     "resilienceConnectionsSubtitle": "Atvėsimo, grandinės pertraukiklio, užrakinimo būsena",
+    "resilienceCooldowns": "Atvėsimų tvarkyklė",
+    "resilienceCooldownsSubtitle": "Masiškai išvalyti atvėsimus",
     "settingsModalityBridge": "Modalumo tiltas",
     "settingsModalityBridgeSubtitle": "Vaizdo / garso → teksto atsarginis režimas modeliams, apdorojantiems tik tekstą",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Modelių blokavimai",
         "count": "Jungčių skaičius"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Atvėsimų tvarkyklė",
+    "description": "Peržiūrėkite visus ryšius, pristabdytus po trikčių, masiškai atšaukite atvėsimus ir koreguokite jų trukmę.",
+    "loading": "Įkeliami atvėsimai…",
+    "loadFailed": "Nepavyko įkelti atvėsimų",
+    "loadFailedDetail": "Patikrinkite ryšį ir atnaujinkite puslapį.",
+    "rules": {
+      "title": "Atvėsimo taisyklės",
+      "subtitle": "Taikoma kiekvienam ryšiui nuo kitos jo trikties.",
+      "stallLabel": "Pristabdyti paskyrą, kai srautas užstringa",
+      "stallDescription": "Pagal numatytuosius nustatymus išjungta: užstrigimas dažniausiai reiškia vieną ilgą samprotavimo ciklą, o ne neveikiančią paskyrą.",
+      "oauth": "OAuth paskyros",
+      "apikey": "API raktai",
+      "baseCooldown": "Bazinis atvėsimas (sekundėmis)",
+      "baseCooldownHint": "Pirmasis atvėsimas po trikties. Pasikartojančios triktys jį padvigubina.",
+      "maxBackoffSteps": "Maksimalus atsitraukimo žingsnių skaičius",
+      "maxBackoffStepsHint": "Kiek kartų atvėsimas gali padvigubėti.",
+      "save": "Išsaugoti taisykles",
+      "saved": "Atvėsimo taisyklės išsaugotos",
+      "saveFailed": "Nepavyko išsaugoti atvėsimo taisyklių"
+    },
+    "list": {
+      "title": "Maršrutizavime nedalyvaujantys ryšiai",
+      "subtitle": "Atvėsimai ir modelių blokavimai baigiasi savaime. Išvalykite juos, kad ryšys vėl būtų įtrauktas į maršrutizavimą.",
+      "provider": "Teikėjas",
+      "allProviders": "Visi teikėjai",
+      "showHealthy": "Rodyti veikiančius ryšius",
+      "refresh": "Atnaujinti",
+      "clearSelected": "Išvalyti pasirinktus ({count})",
+      "clearAll": "Išvalyti visus",
+      "clear": "Išvalyti",
+      "select": "Pasirinkti ryšį",
+      "none": "Nėra",
+      "empty": "Nė vienas ryšys nėra pašalintas iš maršrutizavimo.",
+      "cleared": "Išvalyta {cleared} ryšių ir {lockouts} modelių blokavimų. Praleista {skipped} užblokuotų ar nebegaliojančių.",
+      "clearFailed": "Nepavyko išvalyti atvėsimų",
+      "columns": {
+        "connection": "Ryšys",
+        "provider": "Teikėjas",
+        "status": "Būsena",
+        "remaining": "Liko laiko",
+        "lockouts": "Modelių blokavimai",
+        "lastError": "Paskutinė klaida"
+      }
+    },
+    "status": {
+      "cooling_down": "Vėsta",
+      "model_locked": "Modelis užrakintas",
+      "unavailable": "Nepasiekiamas",
+      "terminal": "Reikia dėmesio",
+      "healthy": "Tvarkinga"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Atmesti užklausas prieš jas perduodant, kai tikslinis modelis neturi reikiamų galimybių (vaizdų apdorojimo, įrankių, struktūrizuotos išvesties, konteksto lango). Tai apsaugo tiesiogines vienam teikėjui skirtas užklausas, kurios apeina derinių lygmens suderinamumo filtrą.",

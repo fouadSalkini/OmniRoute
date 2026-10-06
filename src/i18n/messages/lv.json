@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Reāllaika skats uz visu, kas darbojas",
     "resilienceConnections": "Savienojuma noturība",
     "resilienceConnectionsSubtitle": "Atdzišanas periods, ķēdes pārtraucējs un bloķēšanas stāvoklis",
+    "resilienceCooldowns": "Atdzišanas pārvaldnieks",
+    "resilienceCooldownsSubtitle": "Notīrīt atdzišanas periodus masveidā",
     "settingsModalityBridge": "Modalitātes tilts",
     "settingsModalityBridgeSubtitle": "Attēla/audio → teksta atkāpšanās režīms modeļiem, kas atbalsta tikai tekstu",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Modeļu bloķējumi",
         "count": "Savienojumu skaits"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Atdzišanas pārvaldnieks",
+    "description": "Skatiet visus savienojumus, kas atpūšas pēc kļūmēm, noņemiet atdzišanas periodus masveidā un pielāgojiet to ilgumu.",
+    "loading": "Ielādē atdzišanas periodus…",
+    "loadFailed": "Neizdevās ielādēt atdzišanas periodus",
+    "loadFailedDetail": "Pārbaudiet savienojumu un atsvaidziniet lapu.",
+    "rules": {
+      "title": "Atdzišanas kārtulas",
+      "subtitle": "Piemērot katram savienojumam no tā nākamās kļūmes.",
+      "stallLabel": "Iestatīt konta atdzišanu, kad straume iestrēgst",
+      "stallDescription": "Pēc noklusējuma izslēgts: iestrēgšana parasti nozīmē vienu garu spriešanas soli, nevis bojātu kontu.",
+      "oauth": "OAuth konti",
+      "apikey": "API atslēgas",
+      "baseCooldown": "Bāzes atdzišanas laiks (sekundēs)",
+      "baseCooldownHint": "Pirmais atdzišanas laiks pēc kļūmes. Atkārtotas kļūmes to dubulto.",
+      "maxBackoffSteps": "Maksimālais atkāpšanās soļu skaits",
+      "maxBackoffStepsHint": "Cik reizes atdzišanas laiks var dubultoties.",
+      "save": "Saglabāt kārtulas",
+      "saved": "Atdzišanas kārtulas saglabātas",
+      "saveFailed": "Neizdevās saglabāt atdzišanas kārtulas"
+    },
+    "list": {
+      "title": "Savienojumi ārpus maršrutēšanas",
+      "subtitle": "Atdzišanas periodi un modeļu bloķējumi beidzas paši. Notīriet tos, lai savienojumu atgrieztu maršrutēšanā tūlīt.",
+      "provider": "Pakalpojumu sniedzējs",
+      "allProviders": "Visi pakalpojumu sniedzēji",
+      "showHealthy": "Rādīt darbspējīgos savienojumus",
+      "refresh": "Atsvaidzināt",
+      "clearSelected": "Notīrīt atlasītos ({count})",
+      "clearAll": "Notīrīt visu",
+      "clear": "Notīrīt",
+      "select": "Atlasīt savienojumu",
+      "none": "Nav",
+      "empty": "Neviens savienojums nav ārpus maršrutēšanas.",
+      "cleared": "Notīrīti {cleared} savienojumi un {lockouts} modeļu bloķējumi. Izlaisti {skipped} bloķēti vai derīgumu zaudējuši.",
+      "clearFailed": "Neizdevās notīrīt atdzišanas periodus",
+      "columns": {
+        "connection": "Savienojums",
+        "provider": "Pakalpojumu sniedzējs",
+        "status": "Statuss",
+        "remaining": "Atlikušais laiks",
+        "lockouts": "Modeļu bloķējumi",
+        "lastError": "Pēdējā kļūda"
+      }
+    },
+    "status": {
+      "cooling_down": "Atdziest",
+      "model_locked": "Modelis bloķēts",
+      "unavailable": "Nav pieejams",
+      "terminal": "Nepieciešama uzmanība",
+      "healthy": "Veselīgs"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Noraidīt pieprasījumus pirms nosūtīšanas, ja mērķa modelim trūkst nepieciešamo iespēju (attēlu apstrāde, rīki, strukturēta izvade, konteksta logs). Aizsargā tiešus viena pakalpojumu sniedzēja pieprasījumus, kas apiet combo-layer saderības filtru.",

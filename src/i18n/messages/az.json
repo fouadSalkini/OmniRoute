@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "İşləyən hər şeyin canlı görünüşü",
     "resilienceConnections": "Bağlantı Davamlılığı",
     "resilienceConnectionsSubtitle": "Soyuma, açar, blok vəziyyəti",
+    "resilienceCooldowns": "Gözləmə Müddəti Meneceri",
+    "resilienceCooldownsSubtitle": "Gözləmə müddətlərini toplu şəkildə təmizləyin",
     "settingsModalityBridge": "Modallıq Körpüsü",
     "settingsModalityBridgeSubtitle": "Şəkil/səs → mətn yalnız model üçün mətnə keçid",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Model Blokları",
         "count": "Bağlantı Sayı"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Gözləmə Müddəti Meneceri",
+    "description": "Xətalardan sonra istirahət edən hər bir bağlantını görün, gözləmə müddətlərini toplu şəkildə aradan qaldırın və onların nə qədər çəkəcəyini tənzimləyin.",
+    "loading": "Gözləmə müddətləri yüklənir…",
+    "loadFailed": "Gözləmə müddətləri yüklənmədi",
+    "loadFailedDetail": "Bağlantınızı yoxlayın və səhifəni yeniləyin.",
+    "rules": {
+      "title": "Gözləmə müddəti qaydaları",
+      "subtitle": "Növbəti xətasından etibarən hər bir bağlantıya tətbiq edilsin.",
+      "stallLabel": "Axın dayandıqda hesabı gözləmə rejiminə keçirin",
+      "stallDescription": "Defolt olaraq qeyri-aktivdir: dayanma adətən hesabın xətalı olmasını deyil, sadəcə bir uzun mühakimə mərhələsini bildirir.",
+      "oauth": "OAuth hesabları",
+      "apikey": "API açarları",
+      "baseCooldown": "Baza gözləmə müddəti (saniyə)",
+      "baseCooldownHint": "Xətadan sonrakı ilk gözləmə müddəti. Təkrarlanan xətalar bunu ikiqat artırır.",
+      "maxBackoffSteps": "Maksimum geri çəkilmə addımları",
+      "maxBackoffStepsHint": "Gözləmə müddətinin neçə dəfə ikiqat arta biləcəyi.",
+      "save": "Qaydaları yadda saxla",
+      "saved": "Gözləmə müddəti qaydaları saxlanıldı",
+      "saveFailed": "Gözləmə müddəti qaydalarını saxlamaq mümkün olmadı"
+    },
+    "list": {
+      "title": "Marşrutlaşdırmadan kənarlaşdırılmış bağlantılar",
+      "subtitle": "Gözləmə müddətləri və model kilidlənmələri öz-özünə başa çatır. Bağlantını dərhal yenidən marşrutlaşdırmaya daxil etmək üçün onları təmizləyin.",
+      "provider": "Provayder",
+      "allProviders": "Bütün provayderlər",
+      "showHealthy": "Sağlam bağlantıları göstər",
+      "refresh": "Yenilə",
+      "clearSelected": "Seçilmişləri təmizlə ({count})",
+      "clearAll": "Hamısını təmizlə",
+      "clear": "Təmizlə",
+      "select": "Bağlantı seçin",
+      "none": "Heç biri",
+      "empty": "Marşrutlaşdırmadan kənarlaşdırılmış heç bir bağlantı yoxdur.",
+      "cleared": "{cleared} bağlantı və {lockouts} model kilidlənməsi təmizləndi. Qadağan edilmiş və ya vaxtı bitmiş {skipped} element buraxıldı.",
+      "clearFailed": "Gözləmə müddətlərini təmizləmək mümkün olmadı",
+      "columns": {
+        "connection": "Bağlantı",
+        "provider": "Provayder",
+        "status": "Status",
+        "remaining": "Qalan vaxt",
+        "lockouts": "Model kilidlənmələri",
+        "lastError": "Son xəta"
+      }
+    },
+    "status": {
+      "cooling_down": "Soyudulur",
+      "model_locked": "Model kilidlənib",
+      "unavailable": "Əlçatmaz",
+      "terminal": "Diqqət tələb edir",
+      "healthy": "Sağlam"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Tələb olunan imkanlar (görmə, alətlər, strukturlaşdırılmış çıxış, kontekst pəncərəsi) olmayan hədəf modelində göndərilmədən əvvəl tələbləri rədd edin. Kombinasiya qatının uyğunluq filtrini keçən birbaşa tək təminatçı tələblərini qoruyur.",

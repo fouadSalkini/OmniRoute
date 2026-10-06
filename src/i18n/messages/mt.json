@@ -1313,6 +1313,8 @@
     "orchestrationSubtitle": "Dehra diretta ta’ dak kollu li qed jaħdem",
     "resilienceConnections": "Reżiljenza tal-Konnessjoni",
     "resilienceConnectionsSubtitle": "Stat tal-perjodu ta’ stennija, tal-interruttur u tal-imblukkar",
+    "resilienceCooldowns": "Maniġer tal-Cooldown",
+    "resilienceCooldownsSubtitle": "Neħħi l-cooldowns f'daqqa",
     "settingsModalityBridge": "Pont tal-Modalità",
     "settingsModalityBridgeSubtitle": "Soluzzjoni alternattiva minn immaġni/awdjo → test għal mudelli li jaċċettaw test biss",
     "commandPalette": {
@@ -13967,6 +13969,59 @@
         "modelLockouts": "Imblukkar tal-Mudelli",
         "count": "Għadd ta' Konnessjonijiet"
       }
+    }
+  },
+  "resilienceCooldowns": {
+    "title": "Maniġer tal-Cooldown",
+    "description": "Ara kull konnessjoni li qed tistrieħ wara fallimenti, neħħi l-cooldowns f'daqqa, u aġġusta kemm idumu.",
+    "loading": "Qed jgħabbi l-cooldowns…",
+    "loadFailed": "Ma setgħux jitgħabbew il-cooldowns",
+    "loadFailedDetail": "Iċċekkja l-konnessjoni tiegħek u aġġorna l-paġna.",
+    "rules": {
+      "title": "Regoli tal-cooldown",
+      "subtitle": "Applika għal kull konnessjoni mill-falliment li jmiss tagħha.",
+      "stallLabel": "Attiva cooldown għal kont meta stream jieqaf",
+      "stallDescription": "Mitfi b'mod awtomatiku: waqfien normalment ifisser fażi twila ta' raġunament, mhux kont miksur.",
+      "oauth": "Kontijiet OAuth",
+      "apikey": "Ċwievet tal-API",
+      "baseCooldown": "Cooldown bażiku (sekondi)",
+      "baseCooldownHint": "L-ewwel cooldown wara falliment. Fallimenti ripetuti jirdoppjawh.",
+      "maxBackoffSteps": "Passi massimi ta' backoff",
+      "maxBackoffStepsHint": "Kemm-il darba l-cooldown jista' jirdoppja.",
+      "save": "Salva r-regoli",
+      "saved": "Ir-regoli tal-cooldown ġew salvati",
+      "saveFailed": "Ma setgħux jiġu salvati r-regoli tal-cooldown"
+    },
+    "list": {
+      "title": "Konnessjonijiet barra mir-routing",
+      "subtitle": "Il-cooldowns u l-lockouts tal-mudelli jispiċċaw waħedhom. Neħħihom biex terġa' tpoġġi konnessjoni fir-routing issa.",
+      "provider": "Fornitur",
+      "allProviders": "Il-fornituri kollha",
+      "showHealthy": "Uri konnessjonijiet f'saħħithom",
+      "refresh": "Aġġorna",
+      "clearSelected": "Neħħi dawk magħżula ({count})",
+      "clearAll": "Neħħi kollox",
+      "clear": "Neħħi",
+      "select": "Agħżel il-konnessjoni",
+      "none": "Xejn",
+      "empty": "L-ebda konnessjoni mhi barra mir-routing.",
+      "cleared": "Tneħħew {cleared} konnessjonijiet u {lockouts} lockouts tal-mudelli. Inqabżu {skipped} ipprojbiti jew skaduti.",
+      "clearFailed": "Ma setgħux jitneħħew il-cooldowns",
+      "columns": {
+        "connection": "Konnessjoni",
+        "provider": "Fornitur",
+        "status": "Status",
+        "remaining": "Ħin li fadal",
+        "lockouts": "Lockouts tal-mudelli",
+        "lastError": "L-aħħar żball"
+      }
+    },
+    "status": {
+      "cooling_down": "Qed jiksaħ",
+      "model_locked": "Mudell imsakkar",
+      "unavailable": "Mhux disponibbli",
+      "terminal": "Jeħtieġ attenzjoni",
+      "healthy": "B'saħħtu"
     }
   },
   "featureFlagCapabilityFilterEnabledDescription": "Irrifjuta t-talbiet qabel jintbagħtu meta l-mudell fil-mira ma jkollux il-kapaċitajiet meħtieġa (viżjoni, għodod, output strutturat, tieqa tal-kuntest). Jipproteġi t-talbiet diretti lil fornitur wieħed li jaqbżu l-filtru tal-kompatibbiltà tas-saff tal-kombinazzjonijiet.",
