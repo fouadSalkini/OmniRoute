@@ -68,6 +68,12 @@ export interface PipelineConnectionContext {
   onCredentialsRefreshed: (next: Record<string, unknown>) => void | Promise<void>;
   assertManagedLeaseFence: (connectionId: string) => void;
   getProviderCredentials: typeof getProviderCredentials;
+  /**
+   * Connection allowlist the request was routed under (API key allowlist ∩ combo
+   * step allowlist ∩ quota pool). Account rotation must stay inside it; null means
+   * the request carried no constraint.
+   */
+  allowedConnections?: string[] | null;
   refreshCredentials?: (
     credentials: Record<string, unknown>
   ) => Promise<Record<string, unknown> | null>;
@@ -317,6 +323,7 @@ export async function runProviderExecutionPipeline(
 ): Promise<ProviderExecutionOutcome> {
   const { policy, target, connection, wire, state, sendProviderAttempt } = input;
   const maxAttempts = maxAttemptsFor(target.provider);
+  const allowedConnections = connection.allowedConnections ?? null;
   const excludedIds: string[] = [];
   let attempts = 0;
   let lastAttempt: ChatCoreExecutorResult | null = null;
@@ -389,7 +396,7 @@ export async function runProviderExecutionPipeline(
         await state.onClearSessionAffinity?.({ failedConnectionId: failedId });
       }
       const nextCreds = await connection
-        .getProviderCredentials("codex", null, null, wire.currentModel, {
+        .getProviderCredentials("codex", null, allowedConnections, wire.currentModel, {
           excludeConnectionIds: [...excludedIds],
         })
         .catch(() => null);
@@ -424,7 +431,7 @@ export async function runProviderExecutionPipeline(
           );
         }
         const nextCreds = await connection
-          .getProviderCredentials("antigravity", null, null, wire.currentModel, {
+          .getProviderCredentials("antigravity", null, allowedConnections, wire.currentModel, {
             excludeConnectionIds: [...excludedIds],
           })
           .catch(() => null);
