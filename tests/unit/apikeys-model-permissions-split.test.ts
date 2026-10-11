@@ -44,6 +44,25 @@ test("modelPatternMatches matches a candidate against an exact or wildcard patte
   assert.equal(M.modelPatternMatches("gpt-4o", ["gpt-4o-mini"]), false);
 });
 
+// Permission hardening backport: a gateway wildcard must not include another provider's route.
+for (const { pattern, candidate, allowed } of [
+  { pattern: "cline/*", candidate: "cline/deepseek/deepseek-v4-flash", allowed: true },
+  { pattern: "cline/*", candidate: "cline/openrouter/deepseek/deepseek-v4-flash", allowed: false },
+  { pattern: "cline/*", candidate: "cline/cx/openai/gpt-6.1", allowed: false },
+  {
+    pattern: "cline/openrouter/*",
+    candidate: "cline/openrouter/deepseek/deepseek-v4-flash",
+    allowed: true,
+  },
+  { pattern: "openrouter/*", candidate: "openrouter/deepseek/deepseek-v4-flash", allowed: true },
+]) {
+  test(`${pattern} ${allowed ? "permits" : "rejects"} ${candidate}`, async () => {
+    const shared = await import("../../src/shared/utils/modelPermissionPatterns.ts");
+    assert.equal(M.modelPatternMatches(pattern, [candidate]), allowed);
+    assert.equal(shared.modelPatternMatches(pattern, [candidate]), allowed);
+  });
+}
+
 test("stripExtendedContextSuffix removes the extended-context marker", () => {
   const out = M.stripExtendedContextSuffix("claude-sonnet-4-5[1m]");
   assert.equal(out.includes("[1m]"), false);
