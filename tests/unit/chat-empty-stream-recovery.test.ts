@@ -464,3 +464,79 @@ test("combo uses its two-attempt budget to recover without nested empty retries"
   assert.doesNotMatch(body, /Provider returned empty content/);
   assert.deepEqual(dispatches, [first.token, healthy.token]);
 });
+
+test("one-model round-robin recovers an early empty_content 502 on an allowed sibling", async () => {
+  const first = await seedConnection("rr-early-empty");
+  const sibling = await seedConnection("rr-early-healthy");
+  const apiKey = await apiKeysDb.createApiKey("rr-early-allowed", "test", [], {
+    allowedConnections: [first.id, sibling.id],
+  });
+  const combo = await combosDb.createCombo({
+    name: "rr-early-empty-recovery",
+    strategy: "round-robin",
+    models: [
+      {
+        kind: "model",
+        model: "claude/claude-opus-5-5-xhigh",
+        allowedConnectionIds: [first.id, sibling.id],
+      },
+    ],
+    config: { maxRetries: 1, retryDelayMs: 0, maxGlobalAttempts: 2 },
+  });
+  const dispatches = stubClaudeDispatches((token) =>
+    token === first.token
+      ? new Response(
+          JSON.stringify({
+            error: {
+              message: "Provider returned empty content",
+              type: "server_error",
+              code: "empty_content",
+            },
+          }),
+          { status: 502, headers: { "Content-Type": "application/json" } }
+        )
+      : claudeStream("ROUND_ROBIN_EARLY_RECOVERED")
+  );
+
+  const response = await handleChat(
+    streamRequest({ Authorization: `Bearer ${apiKey.key}` }, combo.name)
+  );
+  const body = await response.text();
+
+  assert.match(body, /ROUND_ROBIN_EARLY_RECOVERED/);
+  assert.deepEqual(dispatches, [first.token, sibling.token]);
+  assert.equal(response.headers.get("X-OmniRoute-Selected-Connection-Id"), sibling.id);
+});
+
+test("one-model round-robin recovers late empty content on an allowed sibling within its budget", async () => {
+  const first = await seedConnection("rr-empty");
+  const sibling = await seedConnection("rr-healthy");
+  const apiKey = await apiKeysDb.createApiKey("rr-allowed", "test", [], {
+    allowedConnections: [first.id, sibling.id],
+  });
+  const combo = await combosDb.createCombo({
+    name: "rr-empty-recovery",
+    strategy: "round-robin",
+    models: [
+      {
+        kind: "model",
+        model: "claude/claude-opus-5-5-xhigh",
+        allowedConnectionIds: [first.id, sibling.id],
+      },
+    ],
+    config: { maxRetries: 1, retryDelayMs: 0, maxGlobalAttempts: 2 },
+  });
+  const dispatches = stubClaudeDispatches((token) =>
+    token === first.token ? delayedEmptyClaudeStream(1_100) : claudeStream("ROUND_ROBIN_RECOVERED")
+  );
+
+  const response = await handleChat(
+    streamRequest({ Authorization: `Bearer ${apiKey.key}` }, combo.name)
+  );
+  const body = await response.text();
+
+  assert.match(body, /ROUND_ROBIN_RECOVERED/);
+  assert.doesNotMatch(body, /Provider returned empty content/);
+  assert.deepEqual(dispatches, [first.token, sibling.token]);
+  assert.equal(response.headers.get("X-OmniRoute-Selected-Connection-Id"), sibling.id);
+});
