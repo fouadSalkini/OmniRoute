@@ -766,7 +766,7 @@ export async function executeTargetAttempt(opts: {
         deps,
       });
       emptyTurnConnectionId = emptyContentRetry.connectionId;
-      if (emptyContentRetry.shouldRetry) continue;
+      if (emptyContentRetry.shouldRetry === true) continue;
       return emptyContentRetry.result;
     }
 
