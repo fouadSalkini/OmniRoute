@@ -292,7 +292,12 @@ function classifyStreamingUpstreamFailure(parsed: unknown): StreamingUpstreamFai
   const normalized = normalizeStreamFailurePayload(parsed);
   if (!normalized) return null;
   const type = normalized.type?.trim().toLowerCase() || "";
-  const code = normalized.code?.trim().toLowerCase() || "";
+  // The disconnect guard's synthetic empty-turn error uses the generic wire code.
+  // Keep it distinct internally so recovery can prefer a sibling without a lockout.
+  const code =
+    normalized.message === "Provider returned empty content"
+      ? "empty_content"
+      : normalized.code?.trim().toLowerCase() || "";
   const requestScoped =
     type === "invalid_request_error" ||
     code === "invalid_request_error" ||

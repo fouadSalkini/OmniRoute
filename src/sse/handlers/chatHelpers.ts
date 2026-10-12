@@ -934,64 +934,12 @@ export function handleNoCredentials(
   );
 }
 
-/**
- * Bug #3758 (Problem A): NVIDIA NIM (and other flaky OpenAI-compatible upstreams)
- * intermittently send HTTP 200, then close the SSE early with zero useful frames.
- * The readiness gate surfaces this as `STREAM_EARLY_EOF` / HTTP 502. On the
- * single-model (non-combo) path that 502 used to be returned immediately for every
- * provider except `antigravity`, so a transient upstream hang-up looked like a hard
- * failure to the caller (e.g. the test-chat scenario).
- *
- * This decides whether a single-model request should re-attempt after an early
- * close. It deliberately:
- *  - retries ONLY on `STREAM_EARLY_EOF` (the strong "upstream hung up after 200"
- *    signal) — NOT on `STREAM_READINESS_TIMEOUT` / `stream_timeout`, which is a
- *    slow-but-alive upstream where retrying would only double latency; and
- *  - is bounded to exactly ONE retry via the per-request `attempt` counter, so it
- *    can never loop (the second consecutive early close surfaces the 502).
- *
- * Pure function (no side effects): the caller performs a plain same-connection
- * re-attempt and must NOT mark the account unavailable for an early close — it is a
- * transient upstream glitch, not a bad key.
- */
-export const STREAM_EARLY_EOF_MAX_RETRIES = 1;
-
-// A genuine 0-byte upstream empty response (emitClaudeEmptyStreamErrorAndAbort,
-// code "empty_response" — call logs 1788132529140-96ef4a / 1788142914004-062cf6)
-// is the same class of transient upstream glitch as STREAM_EARLY_EOF: the
-// upstream sent HTTP 200 then closed with zero useful frames. Treat it the
-// same — ONE bounded same-connection re-attempt, never a loop.
-const RETRYABLE_STREAM_EMPTY_CODES: ReadonlySet<string> = new Set([
-  "STREAM_EARLY_EOF",
-  "empty_response",
-]);
-
-export function shouldRetryStreamEarlyEof(
-  errorCode: string | null | undefined,
-  attempt: number
-): boolean {
-  return (
-    typeof errorCode === "string" &&
-    RETRYABLE_STREAM_EMPTY_CODES.has(errorCode) &&
-    attempt < STREAM_EARLY_EOF_MAX_RETRIES
-  );
-}
-
-export const STREAM_READINESS_TIMEOUT_MAX_RETRIES = 1;
-
-export function shouldRetryStreamReadinessTimeout(
-  errorCode: string | null | undefined,
-  attempt: number,
-  isCombo: boolean,
-  clientAborted: boolean
-): boolean {
-  return (
-    !isCombo &&
-    !clientAborted &&
-    errorCode === "STREAM_READINESS_TIMEOUT" &&
-    attempt < STREAM_READINESS_TIMEOUT_MAX_RETRIES
-  );
-}
+export {
+  shouldRetryStreamEarlyEof,
+  shouldRetryStreamReadinessTimeout,
+  STREAM_EARLY_EOF_MAX_RETRIES,
+  STREAM_READINESS_TIMEOUT_MAX_RETRIES,
+} from "./streamRetryPolicy";
 
 // The sibling hop widens the terminal/failover boundary, so it ships off
 // behind STREAM_EARLY_EOF_SIBLING_FAILOVER_ENABLED until observed live.

@@ -60,8 +60,6 @@ import {
   shouldSkipForPredictedTtft,
   shouldRecordProviderBreakerFailure,
   isComboRequestScopedFailure as isScopedFailure,
-  isStreamReadinessFailureErrorBody,
-  isStreamEarlyEofErrorBody,
   isLocalKeyPolicyBreachErrorBody,
   isLocalQueueCapacityErrorBody,
   toRecordedTarget,
@@ -102,6 +100,12 @@ import type { ComboErrorBody, ComboRetryAfter, ResolvedComboTarget } from "./typ
 import type { ResponseValidationConfig } from "./responseValidation.ts";
 import { resolveComboDailyReset } from "./comboDailyResetClock.ts";
 import type { ProtectedPriorityStopCause } from "./protectedPriorityStopStatus.ts";
+import {
+  handleEmptyContentRetry,
+  isEmptyContentResponse,
+  isEarlyEofResponse,
+  isReadinessFailure,
+} from "./emptyContentRetry.ts";
 
 export async function executeTargetAttempt(opts: {
   index: number;
@@ -142,6 +146,7 @@ export async function executeTargetAttempt(opts: {
         ),
     });
 
+  let emptyTurnConnectionId: string | null = null;
   // Retry loop for transient errors
   for (let retry = 0; retry <= deps.maxRetries; retry++) {
     // Fix #1681: Bail out immediately if the client has disconnected
@@ -361,6 +366,7 @@ export async function executeTargetAttempt(opts: {
     }
     const result = await deps.handleSingleModelWithTimeout(attemptBody, modelStr, {
       ...targetForAttempt,
+      emptyTurnConnectionId,
       effectiveComboStrategy: deps.strategy,
       failoverBeforeRetry: deps.config.failoverBeforeRetry,
     });
@@ -425,7 +431,12 @@ export async function executeTargetAttempt(opts: {
         state.requestScopedFailureSeen ||= qualityFailure.requestScoped;
         if (qualityFailure.requestScoped)
           state.requestScopedRejectedModelKeys?.add(requestScopedReplayKey(modelStr));
-        if (provider && rawModel && !qualityFailure.requestScoped) {
+        if (
+          provider &&
+          rawModel &&
+          !qualityFailure.requestScoped &&
+          quality.upstreamFailure?.code !== "empty_content"
+        ) {
           const mlSettings = resolveModelLockoutSettings(deps.settings);
           if (mlSettings.enabled && mlSettings.errorCodes.includes(qualityFailure.status)) {
             recordModelLockoutFailure(
@@ -452,7 +463,12 @@ export async function executeTargetAttempt(opts: {
           latencyMs: Date.now() - deps.startTime,
         });
         state.observeFailure(false, target.executionKey);
-        if (handlePreContentStreamRetry(quality, retry, deps, modelStr)) continue;
+        if (handlePreContentStreamRetry(quality, retry, deps, modelStr)) {
+          if (quality.upstreamFailure?.code === "empty_content") {
+            emptyTurnConnectionId = effectiveConnectionId || null;
+          }
+          continue;
+        }
         return protectedPriorityTarget ? qualityValidationFailure(quality) : null;
       }
 
@@ -738,13 +754,24 @@ export async function executeTargetAttempt(opts: {
       }
     }
 
-    const isStreamReadinessFailure =
-      (result.status === 502 || result.status === 504) &&
-      isStreamReadinessFailureErrorBody(errorBody);
-    // An early EOF is an upstream failure, not a readiness probe — the breaker must
-    // see it even though the transient-retry path below treats both codes alike.
-    const isStreamEarlyEof =
-      (result.status === 502 || result.status === 504) && isStreamEarlyEofErrorBody(errorBody);
+    if (isEmptyContentResponse(result, errorBody)) {
+      const emptyContentRetry = handleEmptyContentRetry({
+        response: result,
+        errorText,
+        modelStr,
+        retry,
+        protectedPriorityTarget,
+        target,
+        state,
+        deps,
+      });
+      emptyTurnConnectionId = emptyContentRetry.connectionId;
+      if (emptyContentRetry.shouldRetry) continue;
+      return emptyContentRetry.result;
+    }
+
+    const isStreamReadinessFailure = isReadinessFailure(result, errorBody);
+    const isStreamEarlyEof = isEarlyEofResponse(result, errorBody);
 
     // FIX 5: a local per-API-key policy 429 (token limit, budget) must not cool shared accounts.
     const isTokenLimitBreach = result.status === 429 && isLocalKeyPolicyBreachErrorBody(errorBody);

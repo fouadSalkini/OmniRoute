@@ -59,6 +59,8 @@ function hasUsefulValue(value: unknown): boolean {
   // tripping the #8649 empty-content guard.
   // This shape is specific to Responses streams; chat-completion frames do not produce it.
   if (value.type === "compaction" && hasNonEmptyString(value.encrypted_content)) return true;
+  // Tool starts commit an action even before their name/arguments arrive.
+  if (value.type === "function_call" || value.type === "tool_use") return true;
 
   for (const key of [
     "content",
@@ -92,6 +94,7 @@ function hasUsefulValue(value: unknown): boolean {
     "function_call",
     "function_call_output",
     "output",
+    "item",
     "content_block",
     "response",
     "choices",
@@ -187,6 +190,9 @@ const LEGIT_EMPTY_TERMINAL_REASONS = new Set([
   "content_filter",
   "max_tokens",
   "tool_use",
+  "refusal",
+  "pause_turn",
+  "model_context_window_exceeded",
 ]);
 
 const TERMINAL_REASON_PATTERN = /"(?:finish_reason|stop_reason)"\s*:\s*"([^"]+)"/g;
@@ -505,7 +511,8 @@ function createErrorResponse(
 
 export function prependBufferedChunks(
   chunks: Uint8Array[],
-  reader: ReadableStreamDefaultReader<Uint8Array>
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  pendingRead?: Promise<ReadableStreamReadResult<Uint8Array>> | null
 ): ReadableStream<Uint8Array> {
   let bufferedIndex = 0;
   let readInFlight = false;
@@ -550,7 +557,9 @@ export function prependBufferedChunks(
 
       readInFlight = true;
       try {
-        const { done, value } = await reader.read();
+        const next = pendingRead ?? reader.read();
+        pendingRead = null;
+        const { done, value } = await next;
         if (cancelRequested) return;
         if (done) {
           releaseReader();
@@ -579,12 +588,12 @@ class StreamReadinessReadTimeout extends Error {
 }
 
 function readWithTimeout(
-  reader: ReadableStreamDefaultReader<Uint8Array>,
+  read: Promise<ReadableStreamReadResult<Uint8Array>>,
   timeoutMs: number
 ): Promise<ReadableStreamReadResult<Uint8Array>> {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => reject(new StreamReadinessReadTimeout()), timeoutMs);
-    reader.read().then(
+    read.then(
       (value) => {
         clearTimeout(timeout);
         resolve(value);
@@ -607,6 +616,8 @@ export async function ensureStreamReadiness(
     provider?: string | null;
     model?: string | null;
     log?: StreamReadinessLogger | null;
+    /** Brief content check after the first lifecycle event; expiry hands off, never aborts. */
+    contentProbeMs?: number;
   }
 ): Promise<StreamReadinessResult> {
   if (!response.body || options.timeoutMs <= 0) return { ok: true, response };
@@ -631,6 +642,10 @@ export async function ensureStreamReadiness(
       : startedAt + effectiveTimeoutMs;
   let deadline = startedAt + effectiveTimeoutMs;
   let handedOffReader = false;
+  const contentWatcher = options.contentProbeMs ? createStreamContentWatcher() : null;
+  let contentProbeDeadline = 0;
+  let bufferedBytes = 0;
+  let pendingRead: Promise<ReadableStreamReadResult<Uint8Array>> | null = null;
   // Parked streams honor the parked state: the stall deadline is suspended
   // (frozen) on heartbeat comment frames instead of merely extended, so a
   // long park does not trip the stall timeout. The absolute ceiling
@@ -647,7 +662,7 @@ export async function ensureStreamReadiness(
     const headers = new Headers(response.headers);
     // The parked marker is internal: honor it, never forward it.
     headers.delete(PARKED_STREAM_HEADER);
-    return new Response(prependBufferedChunks(chunks, reader), {
+    return new Response(prependBufferedChunks(chunks, reader, pendingRead), {
       status: response.status,
       statusText: response.statusText,
       headers,
@@ -659,7 +674,11 @@ export async function ensureStreamReadiness(
 
   try {
     while (true) {
-      const remainingMs = deadline - Date.now();
+      if (contentProbeDeadline && Date.now() >= contentProbeDeadline) {
+        handedOffReader = true;
+        return { ok: true, response: buildReadyResponse() };
+      }
+      const remainingMs = (contentProbeDeadline || deadline) - Date.now();
       if (remainingMs <= 0) {
         const reason = timeoutReason();
         options.log?.warn?.(
@@ -686,8 +705,19 @@ export async function ensureStreamReadiness(
       const deadlineBeforeRead = deadline;
       const readStart = Date.now();
       try {
-        readResult = await readWithTimeout(reader, remainingMs);
+        pendingRead = reader.read();
+        readResult = await readWithTimeout(
+          pendingRead,
+          contentProbeDeadline ? Math.max(1, contentProbeDeadline - Date.now()) : remainingMs
+        );
+        pendingRead = null;
       } catch (error) {
+        if (contentProbeDeadline) {
+          // A slow reasoning turn is ready, not failed. The replay owns this exact
+          // pending read, including a rejection; starting another read would lose a chunk.
+          handedOffReader = true;
+          return { ok: true, response: buildReadyResponse() };
+        }
         // A source stream that errors before its first non-ping event (e.g. an
         // executor watchdog giving up on a stalled upstream) must say so instead of
         // claiming a readiness timeout. The code/type/status stay on the timeout class on
@@ -743,6 +773,33 @@ export async function ensureStreamReadiness(
       }
 
       if (readResult.done) {
+        contentWatcher?.finish();
+        if (
+          contentProbeDeadline &&
+          contentWatcher?.sawSseFrame() &&
+          !contentWatcher.sawContent() &&
+          !contentWatcher.sawError() &&
+          !contentWatcher.sawLegitEmptyTerminal()
+        ) {
+          const reason = "Provider returned empty content";
+          return {
+            ok: false,
+            reason,
+            classificationReason: reason,
+            code: "empty_content",
+            type: "stream_empty_content",
+            response: createErrorResponse(
+              HTTP_STATUS.BAD_GATEWAY,
+              reason,
+              "empty_content",
+              "stream_empty_content"
+            ),
+          };
+        }
+        if (contentProbeDeadline) {
+          handedOffReader = true;
+          return { ok: true, response: buildReadyResponse() };
+        }
         const tail = decoder.decode(undefined, { stream: false });
         if (tail && appendStreamReadinessSignal(readinessState, tail)) {
           handedOffReader = true;
@@ -782,6 +839,20 @@ export async function ensureStreamReadiness(
       if (!readResult.value) continue;
       chunks.push(readResult.value);
       const decodedChunk = decoder.decode(readResult.value, { stream: true });
+      bufferedBytes += readResult.value.byteLength;
+      contentWatcher?.note(decodedChunk);
+      if (contentProbeDeadline) {
+        if (
+          contentWatcher?.sawContent() ||
+          contentWatcher?.sawError() ||
+          contentWatcher?.sawLegitEmptyTerminal() ||
+          bufferedBytes >= 64 * 1024
+        ) {
+          handedOffReader = true;
+          return { ok: true, response: buildReadyResponse() };
+        }
+        continue;
+      }
 
       // Liveness extension: bytes arrived → connection is alive, not dead.
       // Reset the deadline so slow-but-alive upstreams (reasoning warm-ups,
@@ -808,6 +879,16 @@ export async function ensureStreamReadiness(
       }
 
       if (appendStreamReadinessSignal(readinessState, decodedChunk)) {
+        if (
+          contentWatcher &&
+          !contentWatcher.sawContent() &&
+          !contentWatcher.sawError() &&
+          !contentWatcher.sawLegitEmptyTerminal() &&
+          bufferedBytes < 64 * 1024
+        ) {
+          contentProbeDeadline = Date.now() + Math.min(1000, Math.max(1, options.contentProbeMs!));
+          continue;
+        }
         options.log?.debug?.(
           "STREAM",
           `Stream readiness confirmed in ${Date.now() - startedAt}ms (${options.provider || "provider"}/${options.model || "unknown"})`

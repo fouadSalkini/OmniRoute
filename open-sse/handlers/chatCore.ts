@@ -5859,16 +5859,15 @@ async function handleChatCoreInner({
       `adaptive readiness timeout=${streamReadinessPolicy.timeoutMs}ms base=${streamReadinessPolicy.baseTimeoutMs}ms reason=${streamReadinessPolicy.reasons.join(",")}`
     );
   }
-
   let streamReadiness = await ensureStreamReadiness(providerResponse, {
     timeoutMs: streamReadinessPolicy.timeoutMs,
     maxTimeoutMs: streamReadinessPolicy.maxTimeoutMs,
     provider,
     model,
     log,
+    contentProbeMs: provider === "claude" || provider === "codex" ? 1000 : undefined,
   });
-  // A stall is an upstream issue, not an account fault — the executor loop
-  // already ended at headers, so this bounded retry is the only recovery left.
+  // After executor headers, a bounded retry handles stalls without faulting the account.
   const fallback = await maybeFallbackAfterReadiness({
     streamReadiness,
     clientAborted: streamController.signal.aborted,
