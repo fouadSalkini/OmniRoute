@@ -132,11 +132,15 @@ export const LOCAL_ONLY_API_PATTERNS: ReadonlyArray<RegExp> = [
   // S-01 (#15159): spawn(bin, ["acp", "--agent-type", "summarizer"], …) in
   // src/lib/providers/validation/webProvidersB.ts:535 — fixed binary list + fixed argv (not
   // caller-controlled RCE) but Hard Rules #15 + #17 still require loopback enforcement before
-  // any auth check. Exact paths only: the rest of /api/providers/ CRUD must stay
-  // remote-reachable. NOTE: keep this justification on its OWN line — a trailing `//` comment
-  // makes the pattern invisible to check-openapi-security-tiers.mjs, whose `//.*$` strip cannot
-  // match past a CRLF line ending.
-  /^\/api\/providers\/(validate|import|bulk)\/?$/,
+  // any auth check.
+  //
+  // S-01 (#15159): spawn-capable branch of /api/providers/{validate,import,bulk} is
+  // gated INSIDE each route (allowLocalSpawn from the trusted peer-locality header,
+  // #15766 shape), not by a path pattern — a blanket LOCAL_ONLY regex here locked
+  // remote/reverse-proxied dashboards (docker + nginx deployments) out of key
+  // validation for EVERY provider while only the devin CLI-key fallback can spawn.
+  // The routes must keep threading allowLocalSpawn; see
+  // tests/unit/authz/route-guard-providers-spawn-local-only.test.ts.
   // S-01 (#15159) second hop is deliberately NOT a path pattern: /api/providers/{id}/models
   // resolves `{id}` to an arbitrary CONNECTION id, and the spawn
   // (src/lib/providerModels/cursorAgent.ts:17, via fetchCursorAgentModels) only runs on the
