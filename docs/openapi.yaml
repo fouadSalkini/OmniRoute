@@ -3656,6 +3656,14 @@ paths:
             type: string
             enum: [day, week, month]
             default: day
+        - name: view
+          in: query
+          description: >-
+            `apiKeys` returns only `byApiKey`: lifetime requests, cost and last use for each
+            configured API key, from one grouped query. The API Manager key list uses it.
+          schema:
+            type: string
+            enum: [apiKeys]
       responses:
         "200":
           description: Usage analytics data
