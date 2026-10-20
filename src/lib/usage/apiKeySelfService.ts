@@ -401,6 +401,7 @@ export async function listApiKeyReachableProviders(
 export interface SelfServiceSessionsQuery {
   project?: string | null;
   client?: string | null;
+  clientSessionId?: string | null;
   from?: string | null;
   to?: string | null;
   sort?: "lastSeen" | "firstSeen" | "requests" | "tokens" | "cost";
@@ -430,6 +431,7 @@ export async function buildApiKeySelfServiceSessions(
     apiKeyId: metadata.id,
     projectName: query.project || undefined,
     client: query.client || undefined,
+    clientSessionId: query.clientSessionId || undefined,
     from: query.from || undefined,
     to: query.to || undefined,
     sort: query.sort,

@@ -22,9 +22,13 @@ const isoTimestamp = z
   .datetime({ offset: true })
   .transform((value) => new Date(value).toISOString());
 
+// The proxy records at most this many characters of a client session id (agentContext.ts).
+const MAX_CLIENT_SESSION_ID_CHARS = 128;
+
 const sessionsQuerySchema = z.object({
   project: z.string().trim().min(1).optional(),
   client: z.string().trim().min(1).optional(),
+  clientSessionId: z.string().trim().min(1).max(MAX_CLIENT_SESSION_ID_CHARS).optional(),
   from: isoTimestamp.optional(),
   to: isoTimestamp.optional(),
   sort: z.enum(["lastSeen", "firstSeen", "requests", "tokens", "cost"]).optional(),

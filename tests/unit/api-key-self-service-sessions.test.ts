@@ -331,3 +331,145 @@ test("GET /v1/me/sessions returns an explicit token split with cached input coun
     reasoning: 0,
   });
 });
+
+// clientSessionId filter. Carol and Dave both use the client session id "shared-sess", so the
+// filter has to stay scoped to the calling key even when the id itself collides.
+let keyCarolToken = "";
+let keyCarolId = "";
+let keyDaveToken = "";
+let keyDaveId = "";
+
+async function recordClientSession(
+  apiKey: { id: string; name: string },
+  clientSessionId: string,
+  timestamp: string
+) {
+  await usageHistory.saveRequestUsage({
+    provider: "openai",
+    model: "gpt-4o",
+    tokens: { input: 10, output: 5 },
+    success: true,
+    latencyMs: 10,
+    timestamp,
+    apiKeyId: apiKey.id,
+    apiKeyName: apiKey.name,
+    agentContext: {
+      client: "claude-code",
+      clientSessionId,
+      projectName: "client-filter",
+      projectRepo: null,
+      projectPath: "/home/dev/client-filter",
+      projectSource: "path",
+      gitBranch: "main",
+    },
+  });
+}
+
+function listSessionsAs(token: string, query: string) {
+  return getSessionsRoute(
+    new Request(`http://localhost/api/v1/me/sessions?${query}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+  );
+}
+
+type SessionListBody = {
+  total: number;
+  limit: number;
+  offset: number;
+  sessions: Array<{ id: string; apiKeyId: string; clientSessionId: string }>;
+};
+
+test.before(async () => {
+  const carol = await apiKeysDb.createApiKey("Carol Key", "test-machine", [SELF_USAGE_SCOPE]);
+  keyCarolToken = carol.key;
+  keyCarolId = carol.id;
+  const dave = await apiKeysDb.createApiKey("Dave Key", "test-machine", [SELF_USAGE_SCOPE]);
+  keyDaveToken = dave.key;
+  keyDaveId = dave.id;
+
+  const carolKey = { id: keyCarolId, name: "Carol Key" };
+  const daveKey = { id: keyDaveId, name: "Dave Key" };
+  await recordClientSession(carolKey, "shared-sess", "2026-09-26T10:00:00.000Z");
+  await recordClientSession(carolKey, "carol-only", "2026-09-26T10:05:00.000Z");
+  await recordClientSession(daveKey, "shared-sess", "2026-09-26T10:10:00.000Z");
+  await recordClientSession(daveKey, "dave-only", "2026-09-26T10:15:00.000Z");
+});
+
+test("GET /v1/me/sessions?clientSessionId returns the calling key's session with that id", async () => {
+  const res = await listSessionsAs(keyCarolToken, "clientSessionId=carol-only");
+  assert.equal(res.status, 200);
+  const data = (await res.json()) as SessionListBody;
+  assert.equal(data.total, 1);
+  assert.equal(data.sessions.length, 1);
+  assert.equal(data.sessions[0].clientSessionId, "carol-only");
+  assert.equal(data.sessions[0].apiKeyId, keyCarolId);
+});
+
+test("GET /v1/me/sessions?clientSessionId returns an empty list when nothing matches", async () => {
+  const res = await listSessionsAs(keyCarolToken, "clientSessionId=unknown-sess");
+  assert.equal(res.status, 200);
+  const data = (await res.json()) as SessionListBody;
+  assert.equal(data.total, 0);
+  assert.deepEqual(data.sessions, []);
+});
+
+test("GET /v1/me/sessions?clientSessionId never returns another key's session", async () => {
+  const foreign = await listSessionsAs(keyCarolToken, "clientSessionId=dave-only");
+  const foreignData = (await foreign.json()) as SessionListBody;
+  assert.equal(foreignData.total, 0);
+  assert.deepEqual(foreignData.sessions, []);
+
+  const carolShared = (await (
+    await listSessionsAs(keyCarolToken, "clientSessionId=shared-sess")
+  ).json()) as SessionListBody;
+  const daveShared = (await (
+    await listSessionsAs(keyDaveToken, "clientSessionId=shared-sess")
+  ).json()) as SessionListBody;
+  assert.equal(carolShared.total, 1);
+  assert.equal(carolShared.sessions[0].apiKeyId, keyCarolId);
+  assert.equal(daveShared.total, 1);
+  assert.equal(daveShared.sessions[0].apiKeyId, keyDaveId);
+  assert.notEqual(carolShared.sessions[0].id, daveShared.sessions[0].id);
+});
+
+test("GET /v1/me/sessions validates clientSessionId", async () => {
+  for (const value of ["", "%20%20", "x".repeat(129)]) {
+    const res = await listSessionsAs(keyCarolToken, `clientSessionId=${value}`);
+    assert.equal(res.status, 400, `clientSessionId=${value.slice(0, 20)}`);
+    const body = (await res.json()) as { error: string };
+    assert.equal(body.error, "Invalid query parameters");
+  }
+
+  const longest = await listSessionsAs(keyCarolToken, `clientSessionId=${"x".repeat(128)}`);
+  assert.equal(longest.status, 200);
+
+  const padded = await listSessionsAs(keyCarolToken, "clientSessionId=%20carol-only%20");
+  const paddedData = (await padded.json()) as SessionListBody;
+  assert.equal(paddedData.total, 1);
+  assert.equal(paddedData.sessions[0].clientSessionId, "carol-only");
+});
+
+test("GET /v1/me/sessions?clientSessionId keeps limit and offset", async () => {
+  const firstPage = (await (
+    await listSessionsAs(keyCarolToken, "clientSessionId=shared-sess&limit=1&offset=0")
+  ).json()) as SessionListBody;
+  assert.equal(firstPage.total, 1);
+  assert.equal(firstPage.sessions.length, 1);
+  assert.equal(firstPage.limit, 1);
+
+  const pastEnd = (await (
+    await listSessionsAs(keyCarolToken, "clientSessionId=shared-sess&limit=1&offset=1")
+  ).json()) as SessionListBody;
+  assert.equal(pastEnd.total, 1);
+  assert.deepEqual(pastEnd.sessions, []);
+  assert.equal(pastEnd.offset, 1);
+});
+
+test("listAgentSessions without an api key filters by client session id across keys", () => {
+  const { sessions, total } = agentSessionsDb.listAgentSessions(core.getDbInstance(), {
+    clientSessionId: "shared-sess",
+  });
+  assert.equal(total, 2);
+  assert.deepEqual(sessions.map((s) => s.apiKeyId).sort(), [keyCarolId, keyDaveId].sort());
+});
