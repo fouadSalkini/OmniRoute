@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { markEmptyTurnExecution } from "../../open-sse/utils/emptyTurnPolicy.ts";
 import { ensureStreamReadiness } from "../../open-sse/utils/streamReadiness.ts";
 
 const encoder = new TextEncoder();
@@ -55,6 +56,49 @@ async function collectBytes(response: Response): Promise<Uint8Array> {
 
 const created = event("response.created", {
   response: { id: "resp-probe", status: "in_progress" },
+});
+
+test("content probe preserves an executed native Claude empty turn", async () => {
+  const messageStart = event("message_start", {
+    message: { id: "msg-probe", type: "message", role: "assistant", content: [] },
+  });
+  const messageDelta = event("message_delta", {
+    delta: { stop_reason: "end_turn", stop_sequence: null },
+  });
+  const messageStop = event("message_stop", {});
+  const upstream = streamResponse([messageStart, messageDelta, messageStop]);
+  const executed = markEmptyTurnExecution(upstream, "https://api.anthropic.com/v1/messages", {
+    connectionId: "test-connection",
+    apiKey: "test-key",
+  });
+  const result = await ensureStreamReadiness(executed, { timeoutMs: 500, contentProbeMs: 1_000 });
+
+  assert.equal(result.ok, true);
+  assert.equal(await result.response.text(), messageStart + messageDelta + messageStop);
+});
+
+test("opaque Claude signatures are progress, not output that commits the content probe", async () => {
+  const upstream = streamResponse([
+    event("message_start", { message: { id: "msg-signature", content: [] } }),
+    event("content_block_start", { index: 0, content_block: { type: "thinking", thinking: "" } }),
+    event("content_block_delta", {
+      index: 0,
+      delta: { type: "signature_delta", signature: "opaque-signature" },
+    }),
+    event("content_block_stop", { index: 0 }),
+    event("message_delta", { delta: { stop_reason: "end_turn" } }),
+    event("message_stop", {}),
+  ]);
+  const executed = markEmptyTurnExecution(upstream, "https://api.anthropic.com/v1/messages", {
+    connectionId: "signature-connection",
+    apiKey: "test-key",
+  });
+  const result = await ensureStreamReadiness(executed, { timeoutMs: 500, contentProbeMs: 1_000 });
+
+  assert.equal(result.ok, false);
+  if (result.ok) assert.fail("an opaque signature cannot establish usable output");
+  assert.equal(result.code, "empty_content");
+  assert.equal(result.response.status, 502);
 });
 
 test("content probe bounds an empty lifecycle and returns empty_content at EOF", async () => {

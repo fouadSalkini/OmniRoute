@@ -20,10 +20,9 @@ import {
 import type { KeyStatus, KeyType } from "./apiManagerPageUtils";
 import { readActiveOnlyPreference, writeActiveOnlyPreference } from "./apiManagerPageStorage";
 import { buildApiKeyCreateScopes } from "./apiManagerScopes";
+import { ApiKeyDetailsLink } from "./components/ApiKeyDetailsLink";
 import { extractApiErrorMessage } from "@/shared/http/apiErrorMessage";
 import { hasProviderQuotaBypassScope } from "@/shared/constants/apiKeyPolicyScopes";
-import { ApiKeyDetailsLink } from "./components/ApiKeyDetailsLink";
-import type { SelfServiceQuota } from "./selfServiceQuota";
 import RoutingEntryLink from "@/shared/components/routing/RoutingEntryLink";
 import { ALL_COMBOS_ACCESS_RULE } from "@/shared/constants/comboAccess";
 
@@ -71,7 +70,7 @@ interface AccessSchedule {
 
 type StreamDefaultMode = "legacy" | "json";
 
-interface ApiKey extends Partial<SelfServiceQuota> {
+interface ApiKey {
   id: string;
   name: string;
   key: string;

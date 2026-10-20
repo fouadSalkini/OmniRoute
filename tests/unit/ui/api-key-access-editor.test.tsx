@@ -456,6 +456,7 @@ describe("ApiKeyAccessEditorClient", () => {
       dailyUsageLimitUsd: null,
       weeklyUsageLimitUsd: null,
       chaosModeEnabled: false,
+      forcedModel: null,
       // Fork self-service quota settings, read with readSelfServiceQuota (absent = all / auto).
       sharedQuotaProviders: null,
       anthropicRateLimitHeaders: "auto",

@@ -10,6 +10,7 @@ import {
   MODEL_COMPAT_PROTOCOL_KEYS,
   type ModelCompatProtocolKey,
 } from "@/shared/constants/modelCompat";
+import { type ModelSupportedEndpoint } from "@/shared/constants/modelSupportedEndpoints";
 import { isHiddenForModality } from "@/shared/utils/modelVisibility";
 import {
   getClaudeCodeCompatibleRequestDefaults as _getClaudeCodeCompatibleRequestDefaults,
@@ -83,6 +84,7 @@ export type CompatModelRow = {
   source?: string;
   apiFormat?: string;
   supportedEndpoints?: string[];
+  endpointCapabilitySource?: string;
   normalizeToolCallId?: boolean;
   preserveOpenAIDeveloperRole?: boolean;
   isHidden?: boolean;
@@ -116,6 +118,23 @@ const TARGET_FORMAT_BADGE_I18N_KEYS: Record<string, string> = {
 
 export function targetFormatBadgeI18nKey(value: string): string | null {
   return TARGET_FORMAT_BADGE_I18N_KEYS[value] ?? null;
+}
+
+const GENERATION_FORMAT_ENDPOINTS: Record<string, ModelSupportedEndpoint[]> = {
+  "images-generations": ["images"],
+  video: ["videos"],
+};
+
+/**
+ * #17071 — endpoint ticks to apply when the custom-model API Format changes, or null to keep
+ * them. A generation format replaces the form's default "chat" tick (else the row advertises
+ * chat for an image/video-only model); leaving one restores the "chat" default.
+ */
+export function endpointsForApiFormatChange(
+  from: string,
+  to: string
+): ModelSupportedEndpoint[] | null {
+  return GENERATION_FORMAT_ENDPOINTS[to] ?? (GENERATION_FORMAT_ENDPOINTS[from] ? ["chat"] : null);
 }
 
 /** #5442 — badge for add-credential validation; unsupported → neutral N/A (not red Invalid). */
@@ -697,6 +716,33 @@ export function getCodexFingerprintMode(providerSpecificData: unknown): CodexFin
   return (CODEX_FINGERPRINT_MODE_VALUES as readonly string[]).includes(normalized)
     ? (normalized as CodexFingerprintModeValue)
     : "session";
+}
+
+export const CODEX_PROMPT_CACHE_KEY_SCOPE_VALUES = ["client", "thread"] as const;
+export type CodexPromptCacheKeyScopeValue = (typeof CODEX_PROMPT_CACHE_KEY_SCOPE_VALUES)[number];
+
+export function getCodexPromptCacheKeyScope(
+  providerSpecificData: unknown
+): CodexPromptCacheKeyScopeValue {
+  const data =
+    providerSpecificData &&
+    typeof providerSpecificData === "object" &&
+    !Array.isArray(providerSpecificData)
+      ? (providerSpecificData as Record<string, unknown>)
+      : undefined;
+  const raw = data?.codexPromptCacheKeyScope;
+  const normalized = typeof raw === "string" ? raw.trim().toLowerCase() : "";
+  return normalized === "thread" ? "thread" : "client";
+}
+
+export function getCodexPromptCacheKeyScopeLabel(
+  t: ProviderMessageTranslator,
+  value: CodexPromptCacheKeyScopeValue
+): string {
+  if (value === "thread") {
+    return providerText(t, "codexPromptCacheKeyScopeThread", "Thread — match the converged thread");
+  }
+  return providerText(t, "codexPromptCacheKeyScopeClient", "Client — forward the client's key");
 }
 
 export function getCodexFingerprintModeLabel(

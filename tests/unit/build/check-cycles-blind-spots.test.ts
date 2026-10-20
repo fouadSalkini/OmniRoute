@@ -415,6 +415,23 @@ test("G-02: the shipped quality-baseline.json declares a cycles ceiling", async 
   );
 });
 
+test("G-02: the real ratchet CLI rejects a new cycle but admits the frozen ceiling", () => {
+  const baseline = JSON.parse(readFileSync("config/quality/quality-baseline.json", "utf8"));
+  const ceiling = baseline.metrics.cycles.value;
+  withTree((root) => {
+    for (let i = 0; i <= ceiling; i++) {
+      writeFile(root, `src/cycle${i}.ts`, `import "./cycle${i}";\nexport const value = ${i};\n`);
+    }
+    const regression = runGate(root, ["--ratchet", "src"]);
+    assert.equal(regression.status, 1, regression.stdout);
+    assert.match(regression.stderr, /RATCHET FAIL/);
+    fs.rmSync(join(root, `src/cycle${ceiling}.ts`));
+    const unchanged = runGate(root, ["--ratchet", "src"]);
+    assert.equal(unchanged.status, 0, unchanged.stderr);
+    assert.match(unchanged.stdout, /RATCHET OK/);
+  });
+});
+
 test("G-02: CI runs the ratcheting variant of check:cycles", () => {
   // The invariant is that CI enforces the ceiling, not that it spells a flag a
   // particular way. Accept either the npm alias or a literal `--ratchet`, and
@@ -438,30 +455,6 @@ test("G-02: CI runs the ratcheting variant of check:cycles", () => {
     /check-cycles\.mjs\s+--ratchet$/,
     "check:cycles:ratchet must forward --ratchet to the gate"
   );
-});
-
-test("G-02: ratchet mode rejects cycle counts above the declared ceiling", () => {
-  const baseline = JSON.parse(
-    readFileSync(join(process.cwd(), "config/quality/quality-baseline.json"), "utf8")
-  ).metrics.cycles.value as number;
-
-  withTree((root) => {
-    for (let index = 0; index <= baseline; index += 1) {
-      writeFile(root, `src/a${index}.ts`, `import "./b${index}";\n`);
-      writeFile(root, `src/b${index}.ts`, `import "./a${index}";\n`);
-    }
-
-    const result = runGate(root, ["--ratchet", "src"]);
-    assert.equal(
-      result.status,
-      1,
-      `ratchet must reject ${baseline + 1} SCCs above the declared ceiling of ${baseline}`
-    );
-    assert.match(
-      result.stderr,
-      new RegExp(`RATCHET FAIL - ${baseline + 1} cycles exceeds .* ceiling of ${baseline}`)
-    );
-  });
 });
 
 test("G-02: the cycles ceiling is not above the cycles the gate actually finds", async () => {

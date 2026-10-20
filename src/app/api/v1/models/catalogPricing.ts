@@ -27,16 +27,9 @@
 import { getCachedPricing } from "@/lib/db/readCache";
 import { findModelPricing, findProviderPricing } from "@/lib/db/settings/pricing";
 import { getPricingLookupModels } from "@/lib/usage/costCalculator";
+import { isCreditMeteredProvider } from "@/lib/usage/creditMeteredProviders";
 import { isCatalogFreeModel } from "@/shared/utils/freeModels";
 import { toNumberOrNull } from "@/shared/utils/numeric";
-
-// This branch predates upstream's lib/usage/creditMeteredProviders module; the same
-// provider ids, so the catalog output matches upstream.
-const CREDIT_METERED_PROVIDER_IDS = new Set(["kiro", "kr"]);
-
-function isCreditMeteredProvider(providerId: string): boolean {
-  return CREDIT_METERED_PROVIDER_IDS.has(providerId.trim().toLowerCase());
-}
 
 type PricingRow = Record<string, unknown>;
 type PricingTable = Record<string, Record<string, PricingRow>>;

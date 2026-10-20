@@ -9,6 +9,8 @@
 
 import { parseEnvBoolean } from "@/shared/utils/envBoolean";
 import { resolveBlockThreshold, shouldBlockDetections } from "@/shared/utils/injectionSeverity";
+import { PII_REQUEST_TYPE_ALIASES } from "@/shared/constants/piiTypes";
+import type { CompiledPiiRule } from "@/shared/utils/piiCustomPatterns";
 
 // ─── Prompt Injection Patterns ───────────────────────────────────────
 
@@ -299,16 +301,41 @@ function detectInjection(text) {
 }
 
 /**
+ * Built-in rules narrowed to the operator's per-type selection (null = all),
+ * followed by any pre-compiled custom rules.
+ * @param {{ enabledTypes?: ReadonlySet<string> | null, customRules?: Array<{name: string, regex: RegExp, replacement: string}> }} [options]
+ */
+function resolvePiiRules(options) {
+  const enabled = options?.enabledTypes ?? null;
+  const builtins = enabled
+    ? PII_PATTERNS.filter((rule) => enabled.has(PII_REQUEST_TYPE_ALIASES[rule.name] ?? rule.name))
+    : PII_PATTERNS;
+  const custom = (options?.customRules ?? []).map((rule) => ({
+    name: rule.name,
+    pattern: rule.regex,
+    replacement: rule.replacement,
+  }));
+  return custom.length > 0 ? [...builtins, ...custom] : builtins;
+}
+
+/** Per-type selection and pre-compiled custom rules (structurally a PiiRuleConfig). */
+type PiiRuleOptions = {
+  enabledTypes?: ReadonlySet<string> | null;
+  customRules?: CompiledPiiRule[];
+};
+
+/**
  * Scan and optionally redact PII from text.
  * @param {string} text
  * @param {boolean} redact - If true, replaces PII with placeholders
+ * @param {{ enabledTypes?: ReadonlySet<string> | null, customRules?: Array<{name: string, regex: RegExp, replacement: string}> }} [options] - per-type selection and custom rules
  * @returns {{ text: string, detections: Array<{type: string, count: number}> }}
  */
-function processPII(text, redact = false) {
+function processPII(text, redact = false, options?: PiiRuleOptions) {
   const detections: Array<{ type: string; count: number }> = [];
   let processed = text;
 
-  for (const rule of PII_PATTERNS) {
+  for (const rule of resolvePiiRules(options)) {
     const matches = text.match(rule.pattern);
     if (matches && matches.length > 0) {
       detections.push({ type: rule.name, count: matches.length });
@@ -336,7 +363,7 @@ export function sanitizeRequest(body, logger = console) {
     modified: boolean;
     detections: Array<{ pattern: string; severity: string; match: string }>;
     piiDetections: Array<{ type: string; count: number }>;
-    sanitizedBody: unknown;
+    sanitizedBody: Record<string, unknown> | null;
   } = {
     blocked: false,
     modified: false,

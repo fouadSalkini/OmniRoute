@@ -684,8 +684,8 @@ test("end to end: a flat-rate provider has metered $0 but a list price; unknown 
 
 test("end to end: the list price equals pricing each request on its own", async () => {
   const keyId = "key-e2e-long-context";
-  // This branch's pricing table has no long-context tiers; the check still pins the banded
-  // total to pricing each request on its own.
+  // gpt-6-sol carries a long-context tier (above 272K prompt tokens) where the pricing table
+  // has one; the three small requests sum above it, the last one crosses it alone.
   const requests = [
     tokens(100_000, 2_000),
     tokens(100_000, 2_000),
@@ -696,15 +696,15 @@ test("end to end: the list price equals pricing each request on its own", async 
     insertUsage({
       apiKeyId: keyId,
       provider: "openai",
-      model: "gpt-5.5",
+      model: "gpt-6-sol",
       timestamp: "2026-05-27T09:00:00.000Z",
       tokens: requestTokens,
     });
   }
-  const options = { provider: "openai", model: "gpt-5.5", serviceTier: "standard" };
+  const options = { provider: "openai", model: "gpt-6-sol", serviceTier: "standard" };
   let perRequest = 0;
   for (const requestTokens of requests) {
-    perRequest += (await calculateCostDetailed("openai", "gpt-5.5", requestTokens, options))
+    perRequest += (await calculateCostDetailed("openai", "gpt-6-sol", requestTokens, options))
       .costUsd;
   }
 
@@ -713,7 +713,7 @@ test("end to end: the list price equals pricing each request on its own", async 
     { now: () => NOW }
   );
 
-  assert.ok(perRequest > 0, "gpt-5.5 has a list price in the default table");
+  assert.ok(perRequest > 0, "gpt-6-sol has a list price in the default table");
   assert.equal(status.usage.daily.listPriceUsd, Number(perRequest.toFixed(6)));
   assert.equal(status.usage.daily.unpricedRequests, 0);
 });

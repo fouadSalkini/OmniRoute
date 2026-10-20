@@ -1169,3 +1169,41 @@ test("log-bounded raw bodies never become the stored prompt", async () => {
     else process.env.CHAT_LOG_MAX_DEPTH = previous;
   }
 });
+
+test("a turn deferred by a database lock is stored once, with its session, on the retry", async () => {
+  featureFlagsDb.setFeatureFlagOverride(CAPTURE_FLAG, "true");
+  const { default: Database } = await import("better-sqlite3");
+  // A rival connection holds the write lock, so the first usage write is retried later.
+  const locker = new Database(path.join(TEST_DATA_DIR, "storage.sqlite"));
+  locker.exec("BEGIN IMMEDIATE");
+  try {
+    await recordTurn({
+      prompt: "locked-turn prompt",
+      context: agentContextFor("locked-turn"),
+      apiKeyId: keyAliceId,
+      apiKeyInfo: { noLog: false },
+    });
+    assert.equal(countTurnsWithUserText("locked-turn prompt"), 0);
+  } finally {
+    locker.exec("ROLLBACK");
+    locker.close();
+  }
+  try {
+    const deadline = Date.now() + 5000;
+    while (countTurnsWithUserText("locked-turn prompt") === 0 && Date.now() < deadline) {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    assert.equal(countTurnsWithUserText("locked-turn prompt"), 1);
+    const row = core
+      .getDbInstance()
+      .prepare(
+        `SELECT m.session_id AS messageSession, s.client_session_id AS clientSessionId
+           FROM agent_session_messages m JOIN agent_sessions s ON s.id = m.session_id
+          WHERE m.user_text = ?`
+      )
+      .get("locked-turn prompt") as { messageSession: string; clientSessionId: string };
+    assert.equal(row.clientSessionId, "locked-turn");
+  } finally {
+    featureFlagsDb.removeFeatureFlagOverride(CAPTURE_FLAG);
+  }
+});

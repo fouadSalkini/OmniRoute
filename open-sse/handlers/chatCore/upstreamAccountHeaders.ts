@@ -55,6 +55,7 @@ export function shouldStripAnthropicAccountHeaders(
 ): boolean {
   if (!apiKeyInfo) return false;
 
+  // Deploy branch defaults to "auto" (fork commit 89806a152e); the upstream PR defaults to "forward".
   const mode = apiKeyInfo.anthropicRateLimitHeaders ?? "auto";
   if (mode === "forward") return false;
   if (mode === "strip") return true;
@@ -69,13 +70,4 @@ export function shouldStripAnthropicAccountHeaders(
 
   const forwardAllowed = hasScope && providerShared && pinnedToSingleConnection;
   return !forwardAllowed;
-}
-
-/** Strip all upstream Anthropic account-identity/quota headers from a Headers instance. */
-export function stripAnthropicAccountHeadersFromHeaders(headers: Headers): void {
-  const toDelete: string[] = [];
-  headers.forEach((_val, key) => {
-    if (isAnthropicAccountHeader(key)) toDelete.push(key);
-  });
-  for (const k of toDelete) headers.delete(k);
 }

@@ -438,22 +438,6 @@ export async function buildApiKeySelfServiceStatus(
   };
 }
 
-/** Providers of the connections a key can reach (admin self-service settings UI). */
-export async function listApiKeyReachableProviders(
-  allowedConnections: string[],
-  deps: Pick<ApiKeySelfServiceDeps, "getProviderConnectionById" | "getProviderConnections"> = {}
-) {
-  const providers =
-    deps.getProviderConnectionById && deps.getProviderConnections
-      ? null
-      : await import("@/lib/db/providers");
-  return listReachableProviders(Array.isArray(allowedConnections) ? allowedConnections : [], {
-    getProviderConnectionById:
-      deps.getProviderConnectionById ?? providers!.getProviderConnectionById,
-    getProviderConnections: deps.getProviderConnections ?? providers!.getProviderConnections,
-  });
-}
-
 export interface SelfServiceSessionsQuery {
   project?: string | null;
   client?: string | null;
@@ -543,4 +527,20 @@ export async function buildApiKeySelfServiceSessionDetail(
     },
     recentRequests: sanitizedUsage,
   };
+}
+
+/** Providers of the connections a key can reach (admin self-service settings UI). */
+export async function listApiKeyReachableProviders(
+  allowedConnections: string[],
+  deps: Pick<ApiKeySelfServiceDeps, "getProviderConnectionById" | "getProviderConnections"> = {}
+) {
+  const providers =
+    deps.getProviderConnectionById && deps.getProviderConnections
+      ? null
+      : await import("@/lib/db/providers");
+  return listReachableProviders(Array.isArray(allowedConnections) ? allowedConnections : [], {
+    getProviderConnectionById:
+      deps.getProviderConnectionById ?? providers!.getProviderConnectionById,
+    getProviderConnections: deps.getProviderConnections ?? providers!.getProviderConnections,
+  });
 }

@@ -61,11 +61,17 @@ test("Claude Opus 5.5 is registered only on verified launch surfaces", () => {
     getStaticModelsForProvider("claude")?.some((entry) => entry.id === MODEL_ID),
     "Claude OAuth static discovery must expose Opus 5.5"
   );
-  assert.equal(getClaudeCodeDefaultModels().opus, MODEL_ID);
   assert.equal(
     getNextFamilyFallback(`claude/${MODEL_ID}`, new Set([`claude/${MODEL_ID}`])),
     "claude/claude-opus-5"
   );
+});
+
+test("Claude Code CLI uses Opus 5.5 as the cc/ Opus default", () => {
+  // Deploy branch keeps Opus 5.5 as the cc/ Opus default (fork commit 3af8cf7f6e);
+  // upstream keeps Opus 5 until stale live catalogs refresh (#14612).
+  const { opus } = getClaudeCodeDefaultModels();
+  assert.equal(opus, MODEL_ID);
 });
 
 test("Claude Opus 5.5 has native 1M context and always-on adaptive thinking", () => {
@@ -90,6 +96,22 @@ test("Claude Opus 5.5 has native 1M context and always-on adaptive thinking", ()
   assert.equal(getModelSpec(DOT_MODEL_ID), spec, "dot notation must not prefix-match Opus 5");
   assert.equal(supportsXHighEffort("claude", MODEL_ID), true);
   assert.equal(supportsClaudeMaxEffort(MODEL_ID), true);
+});
+
+test("Claude Opus 5.5 defaults reasoning effort to medium without overriding the client", async () => {
+  const { applyDefaultReasoningEffort } =
+    await import("../../open-sse/services/defaultReasoningEffort.ts");
+  assert.equal(getModelSpec(MODEL_ID)?.defaultReasoningEffort, "medium");
+
+  const bare: Record<string, unknown> = { model: MODEL_ID, messages: [] };
+  assert.equal(applyDefaultReasoningEffort(bare, MODEL_ID).reasoning_effort, "medium");
+
+  const chosen: Record<string, unknown> = {
+    model: MODEL_ID,
+    messages: [],
+    reasoning_effort: "max",
+  };
+  assert.equal(applyDefaultReasoningEffort(chosen, MODEL_ID).reasoning_effort, "max");
 });
 
 test("Claude Opus 5.5 strips unsupported sampling parameters", () => {
@@ -175,5 +197,6 @@ test("Claude Opus 5.5 pricing matches Anthropic's published rates", () => {
     inputCostPer1M: 4,
     outputCostPer1M: 20,
     isFree: false,
+    isEstimated: false,
   });
 });

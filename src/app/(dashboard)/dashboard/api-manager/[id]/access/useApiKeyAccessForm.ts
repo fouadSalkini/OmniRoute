@@ -124,6 +124,7 @@ export interface ApiKeyAccessData extends Partial<SelfServiceQuota> {
   compressionEnabled?: boolean | null;
   allowAutoCombos?: boolean | null;
   catalogScope?: CatalogScope | null;
+  forcedModel?: string | null;
   disableNonPublicModels?: boolean | null;
   allowUsageCommand?: boolean | null;
   usageLimitEnabled?: boolean | null;
@@ -170,6 +171,8 @@ export interface ApiKeyAccessFormState extends SelfServiceQuota {
   compressionEnabled: boolean;
   allowAutoCombos: boolean;
   catalogScope: CatalogScope;
+  /** Per-key enforced routing target; "" = not pinned. */
+  forcedModel: string;
   disableNonPublicModels: boolean;
   allowUsageCommand: boolean;
   usageLimitEnabled: boolean;
@@ -301,6 +304,7 @@ type BehaviourStateField =
   | "compressionEnabled"
   | "allowAutoCombos"
   | "catalogScope"
+  | "forcedModel"
   | "disableNonPublicModels"
   | "allowUsageCommand"
   | "usageLimitEnabled"
@@ -316,6 +320,7 @@ function initialBehaviourState(
     compressionEnabled: apiKey?.compressionEnabled !== false,
     allowAutoCombos: apiKey?.allowAutoCombos !== false,
     catalogScope: apiKey?.catalogScope ?? "all",
+    forcedModel: apiKey?.forcedModel ?? "",
     disableNonPublicModels: apiKey?.disableNonPublicModels === true,
     allowUsageCommand: apiKey?.allowUsageCommand === true,
     usageLimitEnabled: apiKey?.usageLimitEnabled === true,
@@ -465,6 +470,7 @@ export function buildApiKeyAccessPayload(
     dailyUsageLimitUsd: parseUsdLimitInput(formState.dailyUsageLimitUsd),
     weeklyUsageLimitUsd: parseUsdLimitInput(formState.weeklyUsageLimitUsd),
     chaosModeEnabled: formState.chaosModeEnabled,
+    forcedModel: formState.forcedModel.trim() || null,
     // Sent last and on every save, like the old modal's `...selfServiceQuota` spread.
     sharedQuotaProviders: formState.sharedQuotaProviders,
     anthropicRateLimitHeaders: formState.anthropicRateLimitHeaders,
@@ -724,7 +730,14 @@ function useModelPolicySetters(setFormState: FormStateSetter) {
     [setFormState]
   );
 
-  return { blockClaudeCodeFamily, setCatalogScope, setDisableNonPublicModels };
+  const setForcedModel = useCallback(
+    (forcedModel: string) => {
+      setFormState((prev) => ({ ...prev, forcedModel }));
+    },
+    [setFormState]
+  );
+
+  return { blockClaudeCodeFamily, setCatalogScope, setDisableNonPublicModels, setForcedModel };
 }
 
 /** Combo and connection setters (Combos and Connections tabs). */

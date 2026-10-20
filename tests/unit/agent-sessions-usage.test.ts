@@ -4,6 +4,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import Database from "better-sqlite3";
 
 const scratchDir = process.env.DATA_DIR || path.resolve("_artifacts/tests");
 fs.mkdirSync(scratchDir, { recursive: true });
@@ -275,4 +276,54 @@ test("the uncached input is input minus cache reads and writes, clamped at 0 and
   const [shortRequest] = agentSessionsDb.getAgentSessionRecentUsage(db, short.id);
   assert.equal(shortRequest.tokens.input, 100);
   assert.equal(shortRequest.tokens.uncachedInput, 0);
+});
+
+test("a failing agent-session write never drops the usage_history row", async () => {
+  const db = core.getDbInstance();
+  // Simulate agent_sessions being unavailable (missing table / failed migration).
+  db.exec("ALTER TABLE agent_sessions RENAME TO agent_sessions_unavailable");
+  try {
+    await recordUsage({
+      apiKeyId: "key-isolation",
+      apiKeyName: "Isolation",
+      timestamp: "2026-10-08T10:00:00.000Z",
+      agentContext: agentContext({ clientSessionId: "isolation-session" }),
+    });
+  } finally {
+    db.exec("ALTER TABLE agent_sessions_unavailable RENAME TO agent_sessions");
+  }
+  assert.deepEqual(usageSessionIds("key-isolation"), [null]);
+  assert.deepEqual(sessionsFor("key-isolation"), []);
+});
+
+test("a write deferred by a database lock records the row and its session once, together", async () => {
+  const warnings: unknown[] = [];
+  const warn = console.warn;
+  console.warn = (...args: unknown[]) => {
+    warnings.push(args);
+  };
+  // A rival connection holds the write lock, so the first attempt fails and is retried later.
+  const locker = new Database(path.join(TEST_DATA_DIR, "storage.sqlite"));
+  locker.exec("BEGIN IMMEDIATE");
+  try {
+    await recordUsage({
+      apiKeyId: "key-locked",
+      timestamp: "2026-10-20T10:00:00.000Z",
+      agentContext: agentContext({ clientSessionId: "locked-session" }),
+    });
+    assert.deepEqual(usageSessionIds("key-locked"), []);
+  } finally {
+    locker.exec("ROLLBACK");
+    locker.close();
+  }
+  const deadline = Date.now() + 5000;
+  while (usageSessionIds("key-locked").length === 0 && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  console.warn = warn;
+  const [session] = sessionsFor("key-locked");
+  assert.equal(session?.request_count, 1);
+  assert.deepEqual(usageSessionIds("key-locked"), [session.id]);
+  // The lock is not reported as a failed session write that dropped the attribution.
+  assert.deepEqual(warnings, []);
 });
