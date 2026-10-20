@@ -126,6 +126,7 @@ import {
   getComboTargetModelId as getComboTargetModelIdFromMaps,
 } from "./catalogProviderMaps";
 import { indexNodeApiTypes, nodeModelEndpoints, overlayEndpoints } from "./catalogNodeModality";
+import { createComboPricingTargetResolver } from "./catalogPricing";
 import {
   getModelCatalogAuthRejection,
   isCodexModelCatalogClient,
@@ -812,6 +813,20 @@ async function buildUnifiedModelsResponseCore(
     const models = [];
     const timestamp = Math.floor(Date.now() / 1000);
     const listedIds = new Set<string>();
+    // Per-entry `pricing`: a combo is priced as its first visible target.
+    const pricingContext = {
+      providerNodeIdsByPrefix: providerNodeIdByPrefix,
+      resolveComboTarget: createComboPricingTargetResolver(
+        combos,
+        (combo) =>
+          resolveNestedComboTargets(
+            combo as Parameters<typeof resolveNestedComboTargets>[0],
+            combos as Parameters<typeof resolveNestedComboTargets>[1]
+          ) as ComboCatalogTarget[],
+        getComboTargetModelId,
+        (providerId, modelId) => isModelHiddenBulk(providerId, modelId)
+      ),
+    };
 
     // #8770 follow-up: a quota-exclusive key (allowedQuotas non-empty) only ever
     // receives the pool's `qtSd/*` combos — the key-permission step further down
@@ -841,6 +856,7 @@ async function buildUnifiedModelsResponseCore(
           prefixMode,
           aliasToProviderId,
           hideNoThinkVariants: settings.hideNoThinkVariants === true,
+          pricing: pricingContext,
         });
         return finalizeCatalogResponse(request, quotaFinal, () => undefined, {
           ...corsHeaders,
@@ -2054,6 +2070,7 @@ async function buildUnifiedModelsResponseCore(
       prefixMode,
       aliasToProviderId,
       hideNoThinkVariants: settings.hideNoThinkVariants === true,
+      pricing: pricingContext,
     });
 
     const getDefaultContextFallback = (model: any): number | undefined => {

@@ -82,6 +82,28 @@ function stripCodexEffortSuffix(model: string): string {
   return model.replace(/-(?:ultra|max|xhigh|high|medium|low|none)$/i, "");
 }
 
+function isCodexProvider(provider: string | null | undefined): boolean {
+  const providerKey = normalizeServiceTier(provider);
+  return providerKey === "codex" || providerKey === "cx";
+}
+
+/**
+ * Model ids to look up, in order, when pricing (provider, model): exact id first (so
+ * a user override on an annotated id wins), then the prefix-free id, then — for
+ * Codex — the id with its reasoning-effort suffix removed. Exported so the
+ * `/v1/models` catalog prices entries with the same fallbacks as cost accounting.
+ */
+export function getPricingLookupModels(provider: string, model: string): string[] {
+  const keys = [model];
+  const normalized = normalizeModelName(model);
+  if (normalized !== model) keys.push(normalized);
+  if (isCodexProvider(provider)) {
+    const effortless = stripCodexEffortSuffix(normalized);
+    if (effortless !== normalized) keys.push(effortless);
+  }
+  return keys;
+}
+
 export function getCodexFastCostMultiplier(
   provider: string | null | undefined,
   model: string | null | undefined,
@@ -212,20 +234,10 @@ export async function calculateCostDetailed(
   try {
     const { getPricingForModel } = await import("@/lib/db/settings");
 
-    // Try exact match first, then normalized model name
-    let pricing = await getPricingForModel(provider, model);
-    if (!pricing) {
-      const normalized = normalizeModelName(model);
-      if (normalized !== model) {
-        pricing = await getPricingForModel(provider, normalized);
-      }
-      const providerKey = normalizeServiceTier(provider);
-      if (!pricing && (providerKey === "codex" || providerKey === "cx")) {
-        const effortlessModel = stripCodexEffortSuffix(normalized);
-        if (effortlessModel !== normalized) {
-          pricing = await getPricingForModel(provider, effortlessModel);
-        }
-      }
+    let pricing: Awaited<ReturnType<typeof getPricingForModel>> = null;
+    for (const key of getPricingLookupModels(provider, model)) {
+      pricing = await getPricingForModel(provider, key);
+      if (pricing) break;
     }
     // No pricing row anywhere — this is the #12341 case (e.g. a provider's own
     // routing alias such as "auto" that has no catalog price). Report it as

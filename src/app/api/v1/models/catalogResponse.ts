@@ -42,6 +42,11 @@ import { extractApiKey } from "@/sse/services/auth";
 import { maybeOmitCatalogModelName } from "./catalogHelpers";
 import { applyCatalogPage, catalogJsonResponse, parseCatalogPage } from "./catalogPagination";
 import { isCodexModelCatalogClient } from "./catalogRequest";
+import {
+  attachCatalogPricing,
+  normalizeCatalogEntryPricing,
+  type CatalogPricingContext,
+} from "./catalogPricing";
 
 type CatalogVariantAuthorizer = (model: Record<string, any>) => boolean | Promise<boolean>;
 
@@ -96,6 +101,8 @@ export async function applyCatalogPostFilters(
     aliasToProviderId: Record<string, string>;
     hideNoThinkVariants?: boolean;
     authorizeSyntheticModel?: CatalogVariantAuthorizer;
+    /** Combo targets and node prefixes for the per-entry `pricing` object. */
+    pricing?: CatalogPricingContext;
   }
 ): Promise<Array<Record<string, any>>> {
   const yieldTurn = (): Promise<void> => new Promise((resolve) => setImmediate(resolve));
@@ -110,6 +117,10 @@ export async function applyCatalogPostFilters(
       return hasEligibleConnectionForModel(ctx.connections, m.root);
     });
   }
+
+  // Price base entries before the variant/mirror passes below, so each synthetic
+  // entry copies the price of the model it routes to.
+  finalModels = await attachCatalogPricing(finalModels, ctx.pricing);
 
   // #9147: the variant-append passes each walk the full model list (O(n) per pass),
   // so a catalog-scale build must not run all of them in one synchronous stretch.
@@ -314,6 +325,7 @@ export async function finalizeCatalogResponse(
       listedModel = fallbackContextLength
         ? { ...entry, context_length: fallbackContextLength }
         : entry;
+      listedModel = normalizeCatalogEntryPricing(listedModel, enrichmentSnapshot);
       listedModel = maybeOmitCatalogModelName(listedModel, includeModelNames);
     }
     enriched.push(listedModel);
