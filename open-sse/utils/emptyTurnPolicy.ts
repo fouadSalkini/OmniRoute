@@ -11,6 +11,7 @@ type EmptyTurnExecution = {
   eventCount: number;
   terminalType: string | null;
   terminalStatus: string | null;
+  incompleteReason: string | null;
   outputItems: OutputItemCounts;
   streamedOutput: {
     items: OutputItemCounts;
@@ -115,7 +116,8 @@ function observeStreamedOutput(state: EmptyTurnExecution, payload: Record<string
   } else if (payload.type === "response.refusal.delta" && nonemptyText(payload.delta)) {
     state.streamedOutput.refusalDeltaEvents++;
   } else if (
-    payload.type === "response.function_call_arguments.delta" &&
+    (payload.type === "response.function_call_arguments.delta" ||
+      payload.type === "response.custom_tool_call_input.delta") &&
     nonemptyText(payload.delta)
   ) {
     state.streamedOutput.toolArgumentDeltaEvents++;
@@ -138,6 +140,11 @@ function observeResponsesTerminal(state: EmptyTurnExecution, payload: Record<str
     typeof terminal.status === "string" &&
     ["completed", "failed", "cancelled", "incomplete", "in_progress"].includes(terminal.status)
       ? terminal.status
+      : null;
+  const incomplete = terminal.incomplete_details as Record<string, unknown> | undefined;
+  state.incompleteReason =
+    incomplete?.reason === "max_output_tokens" || incomplete?.reason === "content_filter"
+      ? incomplete.reason
       : null;
   state.outputItems = { messages: 0, reasoning: 0, tools: 0, other: 0 };
   if (Array.isArray(terminal.output)) {
@@ -251,6 +258,7 @@ export function markEmptyTurnExecution(
     eventCount: 0,
     terminalType: null,
     terminalStatus: null,
+    incompleteReason: null,
     outputItems: { messages: 0, reasoning: 0, tools: 0, other: 0 },
     streamedOutput: {
       items: { messages: 0, reasoning: 0, tools: 0, other: 0 },
@@ -268,7 +276,9 @@ export function markEmptyTurnExecution(
   const isSse = (response.headers.get("content-type") || "").includes("text/event-stream");
   let pending = "";
   function consume(text: string, done = false) {
-    if (state.failed) return;
+    // A failed turn stays untrusted, but its later terminal still explains why.
+    // Only an observer size-limit failure disables further bounded parsing.
+    if (state.oversizedFrames > 0) return;
     pending += text;
     if (pending.length > MAX_FRAME_CHARS) {
       state.failed = true;
@@ -326,6 +336,7 @@ export function getEmptyTurnDiagnostics(response: Response) {
     failed: state.failed,
     terminalType: state.terminalType,
     terminalStatus: state.terminalStatus,
+    incompleteReason: state.incompleteReason,
     outputItems: { ...state.outputItems },
     streamedOutput: { ...state.streamedOutput, items: { ...state.streamedOutput.items } },
     nativeStreamComplete: state.nativeStreamComplete,

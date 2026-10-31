@@ -71,7 +71,7 @@ test("post-translation rejection logs diagnostic evidence but keeps the public 5
   const response = await new Response(body).text();
 
   assert.match(response, /Provider returned empty content/);
-  assert.match(lines.join("\n"), /detector=post-translation/);
+  assert.match(lines.join("\n"), /detector=post-translation reason=empty-content/);
   assert.match(lines.join("\n"), /"terminalType":"response.done"/);
   assert.doesNotMatch(lines.join("\n"), new RegExp(privateContent));
   assert.doesNotMatch(response, /terminalType|reasoningTokens|detector=/);

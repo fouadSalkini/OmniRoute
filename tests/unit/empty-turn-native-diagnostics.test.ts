@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   getEmptyTurnDiagnostics,
+  hasTrustedEmptyTurn,
   markEmptyTurnExecution,
 } from "../../open-sse/utils/emptyTurnPolicy.ts";
 
@@ -110,6 +111,61 @@ for (const fixture of [
     assert.equal(getEmptyTurnDiagnostics(response)[fixture.counter], 1);
   });
 }
+
+test("failed diagnostics observe later terminals without restoring trust", async () => {
+  const payloads = [
+    { type: "error", error: { message: "private-provider-error" } },
+    {
+      type: "response.failed",
+      response: { status: "failed", error: { message: "private-terminal-error" } },
+    },
+  ];
+  const response = markEmptyTurnExecution(
+    new Response(
+      new ReadableStream({
+        start(controller) {
+          for (const payload of payloads) {
+            controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(payload)}\n\n`));
+          }
+          controller.close();
+        },
+      }),
+      { headers: { "content-type": "text/event-stream" } }
+    ),
+    "https://chatgpt.com/backend-api/codex/responses",
+    { connectionId: "fixture-account", accessToken: "synthetic-token" }
+  );
+  await response.text();
+  const diagnostics = getEmptyTurnDiagnostics(response);
+  assert.ok("terminalType" in diagnostics);
+  assert.equal(diagnostics.terminalType, "response.failed");
+  assert.equal(diagnostics.terminalStatus, "failed");
+  assert.equal(diagnostics.eventCount, 2);
+  assert.equal(hasTrustedEmptyTurn(response), false);
+  assert.doesNotMatch(JSON.stringify(diagnostics), /private-provider|private-terminal/);
+});
+
+for (const reason of ["max_output_tokens", "content_filter", "private-unknown-reason"]) {
+  test(`incomplete diagnostics allowlist the reason: ${reason}`, async () => {
+    const diagnostics = await observe({
+      type: "response.incomplete",
+      response: { status: "incomplete", incomplete_details: { reason } },
+    });
+    assert.ok("incompleteReason" in diagnostics);
+    assert.equal(diagnostics.incompleteReason, reason.startsWith("private-") ? null : reason);
+    assert.doesNotMatch(JSON.stringify(diagnostics), /private-unknown-reason/);
+  });
+}
+
+test("custom tool input deltas count without retaining input", async () => {
+  const diagnostics = await observe({
+    type: "response.custom_tool_call_input.delta",
+    delta: "private-apply-patch-input",
+  });
+  assert.ok("streamedOutput" in diagnostics);
+  assert.equal(diagnostics.streamedOutput.toolArgumentDeltaEvents, 1);
+  assert.doesNotMatch(JSON.stringify(diagnostics), /private-apply-patch-input/);
+});
 
 test("untrusted response identities cannot supply native terminal diagnostics", () => {
   const response = new Response("untrusted fixture");

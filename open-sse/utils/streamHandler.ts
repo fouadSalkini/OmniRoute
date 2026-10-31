@@ -760,7 +760,11 @@ export function createDisconnectAwareStream(
               }
             } else if (silentClose) {
               console.warn(
-                `[STREAM] detector=post-translation native=${JSON.stringify(
+                `[STREAM] detector=post-translation reason=${
+                  silentClose.reason === "Provider returned empty content"
+                    ? "empty-content"
+                    : "missing-terminal"
+                } native=${JSON.stringify(
                   options.emptyTurnDiagnostics?.() ?? { nativeExecutionObserved: false }
                 )}`
               );
