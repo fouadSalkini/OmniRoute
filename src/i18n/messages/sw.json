@@ -10573,10 +10573,7 @@
     "healthCdw": "Kila Wiki · Muda wa kusubiri",
     "healthRecentSuccessBypass": "Uelekezaji unaruhusu akaunti hii kwa sababu ombi limefaulu hivi karibuni.",
     "healthPurchasedBalanceBypass": "Salio lililonunuliwa huruhusu matumizi kuendelea baada ya mgao uliojumuishwa kuisha.",
-    "healthCutoffAtRequest": "Viwango vya mgao wa moja kwa moja hukaguliwa wakati wa kuelekeza ombi.",
-    "statCritical": "Mahututi",
-    "statAlert": "Tahadhari",
-    "statHealthy": "Yenye afya"
+    "healthCutoffAtRequest": "Viwango vya mgao wa moja kwa moja hukaguliwa wakati wa kuelekeza ombi."
   },
   "modals": {
     "waitingAuth": "Inasubiri Uidhinishaji",

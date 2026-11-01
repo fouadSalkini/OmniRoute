@@ -10573,10 +10573,7 @@
     "healthCdw": "Hebdomadaire · Délai d’attente",
     "healthRecentSuccessBypass": "Le routage autorise ce compte car une requête a réussi récemment.",
     "healthPurchasedBalanceBypass": "Le solde acheté permet de continuer après épuisement du quota inclus.",
-    "healthCutoffAtRequest": "Les seuils de quota en temps réel sont vérifiés lors du routage des requêtes.",
-    "statCritical": "Critique",
-    "statAlert": "Alerte",
-    "statHealthy": "Sain"
+    "healthCutoffAtRequest": "Les seuils de quota en temps réel sont vérifiés lors du routage des requêtes."
   },
   "modals": {
     "waitingAuth": "En attente d'autorisation",

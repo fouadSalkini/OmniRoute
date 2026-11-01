@@ -10573,10 +10573,7 @@
     "healthCdw": "Kas savaitę · Laukimo laikotarpis",
     "healthRecentSuccessBypass": "Maršruto parinkimas leidžia šią paskyrą, nes užklausa neseniai buvo sėkminga.",
     "healthPurchasedBalanceBypass": "Įsigytas likutis leidžia tęsti naudojimą išnaudojus įtrauktą kvotą.",
-    "healthCutoffAtRequest": "Realaus laiko kvotos slenksčiai tikrinami parenkant užklausos maršrutą.",
-    "statCritical": "Kritinė būklė",
-    "statAlert": "Įspėjimas",
-    "statHealthy": "Veikia tinkamai"
+    "healthCutoffAtRequest": "Realaus laiko kvotos slenksčiai tikrinami parenkant užklausos maršrutą."
   },
   "modals": {
     "waitingAuth": "Laukiama autorizacijos",

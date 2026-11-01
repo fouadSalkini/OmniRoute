@@ -10573,10 +10573,7 @@
     "healthCdw": "Seachtainiúil · Tréimhse feithimh",
     "healthRecentSuccessBypass": "Ceadaíonn an ródú an cuntas seo mar d’éirigh le hiarratas le déanaí.",
     "healthPurchasedBalanceBypass": "Is féidir an t-iarmhéid ceannaithe a úsáid tar éis don chuóta san áireamh ídiú.",
-    "healthCutoffAtRequest": "Seiceáiltear tairseacha cuóta fíor-ama nuair a dhéantar iarratas a ródú.",
-    "statCritical": "Criticiúil",
-    "statAlert": "Foláireamh",
-    "statHealthy": "Sláintiúil"
+    "healthCutoffAtRequest": "Seiceáiltear tairseacha cuóta fíor-ama nuair a dhéantar iarratas a ródú."
   },
   "modals": {
     "waitingAuth": "Ag fanacht le húdarú",

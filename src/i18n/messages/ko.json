@@ -10573,10 +10573,7 @@
     "healthCdw": "매주 · 대기 시간",
     "healthRecentSuccessBypass": "최근 요청이 성공하여 라우터가 이 계정의 사용을 허용합니다.",
     "healthPurchasedBalanceBypass": "포함된 할당량을 소진해도 구매한 잔액으로 계속 사용할 수 있습니다.",
-    "healthCutoffAtRequest": "실시간 할당량 임계값은 요청을 라우팅할 때 확인합니다.",
-    "statCritical": "심각",
-    "statAlert": "경고",
-    "statHealthy": "정상"
+    "healthCutoffAtRequest": "실시간 할당량 임계값은 요청을 라우팅할 때 확인합니다."
   },
   "modals": {
     "waitingAuth": "승인을 기다리는 중",

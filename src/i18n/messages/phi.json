@@ -10573,10 +10573,7 @@
     "healthCdw": "Lingguhan · Panahon ng paghihintay",
     "healthRecentSuccessBypass": "Pinapayagan ng pagruruta ang account na ito dahil may kahilingang nagtagumpay kamakailan.",
     "healthPurchasedBalanceBypass": "Maaaring magpatuloy gamit ang biniling balanse kapag naubos ang kasamang quota.",
-    "healthCutoffAtRequest": "Sinusuri ang mga live na limitasyon ng quota kapag niruruta ang kahilingan.",
-    "statCritical": "Kritikal",
-    "statAlert": "Alerto",
-    "statHealthy": "Maayos"
+    "healthCutoffAtRequest": "Sinusuri ang mga live na limitasyon ng quota kapag niruruta ang kahilingan."
   },
   "modals": {
     "waitingAuth": "Naghihintay ng Awtorisasyon",

@@ -10573,10 +10573,7 @@
     "healthCdw": "ସାପ୍ତାହିକ · ଅପେକ୍ଷା ସମୟ",
     "healthRecentSuccessBypass": "ନିକଟରେ ଏକ ଅନୁରୋଧ ସଫଳ ହୋଇଥିବାରୁ ରାଉଟିଂ ଏହି ଖାତାକୁ ଅନୁମତି ଦିଏ।",
     "healthPurchasedBalanceBypass": "ଅନ୍ତର୍ଭୁକ୍ତ କୋଟା ସରିବା ପରେ କିଣାଯାଇଥିବା ବାଲାନ୍ସରେ ବ୍ୟବହାର ଜାରି ରହିପାରେ।",
-    "healthCutoffAtRequest": "ଅନୁରୋଧ ରାଉଟ୍ କରିବା ସମୟରେ ଲାଇଭ୍ କୋଟା ସୀମା ଯାଞ୍ଚ କରାଯାଏ।",
-    "statCritical": "ଗୁରୁତର",
-    "statAlert": "ସତର୍କତା",
-    "statHealthy": "ସୁସ୍ଥ"
+    "healthCutoffAtRequest": "ଅନୁରୋଧ ରାଉଟ୍ କରିବା ସମୟରେ ଲାଇଭ୍ କୋଟା ସୀମା ଯାଞ୍ଚ କରାଯାଏ।"
   },
   "modals": {
     "waitingAuth": "ଅନୁମୋଦନ ପାଇଁ ଅପେକ୍ଷାରତ",

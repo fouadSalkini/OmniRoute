@@ -10573,10 +10573,7 @@
     "healthCdw": "Kwa Izu · Oge nchere",
     "healthRecentSuccessBypass": "Usoro ntụgharị na-ekwe akaụntụ a n'ihi na arịrịọ gara nke ọma n'oge na-adịbeghị anya.",
     "healthPurchasedBalanceBypass": "Ego fọdụrụ a zụtara na-enye ohere ịga n'ihu mgbe oke etinyere gwụchara.",
-    "healthCutoffAtRequest": "A na-enyocha oke ojiji dị ugbu a mgbe a na-atụgharị arịrịọ.",
-    "statCritical": "Dị oke egwu",
-    "statAlert": "Ịdọ aka ná ntị",
-    "statHealthy": "Dị mma"
+    "healthCutoffAtRequest": "A na-enyocha oke ojiji dị ugbu a mgbe a na-atụgharị arịrịọ."
   },
   "modals": {
     "waitingAuth": "Na-eche maka ikike",

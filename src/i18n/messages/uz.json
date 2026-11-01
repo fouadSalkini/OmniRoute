@@ -10573,10 +10573,7 @@
     "healthCdw": "Haftalik · Kutish davri",
     "healthRecentSuccessBypass": "Yaqinda so‘rov muvaffaqiyatli bo‘lgani uchun yo‘naltirish bu hisobga ruxsat beradi.",
     "healthPurchasedBalanceBypass": "Kiritilgan kvota tugagach, sotib olingan balansdan foydalanish mumkin.",
-    "healthCutoffAtRequest": "Real vaqtdagi kvota chegaralari so‘rov yo‘naltirilayotganda tekshiriladi.",
-    "statCritical": "Kritik",
-    "statAlert": "Ogohlantirish",
-    "statHealthy": "Sogʻlom"
+    "healthCutoffAtRequest": "Real vaqtdagi kvota chegaralari so‘rov yo‘naltirilayotganda tekshiriladi."
   },
   "modals": {
     "waitingAuth": "Avtorizatsiya kutilmoqda",

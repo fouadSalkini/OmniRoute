@@ -10650,10 +10650,7 @@
     "healthCdw": "ਹਫ਼ਤਾਵਾਰੀ · ਉਡੀਕ ਦੀ ਮਿਆਦ",
     "healthRecentSuccessBypass": "ਹਾਲ ਹੀ ਵਿੱਚ ਬੇਨਤੀ ਸਫਲ ਹੋਣ ਕਾਰਨ ਰਾਊਟਿੰਗ ਇਸ ਖਾਤੇ ਨੂੰ ਇਜਾਜ਼ਤ ਦਿੰਦੀ ਹੈ।",
     "healthPurchasedBalanceBypass": "ਸ਼ਾਮਲ ਕੋਟਾ ਖਤਮ ਹੋਣ ਤੋਂ ਬਾਅਦ ਖਰੀਦੇ ਬਕਾਏ ਨਾਲ ਵਰਤੋਂ ਜਾਰੀ ਰਹਿ ਸਕਦੀ ਹੈ।",
-    "healthCutoffAtRequest": "ਲਾਈਵ ਕੋਟੇ ਦੀਆਂ ਹੱਦਾਂ ਬੇਨਤੀ ਰਾਊਟ ਕਰਨ ਵੇਲੇ ਜਾਂਚੀਆਂ ਜਾਂਦੀਆਂ ਹਨ।",
-    "statCritical": "ਗੰਭੀਰ",
-    "statAlert": "ਚੇਤਾਵਨੀ",
-    "statHealthy": "ਸਿਹਤਮੰਦ"
+    "healthCutoffAtRequest": "ਲਾਈਵ ਕੋਟੇ ਦੀਆਂ ਹੱਦਾਂ ਬੇਨਤੀ ਰਾਊਟ ਕਰਨ ਵੇਲੇ ਜਾਂਚੀਆਂ ਜਾਂਦੀਆਂ ਹਨ।"
   },
   "modals": {
     "waitingAuth": "ਅਧਿਕਾਰ ਦੀ ਉਡੀਕ",

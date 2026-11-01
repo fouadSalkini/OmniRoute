@@ -10650,10 +10650,7 @@
     "healthCdw": "Settimanale · Periodo di attesa",
     "healthRecentSuccessBypass": "Il routing consente questo account perché una richiesta è riuscita di recente.",
     "healthPurchasedBalanceBypass": "Il saldo acquistato consente di continuare dopo aver esaurito la quota inclusa.",
-    "healthCutoffAtRequest": "Le soglie di quota in tempo reale vengono verificate durante il routing delle richieste.",
-    "statCritical": "Critico",
-    "statAlert": "Allerta",
-    "statHealthy": "Sano"
+    "healthCutoffAtRequest": "Le soglie di quota in tempo reale vengono verificate durante il routing delle richieste."
   },
   "modals": {
     "waitingAuth": "In attesa di autorizzazione",

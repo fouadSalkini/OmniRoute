@@ -10573,10 +10573,7 @@
     "healthCdw": "毎週 · 待機期間",
     "healthRecentSuccessBypass": "最近リクエストが成功したため、このアカウントの利用が許可されています。",
     "healthPurchasedBalanceBypass": "プラン内の利用枠を使い切っても、購入済み残高を利用できます。",
-    "healthCutoffAtRequest": "リアルタイムの利用枠のしきい値は、リクエストのルーティング時に確認されます。",
-    "statCritical": "重大",
-    "statAlert": "アラート",
-    "statHealthy": "正常"
+    "healthCutoffAtRequest": "リアルタイムの利用枠のしきい値は、リクエストのルーティング時に確認されます。"
   },
   "modals": {
     "waitingAuth": "承認を待っています",

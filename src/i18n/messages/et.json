@@ -10573,10 +10573,7 @@
     "healthCdw": "Nädalane · Ooteaeg",
     "healthRecentSuccessBypass": "Marsruutimine lubab seda kontot, sest päring õnnestus hiljuti.",
     "healthPurchasedBalanceBypass": "Ostetud saldo võimaldab jätkata pärast kaasatud kvoodi ammendumist.",
-    "healthCutoffAtRequest": "Reaalajas kvoodilävendeid kontrollitakse päringu marsruutimisel.",
-    "statCritical": "Kriitiline",
-    "statAlert": "Hoiatus",
-    "statHealthy": "Korras"
+    "healthCutoffAtRequest": "Reaalajas kvoodilävendeid kontrollitakse päringu marsruutimisel."
   },
   "modals": {
     "waitingAuth": "Autoriseerimise ootel",

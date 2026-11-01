@@ -10573,10 +10573,7 @@
     "healthCdw": "週冷卻",
     "healthRecentSuccessBypass": "此帳號剛有請求成功，路由暫時放行。",
     "healthPurchasedBalanceBypass": "方案內額度用盡後，仍可使用已購餘額。",
-    "healthCutoffAtRequest": "即時額度門檻會在路由請求時檢查。",
-    "statCritical": "嚴重",
-    "statAlert": "警報",
-    "statHealthy": "健康"
+    "healthCutoffAtRequest": "即時額度門檻會在路由請求時檢查。"
   },
   "modals": {
     "waitingAuth": "等待授權",

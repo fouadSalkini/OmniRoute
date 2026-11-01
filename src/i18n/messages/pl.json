@@ -10573,10 +10573,7 @@
     "healthCdw": "Tygodniowy · Okres oczekiwania",
     "healthRecentSuccessBypass": "Routing dopuszcza to konto, ponieważ niedawno żądanie zakończyło się powodzeniem.",
     "healthPurchasedBalanceBypass": "Zakupione saldo pozwala korzystać dalej po wyczerpaniu wliczonego limitu.",
-    "healthCutoffAtRequest": "Progi limitów w czasie rzeczywistym są sprawdzane podczas routingu żądania.",
-    "statCritical": "Krytyczny",
-    "statAlert": "Alert",
-    "statHealthy": "Zdrowy"
+    "healthCutoffAtRequest": "Progi limitów w czasie rzeczywistym są sprawdzane podczas routingu żądania."
   },
   "modals": {
     "waitingAuth": "Oczekiwanie na autoryzację",

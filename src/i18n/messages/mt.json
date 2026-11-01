@@ -10650,10 +10650,7 @@
     "healthCdw": "Kull ġimgħa · Perjodu ta’ stennija",
     "healthRecentSuccessBypass": "Ir-routing jippermetti dan il-kont għax talba rnexxiet dan l-aħħar.",
     "healthPurchasedBalanceBypass": "Il-bilanċ mixtri jippermetti li tkompli wara li tintuża l-kwota inkluża kollha.",
-    "healthCutoffAtRequest": "Il-limiti tal-kwota f’ħin reali jiġu ċċekkjati meta talba tiġi rotta.",
-    "statCritical": "Kritiku",
-    "statAlert": "Twissija",
-    "statHealthy": "Tajjeb"
+    "healthCutoffAtRequest": "Il-limiti tal-kwota f’ħin reali jiġu ċċekkjati meta talba tiġi rotta."
   },
   "modals": {
     "waitingAuth": "Stennija għall-Awtorizzazzjoni",

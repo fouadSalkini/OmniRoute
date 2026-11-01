@@ -10573,10 +10573,7 @@
     "healthCdw": "Mako-mako · Lokacin jira",
     "healthRecentSuccessBypass": "Tsarin tura buƙatu ya ba da damar wannan asusu domin wata buƙata ta yi nasara kwanan nan.",
     "healthPurchasedBalanceBypass": "Za a iya ci gaba da amfani da ragowar kuɗin da aka saya bayan rabon da aka haɗa ya ƙare.",
-    "healthCutoffAtRequest": "Ana duba iyakokin rabo na yanzu yayin tura buƙata.",
-    "statCritical": "Mai tsanani",
-    "statAlert": "Faɗakarwa",
-    "statHealthy": "Lafiyayye"
+    "healthCutoffAtRequest": "Ana duba iyakokin rabo na yanzu yayin tura buƙata."
   },
   "modals": {
     "waitingAuth": "Ana Jiran Izini",

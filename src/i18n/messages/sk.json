@@ -10573,10 +10573,7 @@
     "healthCdw": "Týždenne · Obdobie čakania",
     "healthRecentSuccessBypass": "Smerovanie povoľuje tento účet, pretože nedávna požiadavka uspela.",
     "healthPurchasedBalanceBypass": "Zakúpený zostatok umožňuje pokračovať po vyčerpaní zahrnutej kvóty.",
-    "healthCutoffAtRequest": "Aktuálne prahové hodnoty kvóty sa kontrolujú pri smerovaní požiadavky.",
-    "statCritical": "Kritické",
-    "statAlert": "Upozornenie",
-    "statHealthy": "Zdravé"
+    "healthCutoffAtRequest": "Aktuálne prahové hodnoty kvóty sa kontrolujú pri smerovaní požiadavky."
   },
   "modals": {
     "waitingAuth": "Čaká sa na autorizáciu",

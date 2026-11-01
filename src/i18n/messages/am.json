@@ -10650,10 +10650,7 @@
     "healthCdw": "ሳምንታዊ · የጥበቃ ጊዜ",
     "healthRecentSuccessBypass": "በቅርቡ ጥያቄ ስለተሳካ ማዘዋወሪያው ይህን መለያ ይፈቅዳል።",
     "healthPurchasedBalanceBypass": "የተካተተው ኮታ ካለቀ በኋላ በተገዛው ቀሪ ሂሳብ መጠቀም መቀጠል ይቻላል።",
-    "healthCutoffAtRequest": "የቀጥታ ኮታ ገደቦች ጥያቄን በማዘዋወር ጊዜ ይፈተሻሉ።",
-    "statCritical": "አሳሳቢ",
-    "statAlert": "ማስጠንቀቂያ",
-    "statHealthy": "ጤናማ"
+    "healthCutoffAtRequest": "የቀጥታ ኮታ ገደቦች ጥያቄን በማዘዋወር ጊዜ ይፈተሻሉ።"
   },
   "modals": {
     "waitingAuth": "ፈቃድ በመጠበቅ ላይ",

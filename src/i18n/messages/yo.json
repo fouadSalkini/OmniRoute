@@ -10573,10 +10573,7 @@
     "healthCdw": "Ọ̀sọ̀ọ̀sẹ̀ · Àkókò ìdúró",
     "healthRecentSuccessBypass": "Ìdarí ìbéèrè gba àkọọ́lẹ̀ yìí láyè nítorí ìbéèrè kan ṣàṣeyọrí láìpẹ́.",
     "healthPurchasedBalanceBypass": "Owó tó ṣẹ́ kù nínú èyí tí a rà jẹ́ kí lílò máa bá a lọ lẹ́yìn tí ìpín tó wà nínú ètò bá tán.",
-    "healthCutoffAtRequest": "A máa ń ṣàyẹ̀wò ààlà ìpín ti àkókò gidi nígbà dídarí ìbéèrè.",
-    "statCritical": "Léwu púpọ̀",
-    "statAlert": "Ìkìlọ̀",
-    "statHealthy": "Ó dára"
+    "healthCutoffAtRequest": "A máa ń ṣàyẹ̀wò ààlà ìpín ti àkókò gidi nígbà dídarí ìbéèrè."
   },
   "modals": {
     "waitingAuth": "Ń dúró de Àṣẹ",

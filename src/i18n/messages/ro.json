@@ -10573,10 +10573,7 @@
     "healthCdw": "Săptămânal · Perioadă de așteptare",
     "healthRecentSuccessBypass": "Rutarea permite acest cont deoarece o cerere a reușit recent.",
     "healthPurchasedBalanceBypass": "Soldul cumpărat permite continuarea după epuizarea cotei incluse.",
-    "healthCutoffAtRequest": "Pragurile cotei în timp real sunt verificate la rutarea unei cereri.",
-    "statCritical": "Critic",
-    "statAlert": "Alertă",
-    "statHealthy": "Sănătos"
+    "healthCutoffAtRequest": "Pragurile cotei în timp real sunt verificate la rutarea unei cereri."
   },
   "modals": {
     "waitingAuth": "În așteptarea autorizației",

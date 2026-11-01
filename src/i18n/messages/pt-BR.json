@@ -10573,10 +10573,7 @@
     "healthCdw": "Semanal · Tempo de espera",
     "healthRecentSuccessBypass": "O roteamento permite esta conta porque uma solicitação foi bem-sucedida recentemente.",
     "healthPurchasedBalanceBypass": "O saldo comprado permite continuar após esgotar a cota incluída.",
-    "healthCutoffAtRequest": "Os limites de cota em tempo real são verificados ao rotear uma solicitação.",
-    "statCritical": "Crítico",
-    "statAlert": "Alerta",
-    "statHealthy": "Saudável"
+    "healthCutoffAtRequest": "Os limites de cota em tempo real são verificados ao rotear uma solicitação."
   },
   "modals": {
     "waitingAuth": "Aguardando Autorização",

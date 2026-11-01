@@ -10573,10 +10573,7 @@
     "healthCdw": "Semanal · Periodo de espera",
     "healthRecentSuccessBypass": "El enrutamiento permite usar esta cuenta porque una solicitud tuvo éxito recientemente.",
     "healthPurchasedBalanceBypass": "El saldo comprado permite continuar tras agotar la cuota incluida.",
-    "healthCutoffAtRequest": "Los umbrales de cuota en tiempo real se comprueban al enrutar una solicitud.",
-    "statCritical": "Crítico",
-    "statAlert": "Alerta",
-    "statHealthy": "Correcto"
+    "healthCutoffAtRequest": "Los umbrales de cuota en tiempo real se comprueban al enrutar una solicitud."
   },
   "modals": {
     "waitingAuth": "Esperando autorización",

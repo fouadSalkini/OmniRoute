@@ -10650,10 +10650,7 @@
     "healthCdw": "Weekly cooldown",
     "healthRecentSuccessBypass": "Routing permits this account because a request succeeded recently.",
     "healthPurchasedBalanceBypass": "Purchased balance permits use after the included allowance is exhausted.",
-    "healthCutoffAtRequest": "Live quota thresholds are checked when routing a request.",
-    "statCritical": "Critical",
-    "statAlert": "Alert",
-    "statHealthy": "Healthy"
+    "healthCutoffAtRequest": "Live quota thresholds are checked when routing a request."
   },
   "modals": {
     "waitingAuth": "Waiting for Authorization",

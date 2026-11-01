@@ -10650,10 +10650,7 @@
     "healthCdw": "Semanal · Tempo de espera",
     "healthRecentSuccessBypass": "O encaminhamento permite esta conta porque um pedido foi bem-sucedido recentemente.",
     "healthPurchasedBalanceBypass": "O saldo comprado permite continuar após esgotar a quota incluída.",
-    "healthCutoffAtRequest": "Os limiares de quota em tempo real são verificados ao encaminhar um pedido.",
-    "statCritical": "Crítico",
-    "statAlert": "Alerta",
-    "statHealthy": "Saudável"
+    "healthCutoffAtRequest": "Os limiares de quota em tempo real são verificados ao encaminhar um pedido."
   },
   "modals": {
     "waitingAuth": "Aguardando autorização",

@@ -10573,10 +10573,7 @@
     "healthCdw": "Tedensko · Čakalna doba",
     "healthRecentSuccessBypass": "Usmerjanje dovoli ta račun, ker je bila nedavna zahteva uspešna.",
     "healthPurchasedBalanceBypass": "Kupljeno dobroimetje omogoča uporabo po izčrpanju vključene kvote.",
-    "healthCutoffAtRequest": "Pragovi kvote v realnem času se preverijo ob usmerjanju zahteve.",
-    "statCritical": "Kritično",
-    "statAlert": "Opozorilo",
-    "statHealthy": "Brez težav"
+    "healthCutoffAtRequest": "Pragovi kvote v realnem času se preverijo ob usmerjanju zahteve."
   },
   "modals": {
     "waitingAuth": "Čakanje na avtorizacijo",

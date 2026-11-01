@@ -10573,10 +10573,7 @@
     "healthCdw": "साप्ताहिक · प्रतीक्षा अवधि",
     "healthRecentSuccessBypass": "हालै अनुरोध सफल भएकाले राउटिङले यो खातालाई अनुमति दिन्छ।",
     "healthPurchasedBalanceBypass": "समावेश कोटा सकिएपछि खरिद गरिएको मौज्दातबाट प्रयोग जारी राख्न सकिन्छ।",
-    "healthCutoffAtRequest": "अनुरोध राउट गर्दा प्रत्यक्ष कोटाका सीमा जाँचिन्छन्।",
-    "statCritical": "गम्भीर",
-    "statAlert": "सतर्कता",
-    "statHealthy": "स्वस्थ"
+    "healthCutoffAtRequest": "अनुरोध राउट गर्दा प्रत्यक्ष कोटाका सीमा जाँचिन्छन्।"
   },
   "modals": {
     "waitingAuth": "प्राधिकरणको प्रतीक्षामा",

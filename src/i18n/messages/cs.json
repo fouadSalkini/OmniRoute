@@ -10650,10 +10650,7 @@
     "healthCdw": "Týdně · Doba čekání",
     "healthRecentSuccessBypass": "Směrování povoluje tento účet, protože nedávný požadavek uspěl.",
     "healthPurchasedBalanceBypass": "Zakoupený zůstatek umožňuje pokračovat po vyčerpání zahrnuté kvóty.",
-    "healthCutoffAtRequest": "Aktuální prahové hodnoty kvóty se kontrolují při směrování požadavku.",
-    "statCritical": "Kritické",
-    "statAlert": "Výstraha",
-    "statHealthy": "V pořádku"
+    "healthCutoffAtRequest": "Aktuální prahové hodnoty kvóty se kontrolují při směrování požadavku."
   },
   "modals": {
     "waitingAuth": "Očekávám Autorizaci",

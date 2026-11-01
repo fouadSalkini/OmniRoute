@@ -10573,10 +10573,7 @@
     "healthCdw": "هفتگی · زمان انتظار",
     "healthRecentSuccessBypass": "مسیریابی این حساب را مجاز می‌داند چون درخواستی اخیراً موفق بوده است.",
     "healthPurchasedBalanceBypass": "پس از اتمام سهمیهٔ موجود، می‌توان از موجودی خریداری‌شده استفاده کرد.",
-    "healthCutoffAtRequest": "آستانه‌های سهمیهٔ زنده هنگام مسیریابی درخواست بررسی می‌شوند.",
-    "statCritical": "بحرانی",
-    "statAlert": "هشدار",
-    "statHealthy": "سالم"
+    "healthCutoffAtRequest": "آستانه‌های سهمیهٔ زنده هنگام مسیریابی درخواست بررسی می‌شوند."
   },
   "modals": {
     "waitingAuth": "در انتظار تأیید مجوز",

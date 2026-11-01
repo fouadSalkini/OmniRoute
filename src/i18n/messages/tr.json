@@ -10573,10 +10573,7 @@
     "healthCdw": "Haftalık · Bekleme süresi",
     "healthRecentSuccessBypass": "Yakın zamanda bir istek başarılı olduğu için yönlendirme bu hesaba izin verir.",
     "healthPurchasedBalanceBypass": "Dahil edilen kota tükendikten sonra satın alınan bakiye kullanılabilir.",
-    "healthCutoffAtRequest": "Canlı kota eşikleri, istek yönlendirilirken kontrol edilir.",
-    "statCritical": "Kritik",
-    "statAlert": "Uyarı",
-    "statHealthy": "Sağlıklı"
+    "healthCutoffAtRequest": "Canlı kota eşikleri, istek yönlendirilirken kontrol edilir."
   },
   "modals": {
     "waitingAuth": "Yetkilendirme bekleniyor",

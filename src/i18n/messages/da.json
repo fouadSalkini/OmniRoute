@@ -10650,10 +10650,7 @@
     "healthCdw": "Ugentligt · Ventetid",
     "healthRecentSuccessBypass": "Routingen tillader kontoen, fordi en anmodning for nylig lykkedes.",
     "healthPurchasedBalanceBypass": "Købt saldo kan bruges, når den inkluderede kvote er opbrugt.",
-    "healthCutoffAtRequest": "Kvotetærskler i realtid kontrolleres ved routing af en anmodning.",
-    "statCritical": "Kritisk",
-    "statAlert": "Alarm",
-    "statHealthy": "Sund"
+    "healthCutoffAtRequest": "Kvotetærskler i realtid kontrolleres ved routing af en anmodning."
   },
   "modals": {
     "waitingAuth": "Venter på autorisation",

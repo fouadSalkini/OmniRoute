@@ -10573,10 +10573,7 @@
     "healthCdw": "שבועי · זמן המתנה",
     "healthRecentSuccessBypass": "הניתוב מאפשר שימוש בחשבון זה משום שבקשה הצליחה לאחרונה.",
     "healthPurchasedBalanceBypass": "יתרה שנרכשה מאפשרת להמשיך לאחר ניצול המכסה הכלולה.",
-    "healthCutoffAtRequest": "ספי המכסה בזמן אמת נבדקים בעת ניתוב בקשה.",
-    "statCritical": "קריטי",
-    "statAlert": "התראה",
-    "statHealthy": "תקין"
+    "healthCutoffAtRequest": "ספי המכסה בזמן אמת נבדקים בעת ניתוב בקשה."
   },
   "modals": {
     "waitingAuth": "ממתין לאישור",

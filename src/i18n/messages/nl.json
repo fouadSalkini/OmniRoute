@@ -10573,10 +10573,7 @@
     "healthCdw": "Wekelijks · Wachttijd",
     "healthRecentSuccessBypass": "De routering staat dit account toe omdat een verzoek onlangs is geslaagd.",
     "healthPurchasedBalanceBypass": "Met gekocht tegoed kunt u doorgaan nadat het inbegrepen quotum is verbruikt.",
-    "healthCutoffAtRequest": "Realtime quotumdrempels worden gecontroleerd bij het routeren van een verzoek.",
-    "statCritical": "Kritiek",
-    "statAlert": "Waarschuwing",
-    "statHealthy": "Gezond"
+    "healthCutoffAtRequest": "Realtime quotumdrempels worden gecontroleerd bij het routeren van een verzoek."
   },
   "modals": {
     "waitingAuth": "Wachten op toestemming",

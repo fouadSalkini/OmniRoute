@@ -10650,10 +10650,7 @@
     "healthCdw": "أسبوعيا · فترة الانتظار",
     "healthRecentSuccessBypass": "يسمح التوجيه بهذا الحساب لأن طلبًا نجح مؤخرًا.",
     "healthPurchasedBalanceBypass": "يتيح الرصيد المشترى الاستمرار بعد نفاد الحصة المضمّنة.",
-    "healthCutoffAtRequest": "تُفحص حدود الحصة المباشرة عند توجيه الطلب.",
-    "statCritical": "حرجة",
-    "statAlert": "تنبيه",
-    "statHealthy": "صحي"
+    "healthCutoffAtRequest": "تُفحص حدود الحصة المباشرة عند توجيه الطلب."
   },
   "modals": {
     "waitingAuth": "في انتظار التصريح",

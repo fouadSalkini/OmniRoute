@@ -10650,10 +10650,7 @@
     "healthCdw": "周冷却",
     "healthRecentSuccessBypass": "此账号刚有请求成功，路由暂时放行。",
     "healthPurchasedBalanceBypass": "套餐内额度耗尽后，仍可使用已购余额。",
-    "healthCutoffAtRequest": "实时额度阈值在路由请求时检查。",
-    "statCritical": "严重",
-    "statAlert": "警报",
-    "statHealthy": "健康"
+    "healthCutoffAtRequest": "实时额度阈值在路由请求时检查。"
   },
   "modals": {
     "waitingAuth": "等待授权",

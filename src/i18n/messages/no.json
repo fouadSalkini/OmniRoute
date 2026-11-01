@@ -10573,10 +10573,7 @@
     "healthCdw": "Ukentlig · Ventetid",
     "healthRecentSuccessBypass": "Rutingen tillater kontoen fordi en forespørsel nylig lyktes.",
     "healthPurchasedBalanceBypass": "Kjøpt saldo kan brukes når den inkluderte kvoten er brukt opp.",
-    "healthCutoffAtRequest": "Kvoteterskler i sanntid kontrolleres når en forespørsel rutes.",
-    "statCritical": "Kritisk",
-    "statAlert": "Varsel",
-    "statHealthy": "Frisk"
+    "healthCutoffAtRequest": "Kvoteterskler i sanntid kontrolleres når en forespørsel rutes."
   },
   "modals": {
     "waitingAuth": "Venter på autorisasjon",

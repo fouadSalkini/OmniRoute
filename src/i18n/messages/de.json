@@ -10573,10 +10573,7 @@
     "healthCdw": "Wöchentlich · Wartezeit",
     "healthRecentSuccessBypass": "Das Routing lässt dieses Konto zu, weil kürzlich eine Anfrage erfolgreich war.",
     "healthPurchasedBalanceBypass": "Nach Verbrauch des enthaltenen Kontingents kann gekauftes Guthaben weiter genutzt werden.",
-    "healthCutoffAtRequest": "Echtzeit-Kontingentschwellen werden beim Routing einer Anfrage geprüft.",
-    "statCritical": "Kritisch",
-    "statAlert": "Alarm",
-    "statHealthy": "Gesund"
+    "healthCutoffAtRequest": "Echtzeit-Kontingentschwellen werden beim Routing einer Anfrage geprüft."
   },
   "modals": {
     "waitingAuth": "Warten auf Autorisierung",

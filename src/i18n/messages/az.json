@@ -10650,10 +10650,7 @@
     "healthCdw": "Həftəlik · Gözləmə müddəti",
     "healthRecentSuccessBypass": "Bu yaxınlarda sorğu uğurlu olduğu üçün yönləndirmə bu hesaba icazə verir.",
     "healthPurchasedBalanceBypass": "Daxil edilmiş kvota bitdikdən sonra alınmış balansdan istifadə etmək olar.",
-    "healthCutoffAtRequest": "Real vaxt kvota hədləri sorğu yönləndirilərkən yoxlanılır.",
-    "statCritical": "Kritik",
-    "statAlert": "Xəbərdarlıq",
-    "statHealthy": "Sağlam"
+    "healthCutoffAtRequest": "Real vaxt kvota hədləri sorğu yönləndirilərkən yoxlanılır."
   },
   "modals": {
     "waitingAuth": "Avtorizasiya gözlənilir",

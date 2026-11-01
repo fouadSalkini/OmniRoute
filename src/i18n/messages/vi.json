@@ -10573,10 +10573,7 @@
     "healthCdw": "Hàng tuần · Thời gian chờ",
     "healthRecentSuccessBypass": "Bộ định tuyến cho phép tài khoản này vì một yêu cầu đã thành công gần đây.",
     "healthPurchasedBalanceBypass": "Số dư đã mua cho phép tiếp tục sử dụng sau khi hết hạn mức đi kèm.",
-    "healthCutoffAtRequest": "Ngưỡng hạn mức trực tiếp được kiểm tra khi định tuyến yêu cầu.",
-    "statCritical": "Nghiêm trọng",
-    "statAlert": "Cảnh báo",
-    "statHealthy": "Hoạt động tốt"
+    "healthCutoffAtRequest": "Ngưỡng hạn mức trực tiếp được kiểm tra khi định tuyến yêu cầu."
   },
   "modals": {
     "waitingAuth": "Đang chờ ủy quyền",
