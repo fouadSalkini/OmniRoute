@@ -88,6 +88,7 @@ jobs:
           sudo chown "$(id -u):$(id -g)" /opt/omniroute-ci-pm2
           npm install --prefix /opt/omniroute-ci-pm2 --no-audit --no-fund --ignore-scripts "pm2@$PM2_VERSION"
           sudo --preserve-env=EXPECTED_ARCH,EXPECTED_ABI,EXPECTED_NODE,GITHUB_SHA unshare --net "$(command -v node)" scripts/ci/qualify-native-artifact.mjs dist
+          sudo chown -R "$(id -u):$(id -g)" _artifacts dist
 
       - name: Archive qualified runtime only
         run: |

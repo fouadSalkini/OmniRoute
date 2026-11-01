@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { relinkRuntimeBins } from "../build/relink-runtime-bins.mjs";
 
 export function artifactManifest(directory) {
   const root = fs.realpathSync(directory);
@@ -14,6 +15,7 @@ export function artifactManifest(directory) {
       const filename = path.join(parent, entry.name);
       const relative = path.relative(root, filename);
       if (entry.isSymbolicLink()) {
+        assert.ok(!path.isAbsolute(fs.readlinkSync(filename)), `Absolute artifact symlink: ${relative}`);
         const resolved = fs.realpathSync(filename);
         assert.ok(
           resolved === root || resolved.startsWith(root + path.sep),
@@ -162,6 +164,7 @@ async function main() {
   assert.equal(process.versions.modules, process.env.EXPECTED_ABI);
   assert.equal(process.versions.node, process.env.EXPECTED_NODE);
   const directory = fs.realpathSync(process.argv[2]);
+  const repairedBinLinks = relinkRuntimeBins(path.join(directory, "node_modules"), path.resolve("node_modules"));
   const source = process.env.GITHUB_SHA;
   assert.match(source, /^[a-f0-9]{40}$/);
   const marker = fs.readFileSync(path.join(directory, "BUILD_SHA"), "utf8").trim();
@@ -180,6 +183,7 @@ async function main() {
   assert.ok(libraries.length > 0, "Native artifact contains no addons");
   const receipt = {
     source,
+    repairedBinLinks,
     node: process.versions.node,
     abi: process.versions.modules,
     arch: process.arch,
