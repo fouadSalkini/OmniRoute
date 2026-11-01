@@ -167,6 +167,7 @@ async function main() {
   const marker = fs.readFileSync(path.join(directory, "BUILD_SHA"), "utf8").trim();
   assert.match(marker, /^[a-f0-9]{8,40}$/);
   assert.ok(source.startsWith(marker));
+  fs.mkdirSync(path.resolve("_artifacts"), { recursive: true });
   const scratch = fs.mkdtempSync(path.resolve("_artifacts/native-smoke-"));
   let smoke;
   try {
