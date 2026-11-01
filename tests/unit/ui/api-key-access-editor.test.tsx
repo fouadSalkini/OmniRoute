@@ -519,7 +519,7 @@ describe("ApiKeyAccessEditorClient", () => {
     currentSearch = "tab=limits";
     await renderLoaded();
 
-    fireEvent.click(screen.getByRole("button", { name: "addAdd Limit", exact: true }));
+    fireEvent.click(screen.getByRole("button", { name: "Add Limit", exact: true }));
     const [requestsInput] = screen.getAllByPlaceholderText(
       messages.apiManager.apiManagerRateLimitRequestsPlaceholder
     );

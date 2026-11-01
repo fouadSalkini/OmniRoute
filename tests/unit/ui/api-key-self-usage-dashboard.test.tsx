@@ -188,7 +188,7 @@ describe("API key access editor", () => {
     render(<ApiKeyAccessEditorClient apiKeyId="key-1" />);
 
     expect(await screen.findByRole("radio", { name: "Only selected providers" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("switch", { name: /account_balance/ }));
+    fireEvent.click(screen.getByRole("switch", { name: "Shared Account Quota", exact: true }));
 
     expect(screen.queryByRole("radio", { name: "Only selected providers" })).toBeNull();
     expect(screen.queryByRole("checkbox", { name: /anthropic/ })).toBeNull();
