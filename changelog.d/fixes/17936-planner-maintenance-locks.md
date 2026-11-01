@@ -1,0 +1,1 @@
+- Revert automatic SQLite planner-statistics maintenance from #17936: first-pass analysis can block the request event loop and hold the database write lock for multiple seconds. Existing stored statistics are preserved; background maintenance requires a separately validated nonblocking design before reintroduction.
