@@ -160,9 +160,11 @@ async function main() {
     assert.deepEqual(artifactManifest(process.argv[2]), saved, "Runtime changed after qualification");
     return;
   }
-  assert.equal(process.arch, process.env.EXPECTED_ARCH);
-  assert.equal(process.versions.modules, process.env.EXPECTED_ABI);
-  assert.equal(process.versions.node, process.env.EXPECTED_NODE);
+  const [expectedArch, expectedAbi, expectedNode] = process.argv.slice(3);
+  assert.ok(expectedArch && expectedAbi && expectedNode, "Expected architecture, ABI and Node version arguments required");
+  assert.equal(process.arch, expectedArch);
+  assert.equal(process.versions.modules, expectedAbi);
+  assert.equal(process.versions.node, expectedNode);
   const directory = fs.realpathSync(process.argv[2]);
   const repairedBinLinks = relinkRuntimeBins(path.join(directory, "node_modules"), path.resolve("node_modules"));
   const source = process.env.GITHUB_SHA;

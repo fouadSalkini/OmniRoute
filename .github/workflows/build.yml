@@ -35,7 +35,7 @@ jobs:
             abi: "137"
             pm2: "7.0.4"
     runs-on: ${{ matrix.runner }}
-    if: github.repository == 'fouadSalkini/OmniRoute'
+    if: github.repository_id == '1355714391'
     env:
       EXPECTED_ARCH: ${{ matrix.arch }}
       EXPECTED_ABI: ${{ matrix.abi }}
@@ -87,7 +87,7 @@ jobs:
           sudo mkdir /opt/omniroute-ci-pm2
           sudo chown "$(id -u):$(id -g)" /opt/omniroute-ci-pm2
           npm install --prefix /opt/omniroute-ci-pm2 --no-audit --no-fund --ignore-scripts "pm2@$PM2_VERSION"
-          sudo --preserve-env=EXPECTED_ARCH,EXPECTED_ABI,EXPECTED_NODE,GITHUB_SHA unshare --net "$(command -v node)" scripts/ci/qualify-native-artifact.mjs dist
+          sudo --preserve-env=GITHUB_SHA unshare --net "$(command -v node)" scripts/ci/qualify-native-artifact.mjs dist "$EXPECTED_ARCH" "$EXPECTED_ABI" "$EXPECTED_NODE"
           sudo chown -R "$(id -u):$(id -g)" _artifacts dist
 
       - name: Archive qualified runtime only
