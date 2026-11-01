@@ -56,6 +56,7 @@ jobs:
           fs.writeFileSync("_artifacts/qualification/run-shard.cjs", `
           const { spawnSync } = require("node:child_process");
           const script = require(process.cwd() + "/package.json").scripts["test:unit:ci:shard"];
+          process.env.PATH = process.cwd() + "/node_modules/.bin:" + process.env.PATH;
           let failed = false;
           for (const command of script.split(" && ")) {
             const child = spawnSync(command, { shell: true, stdio: "inherit", env: process.env });
