@@ -252,6 +252,29 @@
       "stream": "https://api.ainative.studio/api/v1/chat/completions"
     }
   },
+  "ainetcafe": {
+    "format": "openai",
+    "headers": {
+      "apiKey": {
+        "Accept": "text/event-stream",
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      },
+      "nonStream": {
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      },
+      "oauth": {
+        "Accept": "text/event-stream",
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      }
+    },
+    "url": {
+      "nonStream": "https://microquickjs.com/v1/chat/completions",
+      "stream": "https://microquickjs.com/v1/chat/completions"
+    }
+  },
   "aion": {
     "format": "openai",
     "headers": {
@@ -1241,12 +1264,26 @@
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "HTTP-Referer": "https://cline.bot",
+        "User-Agent": "Cline/<APP>",
+        "X-CLIENT-TYPE": "omniroute",
+        "X-CLIENT-VERSION": "<APP>",
+        "X-CORE-VERSION": "<APP>",
+        "X-IS-MULTIROOT": "false",
+        "X-PLATFORM": "<PLATFORM>",
+        "X-PLATFORM-VERSION": "<NODE>",
         "X-Title": "Cline"
       },
       "nonStream": {
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "HTTP-Referer": "https://cline.bot",
+        "User-Agent": "Cline/<APP>",
+        "X-CLIENT-TYPE": "omniroute",
+        "X-CLIENT-VERSION": "<APP>",
+        "X-CORE-VERSION": "<APP>",
+        "X-IS-MULTIROOT": "false",
+        "X-PLATFORM": "<PLATFORM>",
+        "X-PLATFORM-VERSION": "<NODE>",
         "X-Title": "Cline"
       },
       "oauth": {
@@ -1254,6 +1291,13 @@
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "HTTP-Referer": "https://cline.bot",
+        "User-Agent": "Cline/<APP>",
+        "X-CLIENT-TYPE": "omniroute",
+        "X-CLIENT-VERSION": "<APP>",
+        "X-CORE-VERSION": "<APP>",
+        "X-IS-MULTIROOT": "false",
+        "X-PLATFORM": "<PLATFORM>",
+        "X-PLATFORM-VERSION": "<NODE>",
         "X-Title": "Cline"
       }
     },
@@ -1467,23 +1511,23 @@
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "Openai-Beta": "responses_websockets=2026-02-06",
-        "User-Agent": "codex-cli/0.160.0 (<OS>; <ARCH>)",
-        "Version": "0.160.0"
+        "User-Agent": "codex-cli/0.165.0 (<OS>; <ARCH>)",
+        "Version": "0.165.0"
       },
       "nonStream": {
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "Openai-Beta": "responses_websockets=2026-02-06",
-        "User-Agent": "codex-cli/0.160.0 (<OS>; <ARCH>)",
-        "Version": "0.160.0"
+        "User-Agent": "codex-cli/0.165.0 (<OS>; <ARCH>)",
+        "Version": "0.165.0"
       },
       "oauth": {
         "Accept": "text/event-stream",
         "Authorization": "Bearer <TOK>",
         "Content-Type": "application/json",
         "Openai-Beta": "responses_websockets=2026-02-06",
-        "User-Agent": "codex-cli/0.160.0 (<OS>; <ARCH>)",
-        "Version": "0.160.0"
+        "User-Agent": "codex-cli/0.165.0 (<OS>; <ARCH>)",
+        "Version": "0.165.0"
       }
     },
     "url": {
@@ -2671,7 +2715,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.91",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.91 (<OS>) term/unknown",
+        "user-agent": "copilot/1.0.91 (linux) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user"
@@ -2685,7 +2729,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.91",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.91 (<OS>) term/unknown",
+        "user-agent": "copilot/1.0.91 (linux) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user"
@@ -2699,7 +2743,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.91",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.91 (<OS>) term/unknown",
+        "user-agent": "copilot/1.0.91 (linux) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user"
@@ -2733,6 +2777,29 @@
       "stream": "https://gigachat.devices.sberbank.ru/api/v1"
     }
   },
+  "gisoo": {
+    "format": "openai",
+    "headers": {
+      "apiKey": {
+        "Accept": "text/event-stream",
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      },
+      "nonStream": {
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      },
+      "oauth": {
+        "Accept": "text/event-stream",
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      }
+    },
+    "url": {
+      "nonStream": "https://gisoo.pro/api/v1/chat/completions",
+      "stream": "https://gisoo.pro/api/v1/chat/completions"
+    }
+  },
   "github": {
     "format": "openai",
     "headers": {
@@ -2745,7 +2812,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.91",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.91 (<OS>) term/unknown",
+        "user-agent": "copilot/1.0.91 (linux) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user",
@@ -2760,7 +2827,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.91",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.91 (<OS>) term/unknown",
+        "user-agent": "copilot/1.0.91 (linux) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user",
@@ -2775,7 +2842,7 @@
         "copilot-integration-id": "copilot-developer-cli",
         "editor-version": "copilot/1.0.91",
         "openai-intent": "conversation-agent",
-        "user-agent": "copilot/1.0.91 (<OS>) term/unknown",
+        "user-agent": "copilot/1.0.91 (linux) term/unknown",
         "x-client-machine-id": "<UUID>",
         "x-github-api-version": "2026-08-01",
         "x-interaction-type": "conversation-user",
@@ -5499,6 +5566,29 @@
       "stream": "https://api.routeway.ai/v1/chat/completions"
     }
   },
+  "runcrate": {
+    "format": "openai",
+    "headers": {
+      "apiKey": {
+        "Accept": "text/event-stream",
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      },
+      "nonStream": {
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      },
+      "oauth": {
+        "Accept": "text/event-stream",
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      }
+    },
+    "url": {
+      "nonStream": "https://api.runcrate.ai/v1/chat/completions",
+      "stream": "https://api.runcrate.ai/v1/chat/completions"
+    }
+  },
   "sambanova": {
     "format": "openai",
     "headers": {
@@ -5983,6 +6073,29 @@
     "url": {
       "nonStream": "https://agent-router.gaib.ai/v1/chat/completions",
       "stream": "https://agent-router.gaib.ai/v1/chat/completions"
+    }
+  },
+  "tokenharbor": {
+    "format": "openai",
+    "headers": {
+      "apiKey": {
+        "Accept": "text/event-stream",
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      },
+      "nonStream": {
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      },
+      "oauth": {
+        "Accept": "text/event-stream",
+        "Authorization": "Bearer <TOK>",
+        "Content-Type": "application/json"
+      }
+    },
+    "url": {
+      "nonStream": "https://tokenharbor.ai/v1/chat/completions",
+      "stream": "https://tokenharbor.ai/v1/chat/completions"
     }
   },
   "tokenmarket": {

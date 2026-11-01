@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   reconcileContextWindows,
+  reconcileContextWindowsCooperative,
   type DiscoveredWindow,
   type ReconcileDeps,
 } from "../../src/lib/contextWindowResolver.ts";
@@ -21,6 +22,23 @@ function makeDeps(catalog: Record<string, number | null>, existing: Record<strin
 }
 
 describe("reconcileContextWindows (5004)", () => {
+  for (const reconcile of [reconcileContextWindows, reconcileContextWindowsCooperative]) {
+    it(`${reconcile.name} preserves authoritative windows while removing stale discovery pins`, async () => {
+      const { deps, writes, removes } = makeDeps(
+        { "codex/gpt-6.1-sol": 1000000 },
+        { "codex/gpt-6.1-sol": "auto:discovery" }
+      );
+      deps.isAuthoritative = () => true;
+      const result = await reconcile(
+        [{ provider: "codex", modelId: "gpt-6.1-sol", window: 128000 }],
+        deps
+      );
+      assert.deepEqual(writes, []);
+      assert.deepEqual(removes, [["codex", "gpt-6.1-sol"]]);
+      assert.equal(result.removed, 1);
+      assert.equal(result.written, 0);
+    });
+  }
   it("writes an auto override when the discovered window diverges from the catalog", () => {
     const discovered: DiscoveredWindow[] = [
       { provider: "openai", modelId: "gpt-x", window: 400000 },
