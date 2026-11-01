@@ -17,8 +17,30 @@ permissions:
 
 jobs:
   build:
-    name: Fast Production Build
-    runs-on: ubuntu-latest
+    name: Native production build (${{ matrix.target }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: a-arm64-node26
+            runner: ubuntu-24.04-arm
+            node: "26.12.1"
+            arch: arm64
+            abi: "147"
+            pm2: "6.0.8"
+          - target: b-x64-node24
+            runner: ubuntu-24.04
+            node: "24.22.1"
+            arch: x64
+            abi: "137"
+            pm2: "7.0.4"
+    runs-on: ${{ matrix.runner }}
+    if: github.repository == 'fouadSalkini/OmniRoute'
+    env:
+      EXPECTED_ARCH: ${{ matrix.arch }}
+      EXPECTED_ABI: ${{ matrix.abi }}
+      EXPECTED_NODE: ${{ matrix.node }}
+      PM2_VERSION: ${{ matrix.pm2 }}
     steps:
       - name: Expand Virtual Memory (Native 10GB Swap)
         run: |
@@ -31,14 +53,14 @@ jobs:
           free -h
 
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: "24"
+          node-version: ${{ matrix.node }}
           cache: npm
 
       - name: Install dependencies
@@ -60,13 +82,21 @@ jobs:
           OMNIROUTE_BUILD_MEMORY_MB: "10240"
           OMNIROUTE_USE_TURBOPACK: "0"
 
-      - name: Archive build outputs
+      - name: Verify native artifact and actual PM2 entrypoint
         run: |
-          tar -czf omniroute-build.tar.gz .build dist
+          sudo mkdir /opt/omniroute-ci-pm2
+          sudo chown "$(id -u):$(id -g)" /opt/omniroute-ci-pm2
+          npm install --prefix /opt/omniroute-ci-pm2 --no-audit --no-fund --ignore-scripts "pm2@$PM2_VERSION"
+          sudo --preserve-env=EXPECTED_ARCH,EXPECTED_ABI,EXPECTED_NODE,GITHUB_SHA unshare --net "$(command -v node)" scripts/ci/qualify-native-artifact.mjs dist
+
+      - name: Archive qualified runtime only
+        run: |
+          node scripts/ci/qualify-native-artifact.mjs dist --verify
+          tar --owner=0 --group=0 --numeric-owner -czf _artifacts/native-artifact/omniroute-build.tar.gz dist
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
-          name: omniroute-build
-          path: omniroute-build.tar.gz
+          name: omniroute-build-${{ matrix.target }}
+          path: _artifacts/native-artifact/
           retention-days: 7
