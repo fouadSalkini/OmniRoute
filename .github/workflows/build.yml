@@ -1,72 +1,152 @@
 name: Build App
 
-# Manual-only since #11946. The hosted 7 GB runner can no longer build this tree — 19 of
-# the last 30 runs died with "The runner has received a shutdown signal" (VM out of
-# memory) ~8 min into `next build`, release/v3.8.51 itself included, even with the 10 GB
-# swapfile below. Triggered on `push: branches: ["**"]` it painted every branch and every
-# PR red while producing an artefact nothing downloads. The bundle is validated where a
-# build actually fits:
-#   - main:       ci.yml `Build` (self-hosted omni-build pool) on every merge
-#   - release/**: nightly-release-green.yml (same pool, continuous)
-# Dispatch this workflow by hand when a hosted build artefact is genuinely needed.
+# Fork-only qualification harness. The production candidate remains unchanged.
 on:
   workflow_dispatch:
 
 permissions:
   contents: read
 
+env:
+  ONNXRUNTIME_NODE_INSTALL: skip
+
 jobs:
-  build:
-    name: Fast Production Build
+  unit:
+    name: Unit ${{ matrix.subject }} ${{ matrix.shard }}/8
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        subject: [candidate, upstream, deployed]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+        include:
+          - subject: candidate
+            source: effb7c2f8a12b99507c862944bd5bad6b1cc4618
+          - subject: upstream
+            source: b2a64106c9e47d654012d24d5ae5424c950649cc
+          - subject: deployed
+            source: 1b776e1e914aabe3c90b565d352b72cbcc1c3c9f
     steps:
-      - name: Expand Virtual Memory (Native 10GB Swap)
-        run: |
-          sudo swapoff -a || true
-          sudo rm -f /mnt/swapfile /swapfile
-          sudo fallocate -l 10G /mnt/swapfile || sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=10240
-          sudo chmod 600 /mnt/swapfile
-          sudo mkswap /mnt/swapfile
-          sudo swapon /mnt/swapfile
-          free -h
-
-      - name: Checkout repository
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
         with:
+          ref: ${{ matrix.source }}
           persist-credentials: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
+          fetch-depth: 1
+      - uses: actions/setup-node@v7
         with:
-          node-version: "24"
+          node-version: 24.22.1
           cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-        env:
-          ONNXRUNTIME_NODE_INSTALL: "skip"
-
-      - name: Build Next.js app & CLI bundle
+      - name: Record source identity
         run: |
-          npm run build:release
+          mkdir -p _artifacts/qualification
+          git rev-parse HEAD > _artifacts/qualification/source.txt
+          sha256sum package-lock.json > _artifacts/qualification/lockfile.txt
+          node -p 'JSON.stringify(process.versions)' > _artifacts/qualification/runtime.json
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Run complete shard with coverage
         env:
-          # Hosted artifact builds run with less memory than the opt-in 64 GB
-          # CI build slot. Keep Webpack here without overriding the latter's
-          # separately measured Turbopack policy (#16169). Validated 2026-10-18 on the
-          # hosted runner (run 39151150605): webpack compiled in 7.1 min, job 17 min.
-          # This is the floor docker-publish.yml must not go below
-          # (tests/unit/docker-publish-build-heap-14325.test.ts).
-          NODE_OPTIONS: "--max-old-space-size=10240"
-          OMNIROUTE_BUILD_MEMORY_MB: "10240"
-          OMNIROUTE_USE_TURBOPACK: "0"
-
-      - name: Archive build outputs
+          TEST_SHARD: ${{ matrix.shard }}/8
         run: |
-          tar -czf omniroute-build.tar.gz .build dist
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+          set +e
+          node <<'NODE'
+          const fs = require("node:fs");
+          fs.writeFileSync("_artifacts/qualification/run-shard.cjs", `
+          const { spawnSync } = require("node:child_process");
+          const script = require(process.cwd() + "/package.json").scripts["test:unit:ci:shard"];
+          let failed = false;
+          for (const command of script.split(" && ")) {
+            const child = spawnSync(command, { shell: true, stdio: "inherit", env: process.env });
+            if (child.status !== 0) failed = true;
+          }
+          process.exitCode = failed ? 1 : 0;
+          `);
+          NODE
+          ./node_modules/.bin/c8 --merge-async --temp-directory _artifacts/qualification/coverage-tmp --reports-dir _artifacts/qualification/coverage --exclude='tests/**' --exclude='**/*.test.*' --reporter=json --reporter=json-summary --reporter=text-summary node _artifacts/qualification/run-shard.cjs > _artifacts/qualification/unit.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > _artifacts/qualification/exit.txt
+          tail -n 45 _artifacts/qualification/unit.log
+          exit "$status"
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: omniroute-build
-          path: omniroute-build.tar.gz
+          name: qualification-${{ matrix.subject }}-unit-${{ matrix.shard }}
+          path: _artifacts/qualification/
+          retention-days: 7
+
+  dependency-audit:
+    name: Dependency audit ${{ matrix.subject }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - subject: candidate
+            source: effb7c2f8a12b99507c862944bd5bad6b1cc4618
+          - subject: deployed
+            source: 1b776e1e914aabe3c90b565d352b72cbcc1c3c9f
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ matrix.source }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.22.1
+      - name: Capture advisories without changing lockfiles
+        run: |
+          mkdir -p _artifacts/qualification
+          git rev-parse HEAD > _artifacts/qualification/source.txt
+          sha256sum package-lock.json electron/package-lock.json > _artifacts/qualification/lockfiles.txt
+          set +e
+          npm audit --json > _artifacts/qualification/root-audit.json
+          printf '%s\n' "$?" > _artifacts/qualification/root-audit-exit.txt
+          npm audit --omit=dev --json > _artifacts/qualification/root-runtime-audit.json
+          printf '%s\n' "$?" > _artifacts/qualification/root-runtime-audit-exit.txt
+          npm --prefix electron audit --json > _artifacts/qualification/electron-audit.json
+          printf '%s\n' "$?" > _artifacts/qualification/electron-audit-exit.txt
+          npm --prefix electron audit --omit=dev --json > _artifacts/qualification/electron-runtime-audit.json
+          printf '%s\n' "$?" > _artifacts/qualification/electron-runtime-audit-exit.txt
+          exit 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qualification-${{ matrix.subject }}-audit
+          path: _artifacts/qualification/
+          retention-days: 7
+
+  candidate-ui:
+    name: Candidate Vitest UI and static gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: effb7c2f8a12b99507c862944bd5bad6b1cc4618
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.22.1
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Run candidate checks independently
+        run: |
+          mkdir -p _artifacts/qualification
+          git rev-parse HEAD > _artifacts/qualification/source.txt
+          set +e
+          for check in test:vitest test:vitest:ui typecheck:core typecheck:noimplicit:core check:cycles check:provider-asset-provenance check:vuln-ratchet; do
+            label=${check//:/-}
+            npm run "$check" > "_artifacts/qualification/$label.log" 2>&1
+            printf '%s %s\n' "$check" "$?" >> _artifacts/qualification/check-exits.txt
+          done
+          cat _artifacts/qualification/check-exits.txt
+          exit 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qualification-candidate-ui-static
+          path: _artifacts/qualification/
           retention-days: 7
