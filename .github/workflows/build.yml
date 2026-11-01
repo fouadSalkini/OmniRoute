@@ -123,7 +123,7 @@ jobs:
       matrix:
         source:
           - name: candidate
-            sha: a86900cc9387824fbb475c57095766f2e4dfc2e4
+            sha: 05dc8200217efa84474f0a478e1f2bd68879d318
           - name: base
             sha: 56870136c7e307095ef9d234cc60523f0699c89d
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
@@ -248,7 +248,7 @@ jobs:
       matrix:
         source:
           - name: candidate
-            sha: a86900cc9387824fbb475c57095766f2e4dfc2e4
+            sha: 05dc8200217efa84474f0a478e1f2bd68879d318
           - name: base
             sha: 56870136c7e307095ef9d234cc60523f0699c89d
     env:
@@ -334,12 +334,6 @@ jobs:
           df -B1 .
           du -sb _artifacts
           free -m
-          node_modules/.bin/c8 report --merge-async --temp-directory _artifacts/coverage-merged \
-            --reports-dir _artifacts/coverage-report --exclude='tests/**' --exclude='**/*.test.*' \
-            --reporter=text-summary --reporter=json-summary --reporter=lcov
-          df -B1 .
-          du -sb _artifacts
-          free -m
           node --input-type=module <<'JS'
           import fs from "node:fs";
           import { spawnSync } from "node:child_process";
@@ -349,7 +343,8 @@ jobs:
             if (value !== "60") throw Error("Pinned coverage floor changed");
             return [`--${metric}`, value];
           });
-          const run = spawnSync("node_modules/.bin/c8", ["check-coverage", "--merge-async", "--temp-directory", "_artifacts/coverage-merged", "--exclude=tests/**", "--exclude=**/*.test.*", ...floors], { stdio: "inherit" });
+          // c8 12's separate check-coverage command ignores merge-async. Reuse the report map.
+          const run = spawnSync("node_modules/.bin/c8", ["report", "--merge-async", "--check-coverage", "--temp-directory", "_artifacts/coverage-merged", "--reports-dir", "_artifacts/coverage-report", "--exclude=tests/**", "--exclude=**/*.test.*", "--reporter=text-summary", "--reporter=json-summary", "--reporter=lcov", ...floors], { stdio: "inherit" });
           process.exitCode = run.status ?? 1;
           JS
           df -B1 .
@@ -381,7 +376,7 @@ jobs:
           import json
           root = Path('coverage-results')
           reports = {}
-          expected = {'candidate': 'a86900cc9387824fbb475c57095766f2e4dfc2e4', 'base': '56870136c7e307095ef9d234cc60523f0699c89d'}
+          expected = {'candidate': '05dc8200217efa84474f0a478e1f2bd68879d318', 'base': '56870136c7e307095ef9d234cc60523f0699c89d'}
           for name, sha in expected.items():
               directory = root / ('fork-coverage-report-' + name)
               tests = json.loads((directory / 'tests.json').read_text())
