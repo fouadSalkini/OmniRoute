@@ -11,6 +11,12 @@ name: Build App
 # Dispatch this workflow by hand when a hosted build artefact is genuinely needed.
 on:
   workflow_dispatch:
+    inputs:
+      coverage_only:
+        description: "Qualify pinned integration/base coverage without rebuilding artifacts"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -35,7 +41,7 @@ jobs:
             abi: "137"
             pm2: "7.0.4"
     runs-on: ${{ matrix.runner }}
-    if: github.repository_id == '1355714391'
+    if: github.repository_id == '1355714391' && !inputs.coverage_only
     env:
       EXPECTED_ARCH: ${{ matrix.arch }}
       EXPECTED_ABI: ${{ matrix.abi }}
@@ -101,3 +107,255 @@ jobs:
           name: omniroute-build-${{ matrix.target }}
           path: _artifacts/native-artifact/
           retention-days: 7
+
+  coverage-shards:
+    name: Pinned coverage (${{ matrix.source.name }}, ${{ matrix.shard }}/8)
+    if: github.repository_id == '1355714391' && inputs.coverage_only
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        source:
+          - name: candidate
+            sha: a86900cc9387824fbb475c57095766f2e4dfc2e4
+          - name: base
+            sha: 56870136c7e307095ef9d234cc60523f0699c89d
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    env:
+      SOURCE_SHA: ${{ matrix.source.sha }}
+      COVERAGE_SHARD: ${{ matrix.shard }}
+      ONNXRUNTIME_NODE_INSTALL: skip
+      DISABLE_SQLITE_AUTO_BACKUP: "true"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ matrix.source.sha }}
+          persist-credentials: false
+      - name: Assert exact tested source
+        run: |
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test -z "$(git status --porcelain)"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "24.22.1"
+          package-manager-cache: false
+      - run: npm ci
+      - name: Run all three unit layers and retain every failure
+        shell: bash
+        run: |
+          mkdir -p _artifacts/coverage-shard
+          node_modules/.bin/c8 --merge-async --temp-directory _artifacts/coverage-shard/raw \
+            --exclude='tests/**' --exclude='**/*.test.*' --reporter=none node --input-type=module <<'JS'
+          import fs from "node:fs";
+          import { spawnSync } from "node:child_process";
+          import { createHash } from "node:crypto";
+          const root = "_artifacts/coverage-shard";
+          const shard = Number(process.env.COVERAGE_SHARD);
+          if (!Number.isInteger(shard) || shard < 1 || shard > 8) throw Error("Invalid shard");
+          const commands = JSON.parse(fs.readFileSync("package.json")).scripts["test:unit:ci:shard"].split(" && ");
+          if (commands.length !== 3) throw Error("Unit layer contract changed");
+          const reporterPath = "tests/_setup/fork-coverage-identity-reporter.mjs";
+          fs.mkdirSync("tests/_setup", { recursive: true });
+          if (fs.existsSync(reporterPath)) throw Error("Reporter path already exists in pinned source");
+          fs.writeFileSync(reporterPath, `export default async function* report(events) {
+            for await (const event of events) {
+              if (["test:start", "test:fail", "test:pass"].includes(event.type)) {
+                const { file, name, nesting, skip } = event.data;
+                yield JSON.stringify({ type: event.type, file, name, nesting, skip }) + "\\n";
+              }
+            }
+          }`);
+          const policy = JSON.parse(fs.readFileSync("package.json")).scripts["test:coverage"];
+          const excludes = [...policy.matchAll(/--exclude=([^ ]+)/g)].map(match => match[1]);
+          if (JSON.stringify(excludes) !== JSON.stringify(["tests/**", "**/*.test.*"])) throw Error("Pinned coverage excludes changed");
+          const layers = [];
+          let exitCode = 0;
+          for (const [index, command] of commands.entries()) {
+            const tokens = command.match(/"[^"]+"|\S+/g).map(token => token.replace(/^"|"$/g, ""));
+            const nodeIndex = tokens.indexOf("node");
+            if (nodeIndex < 0 || !tokens.includes("--test-shard=$TEST_SHARD")) throw Error("Unexpected test command");
+            const args = tokens.slice(nodeIndex + 1).filter(token => !token.includes(".test.") && token !== "--test-shard=$TEST_SHARD");
+            const patterns = tokens.filter(token => token.includes(".test."));
+            const allFiles = [...new Set(fs.globSync(patterns))].sort();
+            const files = allFiles.filter((file, ordinal) => ordinal % 8 === shard - 1);
+            if (!files.length) {
+              layers.push({ index, allFiles, files, exit: 0, failures: [], skipped: [] });
+              continue;
+            }
+            const logPath = `${root}/layer-${index}.tap`;
+            const fd = fs.openSync(logPath, "w");
+            let run;
+            try {
+              run = spawnSync(process.execPath, [...args, "--test-reporter=tap", "--test-reporter-destination=stdout", `--test-reporter=./${reporterPath}`, `--test-reporter-destination=${root}/layer-${index}.events.jsonl`, ...files], { stdio: ["ignore", fd, fd] });
+            } finally {
+              fs.closeSync(fd);
+            }
+            const eventsPath = `${root}/layer-${index}.events.jsonl`;
+            if (!fs.existsSync(eventsPath) || fs.statSync(eventsPath).size === 0) throw Error("Missing structured test events");
+            const events = fs.readFileSync(eventsPath, "utf8").trim().split("\n").filter(Boolean).map(line => JSON.parse(line));
+            const ancestryByFile = new Map();
+            const failures = [];
+            const skipped = [];
+            for (const event of events) {
+              const file = (event.file || "unknown-file").replace(process.cwd() + "/", "");
+              const ancestors = ancestryByFile.get(file) || [];
+              if (event.type === "test:start") {
+                ancestors.length = event.nesting;
+                ancestors[event.nesting] = event.name.replaceAll(process.cwd() + "/", "");
+                ancestryByFile.set(file, ancestors);
+              } else {
+                const identity = JSON.stringify({ file, path: [...ancestors.slice(0, event.nesting), event.name.replaceAll(process.cwd() + "/", "")] });
+                if (event.type === "test:fail") failures.push(identity);
+                if (event.skip) skipped.push(identity);
+              }
+            }
+            const status = run.status ?? 1;
+            if (run.signal || run.error || (status !== 0 && !failures.length)) failures.push(`layer-${index}-abnormal-exit-${run.signal || run.error?.code || status}`);
+            layers.push({ index, allFiles, files, exit: status, failures, skipped });
+            console.log(JSON.stringify({ layer: index, totalFiles: allFiles.length, assignedFiles: files.length, exit: status, failures: failures.length, skips: skipped.length }));
+            if (status !== 0) exitCode = 1;
+          }
+          fs.writeFileSync(`${root}/tests.json`, JSON.stringify({ source: process.env.SOURCE_SHA, shard, node: process.version, coveragePolicy: policy, lockfileSha256: createHash("sha256").update(fs.readFileSync("package-lock.json")).digest("hex"), layers }));
+          process.exitCode = exitCode;
+          JS
+      - name: Upload raw coverage and test receipts even on failure
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: fork-coverage-${{ matrix.source.name }}-${{ matrix.shard }}
+          path: _artifacts/coverage-shard/
+          if-no-files-found: error
+          retention-days: 7
+
+  coverage-report:
+    name: Merged coverage (${{ matrix.source.name }})
+    if: always() && !cancelled() && github.repository_id == '1355714391' && inputs.coverage_only
+    needs: coverage-shards
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        source:
+          - name: candidate
+            sha: a86900cc9387824fbb475c57095766f2e4dfc2e4
+          - name: base
+            sha: 56870136c7e307095ef9d234cc60523f0699c89d
+    env:
+      SOURCE_SHA: ${{ matrix.source.sha }}
+      ONNXRUNTIME_NODE_INSTALL: skip
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ matrix.source.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "24.22.1"
+          package-manager-cache: false
+      - run: |
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          test -z "$(git status --porcelain)"
+          npm ci
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          pattern: fork-coverage-${{ matrix.source.name }}-*
+          path: _artifacts/coverage-inputs/
+      - name: Verify complete exact-once test partition and collect all raw data
+        run: |
+          node --input-type=module <<'JS'
+          import fs from "node:fs";
+          import path from "node:path";
+          import { createHash } from "node:crypto";
+          const input = "_artifacts/coverage-inputs";
+          const directories = fs.readdirSync(input);
+          if (directories.length !== 8) throw Error("Missing coverage shard");
+          const receipts = directories.map(directory => ({ directory, receipt: JSON.parse(fs.readFileSync(path.join(input, directory, "tests.json"))) }));
+          if (new Set(receipts.map(({ receipt }) => receipt.shard)).size !== 8) throw Error("Duplicate shard");
+          if (receipts.some(({ receipt }) => receipt.source !== process.env.SOURCE_SHA || receipt.layers.length !== 3)) throw Error("Source or suite mismatch");
+          const expectedLock = createHash("sha256").update(fs.readFileSync("package-lock.json")).digest("hex");
+          const expectedPolicy = JSON.parse(fs.readFileSync("package.json")).scripts["test:coverage"];
+          if (receipts.some(({ receipt }) => receipt.lockfileSha256 !== expectedLock || receipt.coveragePolicy !== expectedPolicy)) throw Error("Lockfile or coverage policy mismatch");
+          const collected = "_artifacts/coverage-merged";
+          fs.mkdirSync(collected, { recursive: true });
+          for (let layer = 0; layer < 3; layer++) {
+            const expected = receipts[0].receipt.layers[layer].allFiles;
+            if (receipts.some(({ receipt }) => JSON.stringify(receipt.layers[layer].allFiles) !== JSON.stringify(expected))) throw Error("Suite drift");
+            const actual = receipts.flatMap(({ receipt }) => receipt.layers[layer].files).sort();
+            if (new Set(actual).size !== actual.length || JSON.stringify(actual) !== JSON.stringify(expected)) throw Error("Incomplete or duplicated test files");
+            console.log(JSON.stringify({ layer, exactOnceFiles: actual.length }));
+          }
+          for (const { directory, receipt } of receipts) {
+            const raw = path.join(input, directory, "raw");
+            const files = fs.readdirSync(raw).filter(name => name.endsWith(".json"));
+            if (!files.some(name => name.startsWith("coverage-"))) throw Error("Missing raw coverage data");
+            for (const name of files) {
+              const sourcePath = path.join(raw, name);
+              const payload = JSON.parse(fs.readFileSync(sourcePath));
+              if (name.startsWith("coverage-") && !Array.isArray(payload.result)) throw Error("Malformed raw coverage data");
+              fs.copyFileSync(sourcePath, path.join(collected, `${receipt.shard}-${name}`));
+            }
+          }
+          fs.mkdirSync("_artifacts/coverage-report", { recursive: true });
+          fs.writeFileSync("_artifacts/coverage-report/tests.json", JSON.stringify(receipts.map(({ receipt }) => receipt)));
+          JS
+      - name: Merge raw V8 data and enforce unchanged 60 percent floors
+        run: |
+          node_modules/.bin/c8 report --merge-async --temp-directory _artifacts/coverage-merged \
+            --reports-dir _artifacts/coverage-report --exclude='tests/**' --exclude='**/*.test.*' \
+            --reporter=text-summary --reporter=json-summary --reporter=lcov
+          node --input-type=module <<'JS'
+          import fs from "node:fs";
+          import { spawnSync } from "node:child_process";
+          const policy = JSON.parse(fs.readFileSync("package.json")).scripts["test:coverage"];
+          const floors = ["lines", "statements", "functions", "branches"].flatMap(metric => {
+            const value = new RegExp(`--${metric} ([0-9]+)`).exec(policy)?.[1];
+            if (value !== "60") throw Error("Pinned coverage floor changed");
+            return [`--${metric}`, value];
+          });
+          const run = spawnSync("node_modules/.bin/c8", ["check-coverage", "--merge-async", "--temp-directory", "_artifacts/coverage-merged", "--exclude=tests/**", "--exclude=**/*.test.*", ...floors], { stdio: "inherit" });
+          process.exitCode = run.status ?? 1;
+          JS
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: fork-coverage-report-${{ matrix.source.name }}
+          path: _artifacts/coverage-report/
+          if-no-files-found: error
+          retention-days: 7
+
+  coverage-comparison:
+    name: Compare pinned candidate against exact base
+    if: always() && !cancelled() && github.repository_id == '1355714391' && inputs.coverage_only
+    needs: coverage-report
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          pattern: fork-coverage-report-*
+          path: coverage-results/
+      - name: Reject missing coverage, new failures, new skips, or coverage regression
+        run: |
+          python3 -I - <<'PY'
+          from pathlib import Path
+          from collections import Counter
+          import json
+          root = Path('coverage-results')
+          reports = {}
+          expected = {'candidate': 'a86900cc9387824fbb475c57095766f2e4dfc2e4', 'base': '56870136c7e307095ef9d234cc60523f0699c89d'}
+          for name, sha in expected.items():
+              directory = root / ('fork-coverage-report-' + name)
+              tests = json.loads((directory / 'tests.json').read_text())
+              assert len(tests) == 8 and all(row['source'] == sha for row in tests)
+              coverage = json.loads((directory / 'coverage-summary.json').read_text())['total']
+              reports[name] = {'coverage': {metric: coverage[metric]['pct'] for metric in ['lines', 'statements', 'functions', 'branches']}, 'failures': Counter(failure for row in tests for layer in row['layers'] for failure in layer['failures']), 'skips': Counter(skip for row in tests for layer in row['layers'] for skip in layer['skipped'])}
+          candidate_only = reports['candidate']['failures'] - reports['base']['failures']
+          new_skips = reports['candidate']['skips'] - reports['base']['skips']
+          print(json.dumps({'reports': reports, 'candidateOnlyFailures': candidate_only, 'newSkips': new_skips}, indent=2))
+          assert not candidate_only and not new_skips
+          for metric, value in reports['candidate']['coverage'].items():
+              assert value >= 60 and value >= reports['base']['coverage'][metric], metric
+          PY
