@@ -416,6 +416,42 @@ export function findReconnectMatch(
   index: ConversationTurnIndex,
   options: FindReconnectMatchOptions = {}
 ): FindReconnectMatchResult {
+  const walk = reconnectWalk(chainTurns, index, options);
+  let step = walk.next();
+  while (!step.done) step = walk.next();
+  return step.value;
+}
+
+/**
+ * Steps between event-loop yields in the cooperative walk. One step is one HMAC
+ * (~4-6 µs), so a slice is ~10 ms; a full DEFAULT_RECONNECT_MAX_STEPS walk on a
+ * long agentic history used to hold the event loop for ~1 s in one piece.
+ */
+export const RECONNECT_YIELD_EVERY_STEPS = 2_000;
+
+const yieldToEventLoop = () => new Promise<void>((resolve) => setImmediate(resolve));
+
+/** Same walk and result as findReconnectMatch, yielding to the event loop between slices. */
+export async function findReconnectMatchCooperative(
+  chainTurns: CanonicalTurn[],
+  index: ConversationTurnIndex,
+  options: FindReconnectMatchOptions = {}
+): Promise<FindReconnectMatchResult> {
+  const walk = reconnectWalk(chainTurns, index, options);
+  let step = walk.next();
+  while (!step.done) {
+    await yieldToEventLoop();
+    step = walk.next();
+  }
+  return step.value;
+}
+
+function* reconnectWalk(
+  chainTurns: CanonicalTurn[],
+  index: ConversationTurnIndex,
+  options: FindReconnectMatchOptions
+): Generator<void, FindReconnectMatchResult> {
+  let stepsSinceYield = 0;
   const turnHashes = options.turnHashes ?? chainTurns.map(hashTurnContent);
   const budget: ReconnectWalkBudget = options.budget ?? {
     stepsLeft: options.maxSteps ?? DEFAULT_RECONNECT_MAX_STEPS,
@@ -435,6 +471,10 @@ export function findReconnectMatch(
       // than an unverified one.
       budget.stepsLeft -= 1;
       budget.stepsUsed += 1;
+      if (++stepsSinceYield >= RECONNECT_YIELD_EVERY_STEPS) {
+        stepsSinceYield = 0;
+        yield;
+      }
       let parent = anchorNodeId;
       let matchEndIndex = s + 1;
       while (matchEndIndex < chainTurns.length && budget.stepsLeft > 0) {
@@ -444,6 +484,10 @@ export function findReconnectMatch(
         if (!index.nodeIds.has(nodeId)) break;
         parent = nodeId;
         matchEndIndex++;
+        if (++stepsSinceYield >= RECONNECT_YIELD_EVERY_STEPS) {
+          stepsSinceYield = 0;
+          yield;
+        }
       }
       const anchorHasChild = index.parentsWithChildren.has(parent);
       // Longest verified run wins outright: length is matchEndIndex - startIndex,
@@ -539,15 +583,15 @@ interface ReconnectContext {
 }
 
 /** Continue the first candidate whose chain this request extends; null when none does. */
-function reconnectToCandidates(
+async function reconnectToCandidates(
   candidates: ReturnType<typeof findAgenticConversationsByFingerprint>,
   { chainTurns, turnHashes, walkBudget, correlationId }: ReconnectContext
-): ResolveConversationIdResult | null {
+): Promise<ResolveConversationIdResult | null> {
   for (const candidate of candidates) {
     const index = getConversationTurnIndex(candidate.id);
     if (index.nodeIds.size === 0) continue;
 
-    const { match } = findReconnectMatch(chainTurns, index, {
+    const { match } = await findReconnectMatchCooperative(chainTurns, index, {
       turnHashes,
       budget: walkBudget,
     });
@@ -664,19 +708,51 @@ export async function resolveConversationId(
   // The apiKeyId + model + toolNames bucket keeps conversations recorded before session
   // bucketing, or before this client started sending a session id, reachable.
   const probes = probeTurnHashes(turnHashes);
-  const reconnected =
-    reconnectToCandidates(findCandidates(fingerprintHash, probes), context) ??
-    (fingerprintHash !== legacyFingerprintHash
-      ? reconnectToCandidates(findCandidates(legacyFingerprintHash, probes), context)
-      : null);
-  if (reconnected) return reconnected;
+  // The walk now yields to the event loop, so two requests of one conversation could
+  // interleave between reading a candidate's turn index and writing to it. Serializing per
+  // fingerprint bucket keeps the read-walk-write sequence atomic for every conversation
+  // these buckets can reach, as it was when the walk never yielded.
+  return withKeyLocks([fingerprintHash, legacyFingerprintHash], async () => {
+    const reconnected =
+      (await reconnectToCandidates(findCandidates(fingerprintHash, probes), context)) ??
+      (fingerprintHash !== legacyFingerprintHash
+        ? await reconnectToCandidates(findCandidates(legacyFingerprintHash, probes), context)
+        : null);
+    if (reconnected) return reconnected;
 
-  const id = `conv_${randomUUID()}`;
-  createAgenticConversation({ id, apiKeyId: input.apiKeyId, fingerprintHash });
-  insertConversationTurnNodes(
-    id,
-    input.correlationId,
-    buildNewNodes(chainTurns, 0, id, id, turnHashes)
-  );
-  return { conversationId: id, isNewConversation: true };
+    const id = `conv_${randomUUID()}`;
+    createAgenticConversation({ id, apiKeyId: input.apiKeyId, fingerprintHash });
+    insertConversationTurnNodes(
+      id,
+      input.correlationId,
+      buildNewNodes(chainTurns, 0, id, id, turnHashes)
+    );
+    return { conversationId: id, isNewConversation: true };
+  });
+}
+
+const resolutionTails = new Map<string, Promise<void>>();
+
+async function acquireKeyLock(key: string): Promise<() => void> {
+  const previous = resolutionTails.get(key) ?? Promise.resolve();
+  let release: () => void = () => {};
+  const held = new Promise<void>((resolve) => (release = resolve));
+  const tail = previous.then(() => held);
+  resolutionTails.set(key, tail);
+  await previous;
+  return () => {
+    release();
+    if (resolutionTails.get(key) === tail) resolutionTails.delete(key);
+  };
+}
+
+/** Run `work` holding every key's lock; keys are taken in sorted order so holders never deadlock. */
+async function withKeyLocks<T>(keys: string[], work: () => Promise<T>): Promise<T> {
+  const releases: Array<() => void> = [];
+  try {
+    for (const key of [...new Set(keys)].sort()) releases.push(await acquireKeyLock(key));
+    return await work();
+  } finally {
+    for (const release of releases.reverse()) release();
+  }
 }
