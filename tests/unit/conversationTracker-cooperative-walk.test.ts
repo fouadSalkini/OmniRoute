@@ -109,3 +109,29 @@ test("concurrent resolutions of one conversation stay serialized and continue th
   assert.equal(a.isNewConversation, false);
   assert.equal(b.isNewConversation, false);
 });
+
+test("a session's walk does not queue another session of the same API key", async () => {
+  const apiKeyId = "key-cross-session";
+  const request = (messages: Turn[], clientSessionId: string) =>
+    tracker.resolveConversationId({
+      body: { model: "m", messages },
+      model: "m",
+      apiKeyId,
+      clientSessionIdHeader: null,
+      clientSessionId,
+      correlationId: `corr-${Math.random()}`,
+    });
+  const longHistory = pollingHistory(400);
+  await request(longHistory, "sess-long");
+
+  // Continuing the duplicate-heavy history makes the reconnect walk span many yield slices.
+  const continued = [...longHistory, { role: "assistant", content: "Checking build status." }];
+  const finished: string[] = [];
+  const long = request(continued, "sess-long").then(() => finished.push("long"));
+  await new Promise((resolve) => setImmediate(resolve));
+  const other = request([{ role: "user", content: "unrelated question" }], "sess-other").then(() =>
+    finished.push("other")
+  );
+  await Promise.all([long, other]);
+  assert.deepEqual(finished, ["other", "long"]);
+});

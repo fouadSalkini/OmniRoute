@@ -712,11 +712,17 @@ export async function resolveConversationId(
   // interleave between reading a candidate's turn index and writing to it. Serializing per
   // fingerprint bucket keeps the read-walk-write sequence atomic for every conversation
   // these buckets can reach, as it was when the walk never yielded.
-  return withKeyLocks([fingerprintHash, legacyFingerprintHash], async () => {
+  // The shared legacy bucket is locked only when it holds candidates, so concurrent sessions
+  // of one API key do not queue behind each other's walks. Locks are always taken session
+  // bucket first, then legacy bucket, so holders never wait on each other in a cycle.
+  return withKeyLocks([fingerprintHash], async () => {
     const reconnected =
       (await reconnectToCandidates(findCandidates(fingerprintHash, probes), context)) ??
-      (fingerprintHash !== legacyFingerprintHash
-        ? await reconnectToCandidates(findCandidates(legacyFingerprintHash, probes), context)
+      (fingerprintHash !== legacyFingerprintHash &&
+      findCandidates(legacyFingerprintHash, probes).length > 0
+        ? await withKeyLocks([legacyFingerprintHash], () =>
+            reconnectToCandidates(findCandidates(legacyFingerprintHash, probes), context)
+          )
         : null);
     if (reconnected) return reconnected;
 
