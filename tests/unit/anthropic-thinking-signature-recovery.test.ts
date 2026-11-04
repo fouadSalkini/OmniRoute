@@ -300,7 +300,7 @@ test("Anthropic thinking-signature recovery contract", async (t) => {
   });
 
   await t.test(
-    "targeted signature 400 in active tool cycle converts thinking to redacted_thinking and retries successfully",
+    "targeted signature 400 in active tool cycle drops the rejected thinking and retries successfully",
     async () => {
       const body = {
         messages: [
@@ -331,12 +331,10 @@ test("Anthropic thinking-signature recovery contract", async (t) => {
               message: "messages.1.content.0: Invalid `signature` in `thinking` block",
             };
           }
-          // Second attempt must have converted the invalid thinking block to redacted_thinking
-          assert.equal(typedBody.messages[1].content[0].type, "redacted_thinking");
-          assert.equal(
-            (typedBody.messages[1].content[0] as { type: string; data?: string }).data,
-            DEFAULT_THINKING_CLAUDE_SIGNATURE
-          );
+          // Second attempt drops the rejected thinking block; the DEFAULT placeholder is never
+          // replayed (#18036).
+          assert.equal(typedBody.messages[1].content[0].type, "tool_use");
+          assert.equal(JSON.stringify(typedBody).includes(DEFAULT_THINKING_CLAUDE_SIGNATURE), false);
           return { status: 200, message: "ok" };
         },
         getError: (result) => (result.status >= 400 ? result : null),

@@ -24,7 +24,11 @@ import { sanitizeErrorMessage } from "../../utils/error.ts";
 import { isEstimatedUsage } from "../../utils/usageTracking.ts";
 import { cloneBoundedChatLogPayload, truncateForLog } from "./logTruncation.ts";
 import { attachLogMeta } from "./cacheUsageMeta.ts";
-import { readAddedWait } from "../../utils/proxyFetch.ts";
+import {
+  readAddedWait,
+  readUpstreamDispatchedAt,
+  queueWaitMsFromDispatch,
+} from "../../utils/proxyFetch.ts";
 import { discardSessionTurnAttempt } from "./sessionTurnAttempts.ts";
 import { clientSessionIdFromRawRequest } from "./clientSessionId.ts";
 
@@ -285,6 +289,7 @@ export type PersistAttemptLogsContext = {
   detailedLoggingEnabled: boolean;
   reqLogger: { getPipelinePayloads?: () => Record<string, unknown> | undefined } | null | undefined;
   pendingRequestId: unknown;
+  pendingRequestGeneration?: string;
   clientRawRequest: { endpoint?: string; headers?: unknown; body?: unknown } | null | undefined;
   /** This attempt's agent context; identifies the attempt whose session turn a failure drops. */
   agentContext?: object | null;
@@ -569,13 +574,19 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
   // Primary key is a fresh UUID from saveCallLog, not traceId. Attempts share
   // pendingRequestId and must not share the row key. correlationId still
   // pairs the row with request.started. pendingRequestId is NOT the row key: it only
-  // routes token usage to the live in-memory request row (#14324).
+  // routes token usage and generation-checked persistence linkage to the live preview.
   // Late read of the per-request added wait published on the ALS
   // capture sink by the executor. Fail-soft: null outside a capture or when
   // nothing was published — the row stores NULL (no wait), never throws.
   const addedWait = readAddedWait();
+  // First-upstream-dispatch stamp for queue_wait_ms: how long this execution
+  // waited inside OmniRoute (scheduling, translation, parking) before the
+  // first byte left for the provider. Null when nothing was dispatched
+  // (rejected before egress) — mirrors the addedWait late-read above.
+  const upstreamDispatchedAt = readUpstreamDispatchedAt();
   saveCallLog({
     pendingRequestId: ctx.pendingRequestId,
+    pendingRequestGeneration: ctx.pendingRequestGeneration,
     method: "POST",
     path: clientRawRequest?.endpoint || "/v1/chat/completions",
     status,
@@ -638,6 +649,7 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
     responseId: extractResponsesId(sourceFormat, clientResponse),
     videoContentRemoved: videoContentRemoved || false,
     addedWaitMs: addedWait?.ms ?? null,
+    queueWaitMs: queueWaitMsFromDispatch(upstreamDispatchedAt, startTime),
     addedWaitCause: addedWait?.cause ?? null,
   }).catch(() => {});
 
