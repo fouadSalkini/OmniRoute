@@ -165,7 +165,7 @@ async function gateFirstOutput(params: FirstOutputGateParams): Promise<Response>
   if (gate.kind === "reasoning") {
     log.info(
       "COMBO",
-      `first-output gate: reasoning activity from ${modelStr} (${gate.frameKind}), handing stream through`
+      `first-output gate: upstream thinking from ${modelStr} (${gate.frameKind}), ending the first-output wait`
     );
     return gate.response;
   }
