@@ -19,6 +19,7 @@
  */
 import { COMBO_PER_MODEL_TIMEOUT_REASON } from "./comboAbortReasons.ts";
 import { sseChunkCarriesOutput } from "../../utils/sseOutputSignal.ts";
+import { isReasoningProgressFrame } from "../../utils/streamReadiness.ts";
 
 /** Floor for the gate window, so a dispatch that ate the whole budget cannot abandon a live target. */
 const MIN_FIRST_OUTPUT_BUDGET_MS = 250;
@@ -38,7 +39,9 @@ const MAX_BUFFERED_CHARS = 64 * 1024;
 export type FirstOutputStallReason = "budget" | "cancelled" | "empty";
 
 export type FirstOutputResult =
-  { kind: "output"; response: Response } | { kind: "stalled"; reason: FirstOutputStallReason };
+  | { kind: "output"; response: Response }
+  | { kind: "reasoning"; response: Response; frameKind: string }
+  | { kind: "stalled"; reason: FirstOutputStallReason };
 
 /** True for SSE responses carrying a body, the only kind this gate inspects. */
 export function isEventStreamResponse(response: Response): boolean {
@@ -59,6 +62,50 @@ function carriesOutput(payload: string): boolean {
   return sseChunkCarriesOutput(`data: ${payload.replace(/\n/g, " ")}\n\n`);
 }
 
+/** Return a safe protocol label for logs after the shared predicate recognizes reasoning. */
+function reasoningFrameKind(payload: string, eventType: string): string | null {
+  const frame = `${eventType ? `event: ${eventType}\n` : ""}data: ${payload.replace(/\n/g, " ")}\n\n`;
+  if (!isReasoningProgressFrame(frame)) return null;
+
+  try {
+    const parsed: unknown = JSON.parse(payload.replace(/\n/g, " "));
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return "reasoning";
+    const event = parsed as Record<string, unknown>;
+    const type = typeof event.type === "string" ? event.type : eventType;
+    if (
+      type === "content_block_start" &&
+      event.content_block &&
+      typeof event.content_block === "object"
+    ) {
+      const blockType = (event.content_block as Record<string, unknown>).type;
+      if (blockType === "thinking" || blockType === "redacted_thinking") return blockType;
+    }
+    if (type === "content_block_delta" && event.delta && typeof event.delta === "object") {
+      const delta = event.delta as Record<string, unknown>;
+      const deltaType = delta.type;
+      if (deltaType === "signature_delta") {
+        return typeof delta.signature === "string" && delta.signature.length > 0
+          ? "signature_delta"
+          : null;
+      }
+      if (deltaType === "thinking_delta") return "thinking_delta";
+    }
+    if (type.startsWith("response.reasoning")) return "response.reasoning";
+    if (
+      (type === "response.output_item.added" || type === "response.output_item.done") &&
+      event.item &&
+      typeof event.item === "object" &&
+      (event.item as Record<string, unknown>).type === "reasoning"
+    ) {
+      return "reasoning";
+    }
+    if (Array.isArray(event.candidates)) return "thoughtSignature";
+    return "reasoning";
+  } catch {
+    return "reasoning";
+  }
+}
+
 /**
  * Incremental SSE reader that reports the first event carrying output.
  *
@@ -71,6 +118,8 @@ export class SseOutputScanner {
   private pendingLine = "";
   private dataLines: string[] = [];
   private bufferedChars = 0;
+  private eventType = "";
+  private reasoningKind: string | null = null;
 
   /** Feed decoded text; true once an event has shown output. */
   push(text: string): boolean {
@@ -116,19 +165,38 @@ export class SseOutputScanner {
     return this.bufferedChars > MAX_BUFFERED_CHARS;
   }
 
+  /** The kind of upstream reasoning progress found in the most recent push. */
+  reasoningActivity(): string | null {
+    const kind = this.reasoningKind;
+    this.reasoningKind = null;
+    return kind;
+  }
+
   /** Evaluate whatever is left after the body closed without a trailing blank line. */
   flush(): boolean {
     if (this.dataLines.length === 0) return false;
     const payload = this.dataLines.join("\n");
     this.dataLines = [];
-    return payload.length > 0 && carriesOutput(payload);
+    const kind = payload.length > 0 ? reasoningFrameKind(payload, this.eventType) : null;
+    const ready = payload.length > 0 && carriesOutput(payload);
+    if (!ready && kind) this.reasoningKind = kind;
+    this.eventType = "";
+    return ready;
   }
 
   private consumeLine(line: string): boolean {
     if (line === "") {
       const payload = this.dataLines.join("\n");
       this.dataLines = [];
-      return payload.length > 0 && carriesOutput(payload);
+      const kind = payload.length > 0 ? reasoningFrameKind(payload, this.eventType) : null;
+      const ready = payload.length > 0 && carriesOutput(payload);
+      if (!ready && kind) this.reasoningKind = kind;
+      this.eventType = "";
+      return ready;
+    }
+    if (line.startsWith("event:")) {
+      this.eventType = line.slice(6).trim();
+      return false;
     }
     if (!line.startsWith("data:")) return false;
     const value = line.slice(5);
@@ -161,9 +229,10 @@ export async function awaitFirstOutput(
   const scanner = new SseOutputScanner();
   let timer: ReturnType<typeof setTimeout> | undefined;
 
-  const outcome = await new Promise<"output" | FirstOutputStallReason>((resolve) => {
+  let reasoningFrameKind: string | null = null;
+  const outcome = await new Promise<"output" | "reasoning" | FirstOutputStallReason>((resolve) => {
     let settled = false;
-    const finish = (value: "output" | FirstOutputStallReason) => {
+    const finish = (value: "output" | "reasoning" | FirstOutputStallReason) => {
       if (settled) return;
       settled = true;
       if (timer) clearTimeout(timer);
@@ -191,6 +260,11 @@ export async function awaitFirstOutput(
             finish("output");
             return;
           }
+          reasoningFrameKind = scanner.reasoningActivity();
+          if (reasoningFrameKind) {
+            finish("reasoning");
+            return;
+          }
           if (scanner.overflowedWithoutOutput()) {
             finish("output");
             return;
@@ -209,6 +283,9 @@ export async function awaitFirstOutput(
   // awaited — a tee branch's cancel only settles once the sibling is cancelled too.
   void reader.cancel(COMBO_PER_MODEL_TIMEOUT_REASON).catch(() => undefined);
   if (outcome === "output") return { kind: "output", response };
+  if (outcome === "reasoning") {
+    return { kind: "reasoning", response, frameKind: reasoningFrameKind ?? "reasoning" };
+  }
 
   if (outcome === "budget") {
     void response.body?.cancel(COMBO_PER_MODEL_TIMEOUT_REASON).catch(() => undefined);
