@@ -1,5 +1,5 @@
 /**
- * Agent sessions: one aggregate row per coding-agent session (see 9191_agent_sessions.sql; upstream 234).
+ * Agent sessions: one aggregate row per coding-agent session (see 234_agent_sessions.sql).
  * Written from inside saveRequestUsage's transaction, so a usage row and its session counters
  * always move together and dedup no-ops never double count.
  */
@@ -187,11 +187,11 @@ export interface ListAgentSessionsFilter {
   apiKeyId?: string | null;
   projectName?: string | null;
   client?: string | null;
+  /** The client's own session id (agent_sessions.client_session_id). */
+  clientSessionId?: string | null;
   /** Sessions with at least one request through this provider / connection. */
   provider?: string | null;
   connectionId?: string | null;
-  /** The client's own session id (agent_sessions.client_session_id). */
-  clientSessionId?: string | null;
   from?: string | null;
   to?: string | null;
   sort?: "lastSeen" | "firstSeen" | "requests" | "tokens" | "cost";
@@ -296,6 +296,14 @@ function buildSessionFilterSql(filter: ListAgentSessionsFilter): {
   else if (filter.apiKeyId !== undefined) add("api_key_id = ?", filter.apiKeyId);
   if (filter.projectName) add("project_name = ?", filter.projectName);
   if (filter.client) add("client = ?", filter.client);
+  if (filter.clientSessionId) {
+    add("client_session_id = ?", filter.clientSessionId);
+    // A key's session for a client session id is stored under clientSessionRowId, so the
+    // primary key finds it without scanning the key's other sessions.
+    if (filter.apiKeyId !== undefined) {
+      add("id = ?", clientSessionRowId(filter.apiKeyId, filter.clientSessionId));
+    }
+  }
   const requestFilters: Array<[string, string | null | undefined]> = [
     ["provider", filter.provider],
     ["connection_id", filter.connectionId],
@@ -307,14 +315,6 @@ function buildSessionFilterSql(filter: ListAgentSessionsFilter): {
                WHERE uh.agent_session_id = agent_sessions.id AND uh.${column} = ?)`,
       value
     );
-  }
-  if (filter.clientSessionId) {
-    add("client_session_id = ?", filter.clientSessionId);
-    // A key's session for a client session id is stored under clientSessionRowId, so the
-    // primary key finds it without scanning the key's other sessions.
-    if (filter.apiKeyId !== undefined) {
-      add("id = ?", clientSessionRowId(filter.apiKeyId, filter.clientSessionId));
-    }
   }
   if (filter.from) add("last_seen_at >= ?", filter.from);
   if (filter.to) add("last_seen_at <= ?", filter.to);

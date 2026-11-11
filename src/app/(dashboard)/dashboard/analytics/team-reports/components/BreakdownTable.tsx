@@ -3,10 +3,22 @@
 import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
+import { Button as LinkButton } from "@omniroute/ui-kit/button";
+import { SortableTableHead } from "@omniroute/ui-kit/data-table-shell";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@omniroute/ui-kit/table";
+
 import type { ReportBreakdownRow } from "@/lib/usage/agentSessionReports";
-import Icon from "@/shared/components/Icon";
+import { Button } from "@/shared/components";
 import { fmtCompact, formatCost } from "@/shared/utils/formatting";
 
+import { FILTER_NONE } from "../reportFilters";
 import { formatDateTime, splitTokens } from "./format";
 import { CacheTokens, useTokenLabels } from "./TokenFigures";
 
@@ -32,6 +44,10 @@ interface BreakdownTableProps {
   showDetail?: boolean;
   defaultSort?: SortKey;
   onFilter?: (key: string) => void;
+  /** The empty-key row can be filtered on (as FILTER_NONE), because the dimension has a "none" filter. */
+  filterNone?: boolean;
+  /** Makes a row's name open its detail panel (rows with a key only). */
+  onOpen?: (row: ReportBreakdownRow) => void;
 }
 
 function sortValue(row: ReportBreakdownRow, key: SortKey, extra: ExtraCount): string | number {
@@ -84,25 +100,20 @@ function SortableHeader({
 }: {
   column: Column;
   sort: SortState;
-  onSort: (key: SortKey) => void;
+  onSort: (key: SortKey, desc: boolean) => void;
 }) {
   const active = sort.key === column.key;
   return (
-    <th
-      aria-sort={active ? (sort.desc ? "descending" : "ascending") : undefined}
-      className={`py-2 px-3 text-xs font-semibold uppercase tracking-wider text-text-muted ${
-        column.numeric ? "text-right" : "text-left"
-      }`}
+    <SortableTableHead
+      direction={active ? (sort.desc ? "desc" : "asc") : undefined}
+      // A new column starts descending (largest first), except the name column.
+      defaultDirection={column.key === "name" ? "asc" : "desc"}
+      align={column.numeric ? "right" : "left"}
+      onDirectionChange={(direction) => onSort(column.key, direction === "desc")}
+      className="py-2 px-3 text-xs font-semibold uppercase tracking-wider text-text-muted"
     >
-      <button
-        type="button"
-        onClick={() => onSort(column.key)}
-        className="inline-flex items-center gap-1 hover:text-text-main"
-      >
-        {column.label}
-        {active && <Icon name={sort.desc ? "arrow_downward" : "arrow_upward"} size={14} />}
-      </button>
-    </th>
+      {column.label}
+    </SortableTableHead>
   );
 }
 
@@ -112,52 +123,72 @@ function BreakdownRow({
   extraCount,
   showDetail,
   onFilter,
+  filterNone,
+  onOpen,
 }: {
   row: ReportBreakdownRow;
   fallbackName: string;
   extraCount: ExtraCount;
   showDetail: boolean;
   onFilter?: (key: string) => void;
+  filterNone: boolean;
+  onOpen?: (row: ReportBreakdownRow) => void;
 }) {
   const t = useTranslations("reports");
   const tokens = splitTokens(row.tokens);
+  const name = row.label || row.key || fallbackName;
   return (
-    <tr className="border-b border-border/10 transition-colors hover:bg-surface/20">
-      <td className="py-2.5 px-3">
-        <div className="font-medium text-text-main">{row.label || row.key || fallbackName}</div>
+    <TableRow>
+      <TableCell className="py-2.5 px-3">
+        <div className="font-medium text-text-main">
+          {onOpen && row.key ? (
+            <LinkButton
+              variant="link"
+              className="h-auto min-h-0 p-0 text-start font-medium"
+              aria-label={t("openDetails", { name })}
+              onClick={() => onOpen(row)}
+            >
+              {name}
+            </LinkButton>
+          ) : (
+            name
+          )}
+        </div>
         {showDetail && row.detail && (
           <div className="max-w-[260px] truncate font-mono text-xs text-text-muted">
             {row.detail}
           </div>
         )}
-      </td>
-      <td className="py-2.5 px-3 text-right tabular-nums">{row[extraCount]}</td>
-      <td className="py-2.5 px-3 text-right tabular-nums">{row.sessions}</td>
-      <td className="py-2.5 px-3 text-right tabular-nums">{row.requests}</td>
-      <td className="py-2.5 px-3 text-right tabular-nums">{row.errors}</td>
-      <td className="py-2.5 px-3 text-right tabular-nums">{fmtCompact(tokens.input)}</td>
-      <td className="py-2.5 px-3 text-right tabular-nums">{fmtCompact(tokens.output)}</td>
-      <td className="py-2.5 px-3 text-right tabular-nums">
+      </TableCell>
+      <TableCell className="py-2.5 px-3 text-right tabular-nums">{row[extraCount]}</TableCell>
+      <TableCell className="py-2.5 px-3 text-right tabular-nums">{row.sessions}</TableCell>
+      <TableCell className="py-2.5 px-3 text-right tabular-nums">{row.requests}</TableCell>
+      <TableCell className="py-2.5 px-3 text-right tabular-nums">{row.errors}</TableCell>
+      <TableCell className="py-2.5 px-3 text-right tabular-nums">
+        {fmtCompact(tokens.input)}
+      </TableCell>
+      <TableCell className="py-2.5 px-3 text-right tabular-nums">
+        {fmtCompact(tokens.output)}
+      </TableCell>
+      <TableCell className="py-2.5 px-3 text-right tabular-nums">
         <CacheTokens split={tokens} />
-      </td>
-      <td className="py-2.5 px-3 text-right font-mono tabular-nums text-green-500">
+      </TableCell>
+      <TableCell className="py-2.5 px-3 text-right font-mono tabular-nums text-success">
         {formatCost(row.costUsd)}
-      </td>
-      <td className="py-2.5 px-3 text-text-muted">{formatDateTime(row.lastSeenAt)}</td>
+      </TableCell>
+      <TableCell className="py-2.5 px-3 text-text-muted">
+        {formatDateTime(row.lastSeenAt)}
+      </TableCell>
       {onFilter && (
-        <td className="py-2.5 px-3 text-right">
-          {row.key && (
-            <button
-              type="button"
-              onClick={() => onFilter(row.key)}
-              className="rounded px-2 py-1 text-xs text-primary hover:bg-primary/10"
-            >
+        <TableCell className="py-2.5 px-3 text-right">
+          {(row.key || filterNone) && (
+            <Button variant="ghost" size="sm" onClick={() => onFilter(row.key || FILTER_NONE)}>
               {t("filterBy")}
-            </button>
+            </Button>
           )}
-        </td>
+        </TableCell>
       )}
-    </tr>
+    </TableRow>
   );
 }
 
@@ -169,6 +200,8 @@ export default function BreakdownTable({
   showDetail = false,
   defaultSort = "cost",
   onFilter,
+  filterNone = false,
+  onOpen,
 }: BreakdownTableProps) {
   const t = useTranslations("reports");
   const columns = useBreakdownColumns(nameHeader, extraCount);
@@ -186,37 +219,36 @@ export default function BreakdownTable({
     });
   }, [rows, sort, extraCount]);
 
-  const toggleSort = (key: SortKey) =>
-    setSort((current) => ({ key, desc: current.key === key ? !current.desc : key !== "name" }));
+  const changeSort = (key: SortKey, desc: boolean) => setSort({ key, desc });
 
   if (rows.length === 0) {
     return <p className="py-8 text-center text-sm text-text-muted">{t("noData")}</p>;
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-border/30">
-            {columns.map((column) => (
-              <SortableHeader key={column.key} column={column} sort={sort} onSort={toggleSort} />
-            ))}
-            {onFilter && <th className="py-2 px-3" />}
-          </tr>
-        </thead>
-        <tbody>
-          {sortedRows.map((row) => (
-            <BreakdownRow
-              key={row.key || "__none__"}
-              row={row}
-              fallbackName={fallbackName}
-              extraCount={extraCount}
-              showDetail={showDetail}
-              onFilter={onFilter}
-            />
+    <Table className="text-sm" scrollbarLabel={nameHeader}>
+      <TableHeader>
+        <TableRow>
+          {columns.map((column) => (
+            <SortableHeader key={column.key} column={column} sort={sort} onSort={changeSort} />
           ))}
-        </tbody>
-      </table>
-    </div>
+          {onFilter && <TableHead className="py-2 px-3" />}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {sortedRows.map((row) => (
+          <BreakdownRow
+            key={row.key || FILTER_NONE}
+            row={row}
+            fallbackName={fallbackName}
+            extraCount={extraCount}
+            showDetail={showDetail}
+            onFilter={onFilter}
+            filterNone={filterNone}
+            onOpen={onOpen}
+          />
+        ))}
+      </TableBody>
+    </Table>
   );
 }

@@ -168,6 +168,13 @@ test("migrated media billing counts stored charges once in five-hour budgets aft
       { version: "235", name: "usage_history_agent_session_id" },
       { version: "236", name: "key_templates" },
       { version: "237", name: "usage_history_calculated_cost" },
+      // Deploy branch: fork copies recorded on the nodes, plus the team-reports index.
+      { version: "9189", name: "api_key_self_service_settings" },
+      { version: "9190", name: "token_limits_unique_per_window" },
+      { version: "9191", name: "agent_sessions" },
+      { version: "9192", name: "usage_history_agent_session_id" },
+      { version: "9193", name: "agent_session_messages" },
+      { version: "9194", name: "usage_history_session_timestamp_index" },
     ]
   );
   assert.equal(runMigrations(db), 0);

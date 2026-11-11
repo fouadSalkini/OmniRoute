@@ -77,7 +77,8 @@ test("self-service migration 233 coexists with upstream attempt timing migration
   const applied = db
     .prepare("SELECT version FROM _omniroute_migrations WHERE name = ?")
     .all("api_key_self_service_settings");
-  assert.deepEqual(applied, [{ version: "233" }]);
+  // Deploy branch: both nodes recorded the fork copy as 9189, so a fresh DB applies both.
+  assert.deepEqual(applied, [{ version: "233" }, { version: "9189" }]);
   const timingColumns = db.prepare("PRAGMA table_info(proxy_logs)").all() as { name: string }[];
   assert.ok(timingColumns.some((column) => column.name === "headers_ms"));
   assert.deepEqual(
@@ -398,10 +399,10 @@ test("historical turn-node index migration 206 moves to 211 and frees the slot f
   ]);
 });
 
-test("settings default to all providers + forward when no row exists", () => {
+test("settings default to all providers + auto when no row exists", () => {
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("no-such-key"), {
     sharedQuotaProviders: null,
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -445,7 +446,7 @@ test("writes and deletes are visible immediately after a cached read", () => {
   settingsDb.deleteApiKeySelfServiceSettings("key-c");
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("key-c"), {
     sharedQuotaProviders: null,
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -458,7 +459,7 @@ test("returned settings are copies; mutating them does not change later reads", 
   ]);
 });
 
-test("a corrupt stored provider list fails closed to none; an unknown mode reads as forward", () => {
+test("a corrupt stored provider list fails closed to none; an unknown mode reads as auto", () => {
   core
     .getDbInstance()
     .prepare(
@@ -469,7 +470,7 @@ test("a corrupt stored provider list fails closed to none; an unknown mode reads
 
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("key-bad"), {
     sharedQuotaProviders: [],
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
 });
 
@@ -479,7 +480,7 @@ test("a missing table reads as defaults and delete is a no-op", () => {
 
   assert.deepEqual(settingsDb.getApiKeySelfServiceSettings("key-x"), {
     sharedQuotaProviders: null,
-    anthropicRateLimitHeaders: "forward",
+    anthropicRateLimitHeaders: "auto",
   });
   assert.doesNotThrow(() => settingsDb.deleteApiKeySelfServiceSettings("key-x"));
 });
@@ -591,7 +592,7 @@ test("self-service routes reject bad bodies with 400 and unknown keys with 404, 
   assert.equal(missingGet.status, 404);
   assert.deepEqual(
     settingsDb.getApiKeySelfServiceSettings(key.id).anthropicRateLimitHeaders,
-    "forward"
+    "auto"
   );
 });
 

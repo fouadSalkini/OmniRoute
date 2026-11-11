@@ -891,6 +891,7 @@ const RESET_USAGE_HISTORY_PERIOD_MS: Record<TimedResetUsageHistoryPeriod, number
 export interface ResetUsageHistoryResult extends CleanupResult {
   deletedUsageHistory: number;
   deletedAgentSessionMessages: number;
+  deletedAgentSessions: number;
   deletedDailySummary: number;
   deletedDailyTeamSummary: number;
   deletedHourlySummary: number;
@@ -1018,6 +1019,17 @@ const RESET_TARGETS: Array<
     resultKey: "deletedAgenticConversations",
     allOnly: true,
   },
+  // Session rows hold running totals (requests, tokens, cost) plus the project path and branch
+  // of the traffic. A timed reset cannot subtract the deleted rows from those totals, so only
+  // "all" removes them. There is no retention pass either: like daily_usage_summary, the totals
+  // are meant to outlive the raw usage_history rows.
+  {
+    table: "agent_sessions",
+    column: "last_seen_at",
+    cutoff: "iso",
+    resultKey: "deletedAgentSessions",
+    allOnly: true,
+  },
 ];
 
 export async function resetUsageHistory(period: string): Promise<ResetUsageHistoryResult> {
@@ -1031,6 +1043,7 @@ export async function resetUsageHistory(period: string): Promise<ResetUsageHisto
     deleted: 0,
     deletedUsageHistory: 0,
     deletedAgentSessionMessages: 0,
+    deletedAgentSessions: 0,
     deletedDailySummary: 0,
     deletedDailyTeamSummary: 0,
     deletedHourlySummary: 0,
