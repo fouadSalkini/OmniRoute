@@ -286,6 +286,44 @@ describe("API key details page", () => {
     expect(screen.getByText("No shared account quota for this key.")).toBeTruthy();
   });
 
+  it("shows and saves the rolling 5-hour USD limit with the daily and weekly ones", async () => {
+    const calls = stubFetch((url, method) => {
+      if (url === "/api/keys/key-1" && method === "PATCH") return { body: { ok: true } };
+      if (url === "/api/keys/key-1") {
+        return {
+          body: {
+            id: "key-1",
+            name: "Team key",
+            scopes: ["self:usage"],
+            usageLimitEnabled: true,
+            dailyUsageLimitUsd: 10,
+            weeklyUsageLimitUsd: null,
+            fiveHourUsageLimitUsd: 3,
+          },
+        };
+      }
+      if (url === "/api/keys/key-1/self-service") return { body: SELF_SERVICE_FIXTURE };
+      if (url.startsWith("/api/usage/token-limits")) return { body: { limits: [] } };
+      return { body: {} };
+    });
+    render(<ApiKeyDetailsPageClient keyId="key-1" />);
+
+    const card = await screen.findByRole("region", { name: "USD usage limit" });
+    const fiveHour = within(card).getByLabelText("5-hour quota (USD)") as HTMLInputElement;
+    expect(fiveHour.value).toBe("3");
+
+    fireEvent.change(fiveHour, { target: { value: "4.5" } });
+    fireEvent.click(within(card).getByRole("button", { name: "Save" }));
+
+    await waitFor(() => expect(calls.some((c) => c.method === "PATCH")).toBe(true));
+    expect(calls.find((c) => c.method === "PATCH")?.body).toEqual({
+      usageLimitEnabled: true,
+      dailyUsageLimitUsd: 10,
+      weeklyUsageLimitUsd: null,
+      fiveHourUsageLimitUsd: 4.5,
+    });
+  });
+
   it("saves self-service settings immediately and refetches", async () => {
     const calls = routeDetails(SELF_SERVICE_FIXTURE);
     render(<ApiKeyDetailsPageClient keyId="key-1" />);

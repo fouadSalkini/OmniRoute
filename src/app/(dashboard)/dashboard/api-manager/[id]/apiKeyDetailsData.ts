@@ -87,6 +87,7 @@ export interface KeyConfig {
   usageLimitEnabled: boolean;
   dailyUsageLimitUsd: number | null;
   weeklyUsageLimitUsd: number | null;
+  fiveHourUsageLimitUsd: number | null;
 }
 
 export interface TokenLimitRow {
@@ -278,6 +279,7 @@ export function parseKeyConfig(body: unknown): KeyConfig | null {
     usageLimitEnabled: record.usageLimitEnabled === true,
     dailyUsageLimitUsd: positiveOrNull(record.dailyUsageLimitUsd),
     weeklyUsageLimitUsd: positiveOrNull(record.weeklyUsageLimitUsd),
+    fiveHourUsageLimitUsd: positiveOrNull(record.fiveHourUsageLimitUsd),
   };
 }
 
