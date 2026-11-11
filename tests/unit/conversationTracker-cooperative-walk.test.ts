@@ -121,7 +121,9 @@ test("a session's walk does not queue another session of the same API key", asyn
       clientSessionId,
       correlationId: `corr-${Math.random()}`,
     });
-  const longHistory = pollingHistory(400);
+  // reconnectWalk stops once no later start can beat the best run, so the history has to be
+  // long enough that even the shortened walk spans several RECONNECT_YIELD_EVERY_STEPS slices.
+  const longHistory = pollingHistory(4000);
   await request(longHistory, "sess-long");
 
   // Continuing the duplicate-heavy history makes the reconnect walk span many yield slices.
