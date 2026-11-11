@@ -95,7 +95,6 @@
 - [`GET /api/v1/me/status`](#get-apiv1mestatus)
 - [`GET /api/v1/me/sessions`](#get-apiv1mesessions)
 - [`GET /api/v1/me/sessions/{id}`](#get-apiv1mesessionsid)
-- [`GET /api/v1/me/sessions/{id}/messages`](#get-apiv1mesessionsidmessages)
 - [`GET /api/v1/muse-code/models`](#get-apiv1muse-codemodels)
 - [`GET /api/v1/music/generations`](#get-apiv1musicgenerations)
 - [`POST /api/v1/music/generations`](#post-apiv1musicgenerations)
@@ -181,7 +180,7 @@ curl http://localhost:20128/api/v1/search \
 
 Run a unified search
 
-Searches the web, news, or X through a configured provider. Set `provider` to `xquik-search` to use Xquik for X search. The aliases `xquik` and `xquik_search` resolve to the same provider. AnySearch (`anysearch-search`, aliases `anysearch` / `anysearch_search`) provides free fallback-only web search.
+Searches the web, news, or X through a configured provider. Set `provider` to `xquik-search` to use Xquik for X search. The aliases `xquik` and `xquik_search` resolve to the same provider. AnySearch (`anysearch-search`, aliases `anysearch` / `anysearch_search`) provides free fallback-only web search. Codex Web Search (`codex-search`, alias `codex_search`) reuses connected Codex (ChatGPT) accounts. Name it explicitly to use it; automatic selection (a credentialed last resort before keyless search) needs the `CODEX_SEARCH_AUTO_FALLBACK_ENABLED` feature flag, off by default. It spends subscription quota (not a free API), typically takes 10–40 seconds, and uses a 60-second timeout unless the operator sets a lower search timeout. Time range and domain filters are instruction hints, not hard filters.
 
 ```bash
 curl -X POST http://localhost:20128/api/v1/search \
@@ -727,6 +726,9 @@ curl -X DELETE http://localhost:20128/api/v1/{omnirouteCatchAll} \
 
 GET accounts › <id> › limits
 
+Management-only, like `/api/v1/registered-keys`: a dashboard session, the local CLI token, or an API key with `manage`/`admin` scope. Inference-only API keys get 403.
+
+
 ```bash
 curl http://localhost:20128/api/v1/accounts/{id}/limits \
   -H "Authorization: Bearer $OMNIROUTE_TOKEN"
@@ -735,6 +737,9 @@ curl http://localhost:20128/api/v1/accounts/{id}/limits \
 ### PUT /api/v1/accounts/{id}/limits
 
 PUT accounts › <id> › limits
+
+Management-only, like `/api/v1/registered-keys`: a dashboard session, the local CLI token, or an API key with `manage`/`admin` scope. Inference-only API keys get 403.
+
 
 ```bash
 curl -X PUT http://localhost:20128/api/v1/accounts/{id}/limits \
@@ -1032,6 +1037,9 @@ curl http://localhost:20128/api/v1/media/{id} \
 
 POST issues › report
 
+Management-only, like `/api/v1/registered-keys`: a dashboard session, the local CLI token, or an API key with `manage`/`admin` scope. Inference-only API keys get 403.
+
+
 ```bash
 curl -X POST http://localhost:20128/api/v1/issues/report \
   -H "Authorization: Bearer $OMNIROUTE_TOKEN" \
@@ -1152,17 +1160,6 @@ curl http://localhost:20128/api/v1/me/sessions/{id} \
   -H "Authorization: Bearer $OMNIROUTE_TOKEN"
 ```
 
-### GET /api/v1/me/sessions/{id}/messages
-
-GET me › sessions › <id> › messages
-
-Simplified conversation turns for a session owned by the calling API key.
-
-```bash
-curl http://localhost:20128/api/v1/me/sessions/{id}/messages \
-  -H "Authorization: Bearer $OMNIROUTE_TOKEN"
-```
-
 ### GET /api/v1/muse-code/models
 
 GET muse code › models
@@ -1196,6 +1193,9 @@ curl -X POST http://localhost:20128/api/v1/music/generations \
 
 GET providers › <provider> › limits
 
+Management-only, like `/api/v1/registered-keys`: a dashboard session, the local CLI token, or an API key with `manage`/`admin` scope. Inference-only API keys get 403.
+
+
 ```bash
 curl http://localhost:20128/api/v1/providers/{provider}/limits \
   -H "Authorization: Bearer $OMNIROUTE_TOKEN"
@@ -1204,6 +1204,9 @@ curl http://localhost:20128/api/v1/providers/{provider}/limits \
 ### PUT /api/v1/providers/{provider}/limits
 
 PUT providers › <provider> › limits
+
+Management-only, like `/api/v1/registered-keys`: a dashboard session, the local CLI token, or an API key with `manage`/`admin` scope. Inference-only API keys get 403.
+
 
 ```bash
 curl -X PUT http://localhost:20128/api/v1/providers/{provider}/limits \
@@ -1384,20 +1387,30 @@ curl -X POST http://localhost:20128/api/v1/systemone \
 
 ### GET /api/v1/video-bridge/drilldown
 
-GET video bridge › drilldown
+Read authenticated tenant-bound video frame variants
+
+Requires explicit remote drill-down operator consent and an authenticated API key. A nonempty API-key endpoint allowlist must include video. Resolves an opaque handle from the x-omniroute-video-drilldown chat response header; never accepts a client principal, raw video or session ID. JSON including Base64 is limited to 32 MiB. Unknown, expired and cross-key handles return indistinguishable 404 responses. Handles are process-local and expire after ten minutes or a restart.
 
 ```bash
-curl http://localhost:20128/api/v1/video-bridge/drilldown \
-  -H "Authorization: Bearer $OMNIROUTE_TOKEN"
+# Set OMNIROUTE_VIDEO_HANDLE to one handle from the chat response's
+# x-omniroute-video-drilldown header, obtained with the same API key.
+curl --get http://localhost:20128/api/v1/video-bridge/drilldown \
+  -H "Authorization: Bearer $OMNIROUTE_TOKEN" \
+  --data-urlencode "handle=$OMNIROUTE_VIDEO_HANDLE"
 ```
 
 ### DELETE /api/v1/video-bridge/drilldown
 
-DELETE video bridge › drilldown
+Delete an authenticated owner's video drill-down handle
+
+Idempotent; unknown, expired or cross-key handles remove zero entries. Releases retained frames and accounting for the owner only. Remote operator consent and a valid API key are always required. A nonempty API-key endpoint allowlist must include video.
 
 ```bash
-curl -X DELETE http://localhost:20128/api/v1/video-bridge/drilldown \
-  -H "Authorization: Bearer $OMNIROUTE_TOKEN"
+# Set OMNIROUTE_VIDEO_HANDLE to one handle from the chat response's
+# x-omniroute-video-drilldown header, obtained with the same API key.
+curl --get -X DELETE http://localhost:20128/api/v1/video-bridge/drilldown \
+  -H "Authorization: Bearer $OMNIROUTE_TOKEN" \
+  --data-urlencode "handle=$OMNIROUTE_VIDEO_HANDLE"
 ```
 
 ### GET /api/v1/videos/generations

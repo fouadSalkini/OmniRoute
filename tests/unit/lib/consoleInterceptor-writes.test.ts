@@ -152,12 +152,9 @@ test("the log-unavailable notice is emitted at most once, to the real stderr", (
     `const { rmSync, writeFileSync } = await import("node:fs");`,
     `const { dirname } = await import("node:path");`,
     `M.initConsoleInterceptor();`,
-    // A file in the parent path makes mkdirSync fail even for root (chmod does not).
-    `const logDir = dirname(LOG_FILE);`,
-    `const parent = dirname(logDir);`,
-    `rmSync(logDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });`,
-    `rmSync(parent, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });`,
-    `writeFileSync(parent, "blocked");`,
+    // A file at the directory path blocks recreation for root and ordinary users alike.
+    `rmSync(dirname(LOG_FILE), { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });`,
+    `writeFileSync(dirname(LOG_FILE), "fixture blocks log directory");`,
     `for (let i = 0; i < 5; i++) console.error("unwritable " + i);`,
     `setTimeout(() => process.exit(0), 200);`,
   ]);

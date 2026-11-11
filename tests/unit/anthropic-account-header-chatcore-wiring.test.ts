@@ -172,7 +172,7 @@ test("streaming: a `strip` key does not receive the upstream Anthropic account h
   assert.equal(learnedLimitFor("conn-strip")?.limit, 100);
 });
 
-test("streaming: a `forward` key keeps receiving them", async () => {
+test("streaming: a `forward` key (the default) keeps receiving them", async () => {
   const headers = await invoke({
     stream: true,
     connectionId: "conn-forward",

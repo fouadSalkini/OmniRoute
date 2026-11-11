@@ -142,12 +142,12 @@ function KpiCards({ totals }: { totals: ReportTotals }) {
               {card.figures.map(([term, value]) => (
                 <div key={term} className="flex items-baseline justify-between gap-2">
                   <dt className="text-xs text-text-muted">{term}</dt>
-                  <dd className="text-sm font-bold tabular-nums text-text-main">{value}</dd>
+                  <dd className="text-sm font-semibold tabular-nums text-text-main">{value}</dd>
                 </div>
               ))}
             </dl>
           ) : (
-            <p className="mt-1 text-xl font-bold tabular-nums text-text-main">{card.value}</p>
+            <p className="mt-1 text-xl font-semibold tabular-nums text-text-main">{card.value}</p>
           )}
           {card.hint && <p className="mt-0.5 text-xs text-text-muted">{card.hint}</p>}
         </Card>

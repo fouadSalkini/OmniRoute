@@ -33,7 +33,6 @@ import {
 } from "./tokenAccounting";
 import { backfillDuplicateUsageEntry } from "./usageHistory/duplicateEntry";
 import { recordAgentSession } from "./usageHistory/agentSessionUsage";
-import { saveSessionTurn } from "./usageHistory/sessionTurn";
 import type { AgentSessionUsage } from "../db/agentSessions";
 import type { UsageEntry } from "./usageHistory";
 
@@ -74,15 +73,11 @@ function isLockMessage(message: string): boolean {
  * Legacy natural-key dedup stays on unless the caller owns a physical attempt.
  * `agentSession` holds the request's agent-session counters, priced by the caller before
  * the write; the session is upserted in the same transaction as the row it is linked to.
- * `sessionTurn` is the redacted turn transcript stored on that session, when it may be logged.
  */
 export type UsageWriteOptions = {
   deduplicate?: boolean;
   agentSession?: AgentSessionUsage | null;
-  sessionTurn?: SessionTurn;
 };
-
-type SessionTurn = Parameters<typeof saveSessionTurn>[2];
 
 /**
  * Single write attempt. Throws on failure so the caller decides between a
@@ -93,7 +88,7 @@ type SessionTurn = Parameters<typeof saveSessionTurn>[2];
  */
 export function attemptWrite(entry: UsageEntry, options: UsageWriteOptions = {}): void {
   const db = getDbInstance();
-  const prepared = prepareEntry(db, entry, options);
+  const prepared = prepareEntry(db, entry, options.agentSession ?? null);
   let inserted = false;
   const deduplicate = options.deduplicate !== false;
 
@@ -122,7 +117,6 @@ type PreparedEntry = {
   tokensInput: number;
   tokensOutput: number;
   agentSession: AgentSessionUsage | null;
-  sessionTurn: SessionTurn;
   accountIdentity: {
     accountKey: string | null;
     accountLabel: string | null;
@@ -133,7 +127,7 @@ type PreparedEntry = {
 function prepareEntry(
   db: ReturnType<typeof getDbInstance>,
   entry: UsageEntry,
-  options: UsageWriteOptions
+  agentSession: AgentSessionUsage | null
 ): PreparedEntry {
   const timestamp = entry.timestamp || new Date().toISOString();
   const connection = entry.connectionId
@@ -149,8 +143,7 @@ function prepareEntry(
     billingTeamId: resolveBillingTeamIdForApiKeyAt(entry.apiKeyId, timestamp),
     tokensInput: getLoggedInputTokens(entry.tokens),
     tokensOutput: getLoggedOutputTokens(entry.tokens),
-    agentSession: options.agentSession ?? null,
-    sessionTurn: options.sessionTurn ?? null,
+    agentSession,
     accountIdentity: connection
       ? resolveUsageAccountIdentity(connection)
       : resolveOrphanedUsageAccountIdentity(entry.provider, entry.connectionId),
@@ -191,15 +184,15 @@ function insertEntry(db: ReturnType<typeof getDbInstance>, prepared: PreparedEnt
   // Only a row that is actually inserted counts toward its session (dedup no-ops do not).
   // A lock fails the whole write, so the deferred retry replays the row and its session.
   const agentSessionId = recordAgentSession(db, prepared.agentSession, isWriteLockError);
-  saveSessionTurn(db, agentSessionId, prepared.sessionTurn, entry, timestamp);
   db.prepare(
     `
     INSERT INTO usage_history (provider, model, connection_id, account_key, account_label,
       account_label_priority, api_key_id, api_key_name, billing_team_id,
       tokens_input, tokens_output, tokens_cache_read, tokens_cache_creation, tokens_reasoning,
       service_tier, status, success, latency_ms, ttft_ms, error_code, combo_strategy, endpoint,
-      cpa_auth_index, agent_session_id, timestamp, provider_credits, provider_cost_usd)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      cpa_auth_index, agent_session_id, timestamp, provider_credits, provider_cost_usd,
+      calculated_cost_usd, billing_unit, billing_quantity, billing_unit_price_usd)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `
   ).run(
     entry.provider ? resolveProviderId(entry.provider) : null,
@@ -228,8 +221,16 @@ function insertEntry(db: ReturnType<typeof getDbInstance>, prepared: PreparedEnt
     agentSessionId,
     timestamp,
     providerCredits,
-    providerCostUsd
+    providerCostUsd,
+    nonNegativeOrNull(entry.calculatedCostUsd),
+    entry.billingUnit || null,
+    nonNegativeOrNull(entry.billingQuantity),
+    nonNegativeOrNull(entry.billingUnitPriceUsd)
   );
+}
+
+function nonNegativeOrNull(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : null;
 }
 
 function toFinite(value: unknown): number {

@@ -1,5 +1,5 @@
 /**
- * db/apiKeySelfServiceSettings.ts — Per-API-key self-service settings (prod migration 9189).
+ * db/apiKeySelfServiceSettings.ts — Per-API-key self-service settings (prod migration 9189; upstream 233).
  *
  * One optional row per key on `api_key_self_service_settings`:
  *   - shared_quota_providers: JSON array of provider ids whose account quotas the

@@ -18,7 +18,6 @@ import { recordTokenUsage } from "../../services/tokenLimitCounter.ts";
 import { computeBillableTokens } from "./upstreamTimeouts.ts";
 import { type EffectiveServiceTier } from "./serviceTier.ts";
 import { type AgentContext } from "./agentContext.ts";
-import { type AgentSessionTurn } from "./agentSessionTurn.ts";
 
 export type RecordNonStreamingUsageStatsContext = {
   traceEnabled: boolean;
@@ -33,7 +32,6 @@ export type RecordNonStreamingUsageStatsContext = {
   endpoint?: string | null | undefined;
   cpaAuthIndex?: string | null | undefined;
   agentContext?: AgentContext | null;
-  sessionTurn?: AgentSessionTurn | null;
 };
 
 function logUsageTrace(
@@ -65,7 +63,6 @@ function persistUsageRow(usage: object, ctx: RecordNonStreamingUsageStatsContext
     endpoint: ctx.endpoint || undefined,
     cpaAuthIndex: ctx.cpaAuthIndex || undefined,
     agentContext: ctx.agentContext ?? null,
-    sessionTurn: ctx.sessionTurn ?? null,
   }).catch((err) => {
     console.error("Failed to save usage stats:", err.message);
   });
@@ -75,7 +72,8 @@ function recordBillableTokens(
   usage: object,
   apiKeyInfo: RecordNonStreamingUsageStatsContext["apiKeyInfo"],
   provider: string | null | undefined,
-  model: string | null | undefined
+  model: string | null | undefined,
+  requestStartedAt: number
 ): void {
   if (!apiKeyInfo?.id) return;
   try {
@@ -85,7 +83,13 @@ function recordBillableTokens(
     // usage. Mirrors recordTokenUsage's swallow-and-continue.
     recordKeyQuotaUsage(apiKeyInfo.id, billable);
     if (billable > 0)
-      recordTokenUsage(apiKeyInfo.id, provider || "unknown", model || "unknown", billable);
+      recordTokenUsage(
+        apiKeyInfo.id,
+        provider || "unknown",
+        model || "unknown",
+        billable,
+        requestStartedAt
+      );
   } catch {
     // never block the response on counter recording
   }
@@ -99,5 +103,5 @@ export function recordNonStreamingUsageStats(
 
   if (ctx.traceEnabled) logUsageTrace(usage, ctx.provider, ctx.connectionId);
   persistUsageRow(usage, ctx);
-  recordBillableTokens(usage, ctx.apiKeyInfo, ctx.provider, ctx.model);
+  recordBillableTokens(usage, ctx.apiKeyInfo, ctx.provider, ctx.model, ctx.startTime);
 }
