@@ -15,7 +15,10 @@ export function artifactManifest(directory) {
       const filename = path.join(parent, entry.name);
       const relative = path.relative(root, filename);
       if (entry.isSymbolicLink()) {
-        assert.ok(!path.isAbsolute(fs.readlinkSync(filename)), `Absolute artifact symlink: ${relative}`);
+        assert.ok(
+          !path.isAbsolute(fs.readlinkSync(filename)),
+          `Absolute artifact symlink: ${relative}`
+        );
         const resolved = fs.realpathSync(filename);
         assert.ok(
           resolved === root || resolved.startsWith(root + path.sep),
@@ -35,7 +38,9 @@ export function artifactManifest(directory) {
 
 function command(executable, args) {
   const completed = spawnSync(executable, args, {
-    encoding: "utf8", timeout: 120_000, maxBuffer: 64 * 1024 * 1024,
+    encoding: "utf8",
+    timeout: 120_000,
+    maxBuffer: 64 * 1024 * 1024,
   });
   assert.equal(completed.status, 0, `${executable} qualification failed`);
   return completed.stdout;
@@ -52,15 +57,18 @@ function verifySymbolVersions(libraries, requiredVersions) {
   const glibc = process.report.getReport().header.glibcVersionRuntime.split(".").map(Number);
   for (const version of requiredVersions.filter((entry) => entry.startsWith("GLIBC_"))) {
     const required = version.slice(6).split(".").map(Number);
-    assert.ok(required[0] < glibc[0] ||
-      (required[0] === glibc[0] && (required[1] ?? 0) <= glibc[1]), `Unsupported ${version}`);
+    assert.ok(
+      required[0] < glibc[0] || (required[0] === glibc[0] && (required[1] ?? 0) <= glibc[1]),
+      `Unsupported ${version}`
+    );
   }
   const stdcpp = /libstdc\+\+\.so\.6 => (\S+)/.exec(libraries)?.[1];
   const requiredCpp = requiredVersions.filter((entry) => entry.startsWith("GLIBCXX_"));
   if (requiredCpp.length) {
     assert.ok(stdcpp, "Missing C++ runtime");
     const available = command("objdump", ["-T", stdcpp]);
-    for (const version of requiredCpp) assert.ok(available.includes(version), `Unsupported ${version}`);
+    for (const version of requiredCpp)
+      assert.ok(available.includes(version), `Unsupported ${version}`);
   }
 }
 
@@ -69,7 +77,10 @@ export function verifyNativeLibraries(directory, manifest) {
     .filter((relative) => relative.endsWith(".node"))
     .map((relative) => {
       const filename = path.join(directory, relative);
-      const binaryClass = nativeBinaryClass(fs.readFileSync(filename).subarray(0, 20), process.arch);
+      const binaryClass = nativeBinaryClass(
+        fs.readFileSync(filename).subarray(0, 20),
+        process.arch
+      );
       if (binaryClass !== "target-elf") return { file: relative, binaryClass };
       const dynamic = command("objdump", ["-p", filename]);
       if (/NEEDED\s+(?:libc\.musl-\S+|libc\.so\s*$)/m.test(dynamic)) {
@@ -77,14 +88,21 @@ export function verifyNativeLibraries(directory, manifest) {
       }
       const libraries = command("ldd", [filename]);
       const missing = [...libraries.matchAll(/^\s*(\S+) => not found/gm)].map((match) => match[1]);
-      const optionalKeytar = relative === "node_modules/keytar/build/Release/keytar.node" &&
-        missing.length === 1 && missing[0] === "libsecret-1.so.0";
+      const optionalKeytar =
+        relative === "node_modules/keytar/build/Release/keytar.node" &&
+        missing.length === 1 &&
+        missing[0] === "libsecret-1.so.0";
       assert.ok(missing.length === 0 || optionalKeytar, `Missing native library: ${relative}`);
       const symbols = command("objdump", ["-T", filename]);
       const requiredVersions = [...new Set(symbols.match(/GLIBC(?:XX)?_[\d.]+/g) ?? [])].sort();
       verifySymbolVersions(libraries, requiredVersions);
-      return { file: relative, binaryClass: "target-glibc", requiredVersions, missing,
-        ...(optionalKeytar ? { exception: "existing-optional-keytar-libsecret" } : {}) };
+      return {
+        file: relative,
+        binaryClass: "target-glibc",
+        requiredVersions,
+        missing,
+        ...(optionalKeytar ? { exception: "existing-optional-keytar-libsecret" } : {}),
+      };
     });
   const target = classified.filter((entry) => entry.binaryClass === "target-glibc");
   for (const expected of [
@@ -92,7 +110,10 @@ export function verifyNativeLibraries(directory, manifest) {
     `node_modules/better-sqlite3/prebuilds/linux-${process.arch}.node`,
     `node_modules/onnxruntime-node/bin/napi-v6/linux/${process.arch}/onnxruntime_binding.node`,
   ]) {
-    assert.ok(target.some((entry) => entry.file === expected), `Missing target native addon: ${expected}`);
+    assert.ok(
+      target.some((entry) => entry.file === expected),
+      `Missing target native addon: ${expected}`
+    );
   }
   return classified;
 }
@@ -119,9 +140,18 @@ async function smokePm2(directory, scratch) {
     stdio: ["ignore", "pipe", "pipe"],
   });
   let exitCode;
-  child.once("error", () => { exitCode = 125; });
-  const exited = new Promise((resolve) => child.once("exit", (code) => { exitCode = code; resolve(); }));
-  const collect = (chunk) => { output = (output + chunk.toString()).slice(-262_144); };
+  child.once("error", () => {
+    exitCode = 125;
+  });
+  const exited = new Promise((resolve) =>
+    child.once("exit", (code) => {
+      exitCode = code;
+      resolve();
+    })
+  );
+  const collect = (chunk) => {
+    output = (output + chunk.toString()).slice(-262_144);
+  };
   child.stdout.on("data", collect);
   child.stderr.on("data", collect);
   let good = 0;
@@ -140,7 +170,11 @@ async function smokePm2(directory, scratch) {
       await new Promise((resolve) => setTimeout(resolve, 250));
     }
     assert.equal(good, 6, "PM2 artifact health smoke failed");
-    assert.match(output, /\[DB\] Driver:\s*node:sqlite\b/, "Actual PM2 entrypoint must use node:sqlite");
+    assert.match(
+      output,
+      /\[DB\] Driver:\s*node:sqlite\b/,
+      "Actual PM2 entrypoint must use node:sqlite"
+    );
     return { driver: "node:sqlite", consecutiveHealthy: good };
   } finally {
     if (child.pid && exitCode === undefined) {
@@ -157,16 +191,27 @@ async function smokePm2(directory, scratch) {
 async function main() {
   if (process.argv[3] === "--verify") {
     const saved = JSON.parse(fs.readFileSync("_artifacts/native-artifact/manifest.json", "utf8"));
-    assert.deepEqual(artifactManifest(process.argv[2]), saved, "Runtime changed after qualification");
+    assert.deepEqual(
+      artifactManifest(process.argv[2]),
+      saved,
+      "Runtime changed after qualification"
+    );
     return;
   }
   const [expectedArch, expectedAbi, expectedNode] = process.argv.slice(3);
-  assert.ok(expectedArch && expectedAbi && expectedNode, "Expected architecture, ABI and Node version arguments required");
+  assert.ok(
+    expectedArch && expectedAbi && expectedNode,
+    "Expected architecture, ABI and Node version arguments required"
+  );
   assert.equal(process.arch, expectedArch);
   assert.equal(process.versions.modules, expectedAbi);
   assert.equal(process.versions.node, expectedNode);
   const directory = fs.realpathSync(process.argv[2]);
-  const repairedBinLinks = relinkRuntimeBins(path.join(directory, "node_modules"), path.resolve("node_modules"));
+  const nextDistDir = process.env.NEXT_DIST_DIR || ".build/next";
+  const repairedBinLinks = relinkRuntimeBins(path.join(directory, "node_modules"), [
+    path.resolve("node_modules"),
+    path.resolve(nextDistDir, "standalone", "node_modules"),
+  ]);
   const source = process.env.GITHUB_SHA;
   assert.match(source, /^[a-f0-9]{40}$/);
   const marker = fs.readFileSync(path.join(directory, "BUILD_SHA"), "utf8").trim();
@@ -199,7 +244,9 @@ async function main() {
   fs.mkdirSync(output, { recursive: true });
   fs.writeFileSync(path.join(output, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
   fs.writeFileSync(path.join(output, "receipt.json"), JSON.stringify(receipt, null, 2) + "\n");
-  console.log(JSON.stringify({ source, arch: receipt.arch, abi: receipt.abi, files: receipt.files, smoke }));
+  console.log(
+    JSON.stringify({ source, arch: receipt.arch, abi: receipt.abi, files: receipt.files, smoke })
+  );
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

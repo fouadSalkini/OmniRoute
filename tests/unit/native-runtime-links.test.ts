@@ -32,6 +32,35 @@ test("internal bin links become relative while unrelated escaping links remain r
   }
 });
 
+test("bin links into any listed copy source are repointed at the bundled copy", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-runtime-links-"));
+  try {
+    const runtime = path.join(directory, "runtime");
+    const source = path.join(directory, "source");
+    const standalone = path.join(directory, "standalone");
+    const nested = path.join("global-agent", "node_modules", "semver", "bin");
+    for (const root of [runtime, standalone]) {
+      fs.mkdirSync(path.join(root, nested), { recursive: true });
+      fs.writeFileSync(path.join(root, nested, "semver.js"), "semver");
+    }
+    fs.mkdirSync(source);
+    const bin = path.join(runtime, "global-agent", "node_modules", ".bin");
+    fs.mkdirSync(bin);
+    fs.symlinkSync(path.join(standalone, nested, "semver.js"), path.join(bin, "semver"));
+    assert.throws(() => relinkRuntimeBins(runtime, source), /outside build dependencies/);
+    assert.equal(relinkRuntimeBins(runtime, [source, standalone]), 1);
+    assert.equal(fs.readlinkSync(path.join(bin, "semver")), "../semver/bin/semver.js");
+    artifactManifest(runtime);
+    assert.equal(
+      relinkRuntimeBins(runtime, [source, path.join(directory, "missing")]),
+      0,
+      "a missing optional source is skipped"
+    );
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("ELF validation rejects truncated headers and accepts big-endian target headers", () => {
   const malformed = Buffer.from("7f454c46", "hex");
   assert.throws(() => nativeBinaryClass(malformed, "x64"), /Malformed ELF header/);
