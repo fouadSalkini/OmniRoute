@@ -479,10 +479,18 @@ test("streamed Anthropic passthrough yields the assistant text and tool_use name
   const chunks = claudeToolUseStream(["Read"], "Let me check the tests.");
   const completion = await assembleStream(chunks, claudePassthroughOptions());
 
+  // Since #19557 the log/cache summary carries native tool calls with their arguments (never
+  // name-only); the client stream itself stays Claude-shaped.
   const message = (completion.responseBody as AssembledChatBody).choices[0].message;
-  assert.equal(message.tool_calls, undefined, "the assembled body gains no name-only tool_calls");
-  assert.ok(!JSON.stringify(completion.responseBody).includes("Read"), "names stay off the wire");
-  assert.ok(!JSON.stringify(completion.clientPayload).includes("tool_calls"), "call log unchanged");
+  assert.deepEqual(
+    message.tool_calls?.map((call) => [call.function.name, call.function.arguments]),
+    [["Read", '{"file_path":"a.ts"}']],
+    "summary tool calls are complete, not name-only"
+  );
+  assert.ok(
+    JSON.stringify(completion.clientPayload).includes('"arguments":"{\\"file_path\\":\\"a.ts\\"}"'),
+    "the call log keeps the complete tool call (#19557)"
+  );
   const turn = streamedAssistantTurn(completion);
   assert.equal(turn.assistantText, "Let me check the tests.");
   assert.deepEqual(turn.toolNames, ["Read"]);
@@ -518,7 +526,7 @@ test("streamed Anthropic passthrough keeps at most 20 tool names", async () => {
   assert.deepEqual(streamedAssistantTurn(completion).toolNames, names.slice(0, 20));
 });
 
-test("the semantic cache stores the Claude passthrough body without tool names", async () => {
+test("the semantic cache skips a Claude passthrough answer that called tools", async () => {
   const completion = await assembleStream(
     claudeToolUseStream(["Read"], "Cached text."),
     claudePassthroughOptions()
@@ -544,9 +552,8 @@ test("the semantic cache stores the Claude passthrough body without tool names",
     }
   );
 
-  const replayed = JSON.parse(JSON.stringify(cachedBody)) as AssembledChatBody;
-  assert.equal(replayed.choices[0].message.content, "Cached text.");
-  assert.equal(replayed.choices[0].message.tool_calls, undefined, "no malformed tool calls replay");
+  // #19557: an answer that called tools is never replayed from the semantic cache.
+  assert.equal(cachedBody, null, "no tool-call answer is cached");
 });
 
 test("streamed OpenAI upstream translated for an Anthropic client yields text and tools", async () => {
